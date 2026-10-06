@@ -14,21 +14,37 @@ class TicketUpdate(BaseModel):
     status: TicketStatus | None = None
     priority: TicketPriority | None = None
     assigned_to: uuid.UUID | None = None
+    resolution: str | None = None
 
 
 class TicketOut(TimestampedRead):
     ticket_number: str
     client_id: uuid.UUID | None = None
+    partner_account_id: uuid.UUID | None = None
     subject: str
     description: str
     priority: TicketPriority
     status: TicketStatus
     assigned_to: uuid.UUID | None = None
+    sla_due_at: datetime | None = None
+    resolution: str | None = None
+    resolved_at: datetime | None = None
+    closed_at: datetime | None = None
 
 
 class TicketReplyCreate(BaseModel):
-    message: str
+    message: str | None = None
+    content: str | None = None
     attachment_url: str | None = None
+
+    def model_dump(self, **kwargs):
+        d = super().model_dump(**kwargs)
+        if not d.get("message") and d.get("content"):
+            d["message"] = d.pop("content")
+        else:
+            d.pop("content", None)
+        return d
+
 
 
 class TicketReplyOut(TimestampedRead):
@@ -54,6 +70,7 @@ class MeetingUpdate(BaseModel):
     scheduled_at: datetime | None = None
     status: MeetingStatus | None = None
     notes: str | None = None
+    recording_url: str | None = None
 
 
 class MeetingOut(TimestampedRead):
@@ -67,6 +84,7 @@ class MeetingOut(TimestampedRead):
     organizer_id: uuid.UUID | None = None
     status: MeetingStatus
     notes: str | None = None
+    recording_url: str | None = None
 
 
 # ---------- Notification ----------

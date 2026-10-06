@@ -15,6 +15,7 @@ class UserRole(str, enum.Enum):
     client = "client"
     employee = "employee"
     guest = "guest"
+    partner = "partner"
 
 
 class EmploymentType(str, enum.Enum):
@@ -133,33 +134,11 @@ class CommentStatus(str, enum.Enum):
     spam = "spam"
 
 
-class CategoryType(str, enum.Enum):
-    blog = "blog"
-    gallery = "gallery"
-    download = "download"
-    event = "event"
-
-
-class TechnologyCategory(str, enum.Enum):
-    frontend = "frontend"
-    backend = "backend"
-    database = "database"
-    cloud = "cloud"
-    devops = "devops"
-    ai_ml = "ai_ml"
-    mobile = "mobile"
-    other = "other"
-
-
-class PartnerType(str, enum.Enum):
-    technology_partner = "technology_partner"
-    business_partner = "business_partner"
-    reseller = "reseller"
-
-
-class GalleryType(str, enum.Enum):
-    image = "image"
-    video = "video"
+class ContactStatus(str, enum.Enum):
+    new = "new"
+    in_progress = "in_progress"
+    resolved = "resolved"
+    spam = "spam"
 
 
 class CareerEmploymentType(str, enum.Enum):
@@ -210,13 +189,6 @@ class NotificationType(str, enum.Enum):
     error = "error"
 
 
-class ContactStatus(str, enum.Enum):
-    new = "new"
-    in_progress = "in_progress"
-    resolved = "resolved"
-    spam = "spam"
-
-
 class LeadSource(str, enum.Enum):
     website = "website"
     contact_form = "contact_form"
@@ -231,6 +203,10 @@ class LeadStatus(str, enum.Enum):
     new = "new"
     contacted = "contacted"
     requirement_gathering = "requirement_gathering"
+    # Set the moment a draft proposal is created for the lead (before it's
+    # actually emailed to the client) — distinct from proposal_sent so the
+    # pipeline UI can show "proposal drafted, not yet sent" as its own step.
+    proposal_created = "proposal_created"
     proposal_sent = "proposal_sent"
     proposal_approved = "proposal_approved"
     converted = "converted"
@@ -239,13 +215,50 @@ class LeadStatus(str, enum.Enum):
 
 class ProposalStatus(str, enum.Enum):
     draft = "draft"
+    # PM-review stage: an employee drafts a proposal, submits it for PM
+    # sign-off, and only a pm_approved (or, for staff with direct sending
+    # authority, still-draft) proposal can be sent to the client. See
+    # POST /proposals/{id}/submit-for-review and .../review.
+    submitted_for_review = "submitted_for_review"
+    pm_approved = "pm_approved"
+    pm_rejected = "pm_rejected"
     sent = "sent"
     viewed = "viewed"
     accepted = "accepted"
     rejected = "rejected"
+    superseded = "superseded"
 
 
 class ContractStatus(str, enum.Enum):
     pending = "pending"
     signed = "signed"
     void = "void"
+
+
+class CategoryType(str, enum.Enum):
+    blog = "blog"
+    gallery = "gallery"
+    download = "download"
+    event = "event"
+
+
+class GalleryType(str, enum.Enum):
+    image = "image"
+    video = "video"
+
+
+class PartnerType(str, enum.Enum):
+    technology_partner = "technology_partner"
+    business_partner = "business_partner"
+    reseller = "reseller"
+
+
+class TechnologyCategory(str, enum.Enum):
+    frontend = "frontend"
+    backend = "backend"
+    database = "database"
+    cloud = "cloud"
+    devops = "devops"
+    ai_ml = "ai_ml"
+    mobile = "mobile"
+    other = "other"

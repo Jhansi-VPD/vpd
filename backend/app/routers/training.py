@@ -1,8 +1,9 @@
 import uuid
+from contextlib import suppress
 
-from fastapi import APIRouter, Depends
-from slugify import slugify
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, Request
+from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -12,8 +13,8 @@ from app.core.errors import ApiError
 from app.crud.base import CRUDBase
 from app.models.training import Course, TrainingEnrollment
 from app.models.user import User
-from app.schemas.training import CourseCreate, CourseOut, CourseUpdate, TrainingEnrollmentOut
-from app.utils.pagination import PageParams, page_params
+from app.schemas.training import CourseCreate, CourseOut, TrainingEnrollmentOut
+from app.utils.pagination import PageParams, bounded_select, page_params, paginate_query
 from app.utils.responses import build_pagination_meta, success_response
 
 router = APIRouter(prefix="/trainings", tags=["Training"])
@@ -39,28 +40,6 @@ async def get_course(course_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     return success_response(data=CourseOut.model_validate(course))
 
 
-# ---------- Admin CRUD ----------
-@router.post("/courses", response_model=dict, status_code=201, dependencies=[Depends(require_roles("admin", "hr"))])
-async def create_course(payload: CourseCreate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
-    data = payload.model_dump()
-    data["slug"] = data.get("slug") or slugify(data["title"])
-    data["created_by"] = current_user.id
-    course = await course_crud.create(db, data)
-    return success_response(data=CourseOut.model_validate(course), message="Course created", status_code=201)
-
-
-@router.put("/courses/{course_id}", response_model=dict, dependencies=[Depends(require_roles("admin", "hr"))])
-async def update_course(course_id: uuid.UUID, payload: CourseUpdate, db: AsyncSession = Depends(get_db)):
-    course = await course_crud.update(db, course_id, payload.model_dump(exclude_unset=True))
-    return success_response(data=CourseOut.model_validate(course), message="Course updated")
-
-
-@router.delete("/courses/{course_id}", response_model=dict, dependencies=[Depends(require_roles("admin"))])
-async def delete_course(course_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
-    await course_crud.delete(db, course_id)
-    return success_response(message="Course deleted")
-
-
 # ---------- Employee enrollment (self-service) ----------
 @router.post("/enroll", response_model=dict, status_code=201)
 async def enroll(course_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -80,7 +59,17 @@ async def enroll(course_id: uuid.UUID, db: AsyncSession = Depends(get_db), curre
 
     enrollment = TrainingEnrollment(employee_id=employee.id, course_id=course_id)
     db.add(enrollment)
-    await db.commit()
+    try:
+        await db.commit()
+    except IntegrityError:
+        # The query-then-insert check above narrows the common case, but a
+        # genuine race (two concurrent enroll requests for the same
+        # employee/course) is only actually prevented by the database's own
+        # unique constraint (training_enrollments' uq_training_enrollment_
+        # employee_course) — this translates that constraint violation into
+        # the same friendly 409 the pre-check gives, rather than a raw 500.
+        await db.rollback()
+        raise ApiError.conflict("Already enrolled in this course") from None
     await db.refresh(enrollment)
     return success_response(data=TrainingEnrollmentOut.model_validate(enrollment), message="Enrolled successfully", status_code=201)
 
@@ -92,8 +81,45 @@ async def my_enrollments(db: AsyncSession = Depends(get_db), current_user: User 
     if not employee:
         raise ApiError.not_found("Employee profile not found")
     result = await db.execute(
-        select(TrainingEnrollment).options(selectinload(TrainingEnrollment.course))
-        .where(TrainingEnrollment.employee_id == employee.id)
-        .order_by(TrainingEnrollment.enrolled_at.desc())
+        bounded_select(
+            select(TrainingEnrollment).options(selectinload(TrainingEnrollment.course))
+            .where(TrainingEnrollment.employee_id == employee.id)
+            .order_by(TrainingEnrollment.enrolled_at.desc())
+        )
     )
     return success_response(data=[TrainingEnrollmentOut.model_validate(e) for e in result.scalars().all()])
+
+
+# ---------- Admin course creation & enrollment management ----------
+@router.post("", response_model=dict, status_code=201, dependencies=[Depends(require_roles("admin", "hr"))])
+@router.post("/courses", response_model=dict, status_code=201, dependencies=[Depends(require_roles("admin", "hr"))])
+async def create_course(payload: CourseCreate, db: AsyncSession = Depends(get_db)):
+    from slugify import slugify
+    data = payload.model_dump()
+    if not data.get("slug"):
+        data["slug"] = slugify(payload.title)
+    course = await course_crud.create(db, data)
+    return success_response(data=CourseOut.model_validate(course), message="Course created successfully", status_code=201)
+
+
+
+@router.get("/enrollments", response_model=dict, dependencies=[Depends(require_roles("admin", "hr"))])
+async def list_enrollments(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    page: PageParams = Depends(page_params),
+):
+    filters = {}
+    emp_id = request.query_params.get("employee_id")
+    if emp_id:
+        with suppress(ValueError):
+            filters["employee_id"] = uuid.UUID(emp_id)
+    stmt = select(TrainingEnrollment).options(selectinload(TrainingEnrollment.course))
+    count_stmt = select(func.count()).select_from(TrainingEnrollment)
+    for k, v in filters.items():
+        stmt = stmt.where(getattr(TrainingEnrollment, k) == v)
+        count_stmt = count_stmt.where(getattr(TrainingEnrollment, k) == v)
+    stmt = stmt.order_by(TrainingEnrollment.enrolled_at.desc())
+    items, meta = await paginate_query(db, stmt, count_stmt, page)
+    return success_response(data=[TrainingEnrollmentOut.model_validate(e) for e in items], message="Enrollments fetched", meta=meta)
+

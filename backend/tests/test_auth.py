@@ -1,113 +1,84 @@
-from unittest.mock import patch
+"""Unit tests for auth business logic (not covered by API endpoint tests).
+
+Registration is fully local now (CoreFusion-owned auth — see
+app/services/auth_service.py) — there is no external identity provider
+dependency left to test failure modes for; these tests target the actual
+remaining logic: duplicate-email rejection and successful account creation.
+"""
+from datetime import UTC, datetime
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from starlette.requests import Request
 
 from app.core.errors import ApiError
+from app.core.password import verify_password
+from app.models.user import User
 from app.routers.auth import register
 from app.schemas.auth import RegisterRequest
 
 
-class TestAuthValidation:
-    """Tests for auth endpoint validation (no real Supabase dependency)."""
+def _refresh_side_effect(obj):
+    obj.id = obj.id or "00000000-0000-0000-0000-000000000000"
+    obj.created_at = obj.created_at or datetime.now(UTC)
+    obj.updated_at = obj.updated_at or datetime.now(UTC)
 
-    async def test_register_requires_valid_email(self, async_client):
-        response = await async_client.post(
-            "/api/v1/auth/register",
-            json={"name": "Test User", "email": "not-an-email", "password": "password123"},
+
+def _fake_request() -> Request:
+    """Minimal ASGI scope so slowapi's rate-limit decorator (which requires a
+    real Request) can be satisfied when calling the endpoint function directly."""
+    return Request({
+        "type": "http",
+        "method": "POST",
+        "path": "/api/v1/auth/register",
+        "headers": [],
+        "client": ("testclient", 123),
+        "query_string": b"",
+    })
+
+
+class TestRegister:
+    @pytest.mark.asyncio
+    async def test_rejects_duplicate_email(self):
+        mock_db = AsyncMock()
+        mock_db.add = MagicMock()
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = User(
+            id="00000000-0000-0000-0000-000000000000", name="Existing", email="test@example.com",
+            password_hash="x", role="client",
         )
-        assert response.status_code == 422
-        errors = response.json()["errors"]
-        assert any("email" in e["field"] for e in errors)
+        mock_db.execute.return_value = mock_result
 
-    async def test_register_requires_min_password_length(self, async_client):
-        response = await async_client.post(
-            "/api/v1/auth/register",
-            json={"name": "Test User", "email": "test@example.com", "password": "short"},
-        )
-        assert response.status_code == 422
+        with pytest.raises(ApiError) as exc_info:
+            await register(
+                _fake_request(),
+                RegisterRequest(name="Test User", email="test@example.com", password="Password123!"),
+                db=mock_db,
+            )
+        assert exc_info.value.status_code == 409
 
-    async def test_register_requires_name(self, async_client):
-        response = await async_client.post(
-            "/api/v1/auth/register",
-            json={"email": "test@example.com", "password": "password123"},
-        )
-        assert response.status_code == 422
+    @pytest.mark.asyncio
+    async def test_creates_account_with_hashed_password_and_issues_verification_email(self):
+        mock_db = AsyncMock()
+        mock_db.add = MagicMock()
+        mock_db.refresh.side_effect = _refresh_side_effect
+        no_existing = MagicMock()
+        no_existing.scalar_one_or_none.return_value = None
+        mock_db.execute.return_value = no_existing
 
-    async def test_login_requires_email_and_password(self, async_client):
-        response = await async_client.post(
-            "/api/v1/auth/login",
-            json={"email": "not-an-email", "password": ""},
-        )
-        assert response.status_code == 422
+        with patch("app.routers.auth._issue_verification_email", new_callable=AsyncMock) as mock_issue:
+            result = await register(
+                _fake_request(),
+                RegisterRequest(name="Test User", email="new@example.com", password="Password123!"),
+                db=mock_db,
+            )
 
-    async def test_register_returns_service_unavailable_when_auth_client_is_unavailable(self):
-        class FakeDbSession:
-            async def execute(self, *args, **kwargs):
-                class FakeResult:
-                    def scalar_one_or_none(self):
-                        return None
-
-                return FakeResult()
-
-            async def commit(self):
-                return None
-
-            async def refresh(self, *args, **kwargs):
-                return None
-
-            async def rollback(self):
-                return None
-
-            def add(self, *args, **kwargs):
-                return None
-
-        with patch("app.routers.auth.get_admin_client", side_effect=ApiError.internal("Supabase admin client is not configured")):
-            with pytest.raises(ApiError) as exc_info:
-                await register(
-                    RegisterRequest(name="Test User", email="test@example.com", password="password123"),
-                    db=FakeDbSession(),
-                )
-
-        assert exc_info.value.status_code == 503
-        assert "temporarily unavailable" in exc_info.value.message.lower()
-
-    async def test_me_without_token(self, async_client):
-        response = await async_client.get("/api/v1/auth/me")
-        assert response.status_code == 401
-
-    async def test_me_with_invalid_token(self, async_client):
-        response = await async_client.get(
-            "/api/v1/auth/me",
-            headers={"Authorization": "Bearer invalid-token"},
-        )
-        assert response.status_code == 401
-
-    async def test_logout_with_empty_token(self, async_client):
-        """Logout with empty token hits Supabase admin client which isn't
-        configured in test — this validates the endpoint exists."""
-        response = await async_client.post(
-            "/api/v1/auth/logout",
-            json={"access_token": "some-valid-token"},
-        )
-        assert response.status_code in (200, 500)
-
-    async def test_forgot_password_validation(self, async_client):
-        response = await async_client.post(
-            "/api/v1/auth/forgot-password",
-            json={"email": "not-an-email"},
-        )
-        assert response.status_code == 422
-
-    async def test_reset_password_validation(self, async_client):
-        response = await async_client.post(
-            "/api/v1/auth/reset-password",
-            json={"recovery_token": "tok", "password": "short"},
-        )
-        assert response.status_code == 422
-
-    async def test_refresh_token_validation(self, async_client):
-        response = await async_client.post(
-            "/api/v1/auth/refresh-token",
-            json={},
-        )
-        assert response.status_code == 422
+        assert result["data"].email == "new@example.com"
+        assert result["data"].is_active is True
+        mock_db.add.assert_called_once()
+        created_user = mock_db.add.call_args[0][0]
+        assert isinstance(created_user, User)
+        # The plaintext password is never stored — only its hash.
+        assert created_user.password_hash != "Password123!"
+        assert verify_password("Password123!", created_user.password_hash)
+        mock_issue.assert_awaited_once()

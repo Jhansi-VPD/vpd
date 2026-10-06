@@ -37,7 +37,10 @@ class BlogOut(TimestampedRead):
     content: str
     cover_image: str | None = None
     author_id: uuid.UUID | None = None
+    author_name: str | None = None
+    author_role: str | None = None
     category_id: uuid.UUID | None = None
+    category_name: str | None = None
     tags: list[str] = []
     status: BlogStatus
     views: int
@@ -45,9 +48,14 @@ class BlogOut(TimestampedRead):
 
 
 class CommentCreate(BaseModel):
+    blog_id: uuid.UUID
     name: str
     email: EmailStr
     content: str
+
+
+class CommentModerate(BaseModel):
+    status: CommentStatus
 
 
 class CommentOut(TimestampedRead):

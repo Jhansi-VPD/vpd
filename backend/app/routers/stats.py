@@ -23,10 +23,16 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
             return default
 
     total_services    = await count(select(func.count()).select_from(Service))
-    total_projects    = await count(select(func.count()).select_from(Project).where(Project.deleted_at.is_(None)))
+    # Project.deleted_at is never actually set by any code path (DELETE
+    # /projects/{id} hard-deletes via CRUDBase.delete()) — this filter used
+    # to imply soft-delete is in effect here, which was misleading dead
+    # code (found during a documentation review); removed rather than left
+    # to suggest a behavior this app doesn't have.
+    total_projects    = await count(select(func.count()).select_from(Project))
     active_projects   = await count(select(func.count()).select_from(Project).where(Project.status == "in_progress"))
     total_employees   = await count(select(func.count()).select_from(Employee).where(Employee.status == "active"))
     total_clients     = await count(select(func.count()).select_from(Client))
+    total_countries   = await count(select(func.count(func.distinct(Client.country))).where(Client.country.isnot(None)))
     total_employee_users = await count(select(func.count()).select_from(User).where(User.role == UserRole.employee))
     total_client_users   = await count(select(func.count()).select_from(User).where(User.role == UserRole.client))
 
@@ -37,10 +43,9 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
             "active_projects": active_projects,
             "total_employees": total_employees,
             "total_clients": total_clients,
+            "countries": total_countries,
             "total_employee_users": total_employee_users,
             "total_client_users": total_client_users,
-            "countries": 18,
-            "uptime": 99.8,
         },
         message="Stats fetched",
     )
