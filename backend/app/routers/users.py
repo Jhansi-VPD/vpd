@@ -16,7 +16,7 @@ from app.services.auth_service import revoke_all_sessions
 from app.utils.pagination import PageParams, page_params
 from app.utils.responses import build_pagination_meta, success_response
 
-EMPLOYEE_ROLES = {"employee", "developer", "sales", "marketing", "project_manager", "qa", "support", "finance", "hr", "admin", "super_admin"}
+EMPLOYEE_ROLES = {"employee", "developer", "sales", "project_manager", "qa", "support", "finance", "hr", "admin", "super_admin"}
 
 router = APIRouter(prefix="/users", tags=["Users"], dependencies=[Depends(require_roles("admin", "hr"))])
 

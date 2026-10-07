@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 from functools import lru_cache
 from pathlib import Path
 
@@ -86,13 +87,21 @@ class Settings(BaseSettings):
     redis_port: int = 6379
     redis_password: str | None = None
     redis_tls: bool = False  # forces rediss:// when building from host/port/password instead of redis_url_override
+    upstash_redis_rest_url: str = Field(
+        default="",
+        validation_alias=AliasChoices("UPSTASH_REDIS_REST_URL"),
+    )
+    upstash_redis_rest_token: str = Field(
+        default="",
+        validation_alias=AliasChoices("UPSTASH_REDIS_REST_TOKEN"),
+    )
 
     # Email — Brevo's transactional email HTTP API (not SMTP; see
     # services/email_service.py). One account/API key serves every
     # environment (local dev and staging both send through Brevo per
     # explicit instruction) — there is no separate "local" email path.
     brevo_api_key: str = ""
-    brevo_sender_email: str = "no-reply@vpdtechnologies.com"
+    brevo_sender_email: str = "kethana2022@gmail.com"
     brevo_sender_name: str = "VPD Technologies"
 
     # Uploads / file storage. "local" (default) writes to local disk exactly
@@ -112,7 +121,7 @@ class Settings(BaseSettings):
     s3_bucket: str = "vpdtechnologies-uploads"
     s3_region: str = "us-east-1"
     s3_force_path_style: bool = True  # required by MinIO; harmless elsewhere
-    s3_public_url_base: str = ""  # e.g. http://localhost:9000/vpd-uploads (local) or https://<project-ref>.supabase.co/storage/v1/object/public/vpd-uploads (staging)
+    s3_public_url_base: str = ""  # e.g. http://localhost:9000/vpdtechnologies-uploads (local) or https://<project-ref>.supabase.co/storage/v1/object/public/vpdtechnologies-uploads (staging)
     s3_auto_create_bucket: bool = True  # convenient for MinIO's empty local volume; a no-op (caught, ignored) if the bucket already exists, e.g. on Supabase
 
     # Site
@@ -164,25 +173,19 @@ class Settings(BaseSettings):
 
     def _get_async_database_url(self) -> str:
         """Get the async PostgreSQL URL."""
-        from urllib.parse import quote_plus
         if self.database_url:
             return _as_scheme(self.database_url, "postgresql+asyncpg://")
-        encoded_pass = quote_plus(self.db_pass) if self.db_pass else ""
-        return (
-            f"postgresql+asyncpg://{self.db_user}:{encoded_pass}"
-            f"@{self.db_host}:{self.db_port}/{self.db_name}"
-        )
+        pass_quoted = urllib.parse.quote_plus(self.db_pass) if self.db_pass else ""
+        user_quoted = urllib.parse.quote_plus(self.db_user) if self.db_user else ""
+        return f"postgresql+asyncpg://{user_quoted}:{pass_quoted}@{self.db_host}:{self.db_port}/{self.db_name}"
 
     def _get_sync_database_url(self) -> str:
         """Get the sync PostgreSQL URL (for Alembic migrations)."""
-        from urllib.parse import quote_plus
         if self.database_url:
             return _as_scheme(self.database_url, "postgresql+psycopg2://")
-        encoded_pass = quote_plus(self.db_pass) if self.db_pass else ""
-        return (
-            f"postgresql+psycopg2://{self.db_user}:{encoded_pass}"
-            f"@{self.db_host}:{self.db_port}/{self.db_name}"
-        )
+        pass_quoted = urllib.parse.quote_plus(self.db_pass) if self.db_pass else ""
+        user_quoted = urllib.parse.quote_plus(self.db_user) if self.db_user else ""
+        return f"postgresql+psycopg2://{user_quoted}:{pass_quoted}@{self.db_host}:{self.db_port}/{self.db_name}"
 
     @property
     def async_database_url(self) -> str:

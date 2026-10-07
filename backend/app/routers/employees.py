@@ -59,7 +59,7 @@ leave_crud = CRUDBase(Leave, relationships=["employee"])
 timesheet_crud = CRUDBase(Timesheet)
 
 
-EMPLOYEE_ROLES = {"employee", "developer", "sales", "marketing", "project_manager", "qa", "support", "finance", "hr", "admin", "super_admin"}
+EMPLOYEE_ROLES = {"employee", "developer", "sales", "project_manager", "qa", "support", "finance", "hr", "admin", "super_admin"}
 
 
 def _parse_date_param(request: Request, name: str) -> date | None:

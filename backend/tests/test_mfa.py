@@ -14,7 +14,7 @@ def _mfa_key(monkeypatch):
     from cryptography.fernet import Fernet
 
     monkeypatch.setattr(mfa.settings, "mfa_encryption_key", Fernet.generate_key().decode())
-    monkeypatch.setattr(mfa.settings, "mfa_issuer", "CoreFusion Technologies")
+    monkeypatch.setattr(mfa.settings, "mfa_issuer", "VPD Technologies")
 
 
 class TestSecretEncryption:
@@ -55,7 +55,7 @@ class TestProvisioningUri:
         uri = mfa.provisioning_uri(secret, "user@example.com")
         assert uri.startswith("otpauth://totp/")
         assert "user%40example.com" in uri or "user@example.com" in uri
-        assert "CoreFusion" in uri
+        assert "VPD" in uri
 
 
 class TestVerifyTotpCode:

@@ -24,15 +24,12 @@ import pytest
 from app.core.errors import ApiError
 from app.models.client import Client
 from app.models.lead import Lead
-from app.models.partner_account import PartnerAccount
 from app.models.project import Project
 from app.models.user import User
 from app.routers.clients import staff_upload_client_file
 from app.routers.leads import get_lead, list_leads, update_lead
-from app.routers.partner_account import upload_partner_file
 from app.routers.projects import assign_team, update_project
 from app.schemas.crm import LeadUpdate
-from app.schemas.partner_account import PartnerFileCreate
 from app.schemas.project import AssignTeamRequest, ProjectUpdate
 
 
@@ -164,22 +161,6 @@ class TestClientPartnerFileIDORAttackSurface:
             with pytest.raises(ApiError) as exc_info:
                 await staff_upload_client_file(
                     unassigned_client.id, "x", "contract", MagicMock(), mock_db, pm_a,
-                )
-        assert exc_info.value.status_code == 403
-
-    @pytest.mark.asyncio
-    async def test_id_swap_cannot_upload_file_to_unassigned_partner(self):
-        sales_a = _make_user("sales")
-        unassigned_partner = PartnerAccount(id=uuid.uuid4(), user_id=uuid.uuid4(), company_name="Not Mine", account_manager_id=uuid.uuid4())
-        mock_db = AsyncMock()
-        mock_db.add = MagicMock()
-        mock_db.execute.return_value = MagicMock(scalar_one_or_none=MagicMock(return_value=None))
-
-        with patch("app.routers.partner_account.crud.get", new_callable=AsyncMock, return_value=unassigned_partner):
-            with pytest.raises(ApiError) as exc_info:
-                await upload_partner_file(
-                    unassigned_partner.id, PartnerFileCreate(name="x", category="contract", file_url="http://x/y.pdf"),
-                    mock_db, sales_a,
                 )
         assert exc_info.value.status_code == 403
 

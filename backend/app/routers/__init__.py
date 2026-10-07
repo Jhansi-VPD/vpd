@@ -39,6 +39,7 @@ from app.routers import (
     oauth,
     office,
     page_content,
+    partner,
     portfolio,
     product,
     projects,

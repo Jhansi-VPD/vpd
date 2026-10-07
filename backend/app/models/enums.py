@@ -6,7 +6,6 @@ class UserRole(str, enum.Enum):
     admin = "admin"
     hr = "hr"
     sales = "sales"
-    marketing = "marketing"
     project_manager = "project_manager"
     developer = "developer"
     qa = "qa"
@@ -14,8 +13,7 @@ class UserRole(str, enum.Enum):
     finance = "finance"
     client = "client"
     employee = "employee"
-    guest = "guest"
-    partner = "partner"
+  
 
 
 class EmploymentType(str, enum.Enum):

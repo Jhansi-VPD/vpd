@@ -51,7 +51,7 @@ def write_credentials_md() -> None:
         rows.append((role_label, account.get("department", "—"), account["email"], account["password"]))
 
     lines = [
-        "# CoreFusion Demo Credentials",
+        "# VPD Demo Credentials",
         "",
         "**Generated locally by `scripts/reset_demo_passwords.py` — never commit this file.**",
         f"Generated at: {datetime.now(UTC).isoformat()}",

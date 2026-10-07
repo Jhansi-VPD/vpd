@@ -19,6 +19,7 @@ Idempotent: safe to re-run any time (e.g. after a re-seed).
 import asyncio
 import os
 import sys
+import getpass
 
 from sqlalchemy import delete, select, update
 
@@ -30,6 +31,12 @@ from app.models.user import User
 from app.models.user_session import UserSession
 from app.routers.auth import LOGIN_ALLOWLIST
 from app.seeders import seed
+
+SUPER_ADMIN_EMAIL = "superadmin@vpdtechnologies.com"
+ADMIN_EMAIL = "admin@vpdtechnologies.com"
+
+SUPER_ADMIN_PASSWORD = os.environ.get("SUPER_ADMIN_PASSWORD") or getpass.getpass(f"Password for {SUPER_ADMIN_EMAIL}: ")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD") or getpass.getpass(f"Password for {ADMIN_EMAIL}: ")
 
 
 async def main() -> None:
@@ -61,8 +68,15 @@ async def main() -> None:
             )
             if result.rowcount:
                 print(f"[OK]      {account['email']}  role={role_key}  password reset")
+
+        # 2. Verify final state
+        print("\n=== Final user state ===")
+        for email in ADMIN_EMAIL:
+            user = (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
+            if user:
+                print(f"  {user.email}  role={user.role}  name={user.name}")
             else:
-                print(f"[MISSING] {account['email']} not in DB — run scripts/migrations/002_seed_users.py")
+                print(f"[MISSING] {email} not in DB — run scripts/migrations/002_seed_users.py")
 
         # 2. Everyone else: deactivated, sessions revoked.
         blocked = await db.execute(

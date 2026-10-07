@@ -10,14 +10,14 @@ def test_normalize_allowed_origins_removes_trailing_slashes_and_duplicates():
         "http://localhost:5173",
         "",
         "http://localhost:5173/",
-        "https://www.corefusiontech.com",
-        "https://www.corefusiontech.com/",
+        "https://www.vpdtechnologies.com",
+        "https://www.vpdtechnologies.com/",
     ]
 
     assert normalize_allowed_origins(origins) == [
         "https://cf-azure-eta.vercel.app",
         "http://localhost:5173",
-        "https://www.corefusiontech.com",
+        "https://www.vpdtechnologies.com",
     ]
 
 

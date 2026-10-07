@@ -55,7 +55,7 @@ DEPARTMENTS = [
 # a bogus role.
 ROLE_KEYS = [
     "super_admin", "admin", "employee", "sales", "hr", "marketing",
-    "project_manager", "developer", "qa", "support", "finance", "partner", "client",
+    "project_manager", "developer", "qa", "support", "finance", "client",
 ]
 
 # Back-compat module-level constants (EMAIL_DEPARTMENT lookups, credential-sheet
@@ -229,7 +229,7 @@ async def run():
             ("site.tagline", "Transforming Businesses Through Intelligent Digital Solutions", "public"),
             ("contact.email", "info@vpdtechnologies.com", "public"),
             ("contact.phone", "+91-11-0000-0000", "public"),
-            ("social.linkedin", "https://linkedin.com/company/vpdtech", "public"),
+            ("social.linkedin", "https://linkedin.com/company/vpdtechnologies", "public"),
         ]
         for key, value, group in settings_data:
             exists = (await db.execute(select(Setting).where(Setting.key == key))).scalar_one_or_none()

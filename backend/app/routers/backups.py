@@ -20,7 +20,7 @@ from app.utils.responses import success_response
 router = APIRouter(prefix="/backups", tags=["Backups"], dependencies=[Depends(require_roles("super_admin"))])
 
 BACKUP_DIR = BACKEND_ROOT / "backups"
-_FILENAME_RE = re.compile(r"^vpd-[a-z]+-\d{8}T\d{6}Z\.dump$")
+_FILENAME_RE = re.compile(r"^(vpdtechnologies|vpd|corefusion)-[a-z]+-\d{8}T\d{6}Z\.dump$")
 
 
 def _pg_dump_args() -> tuple[list[str], dict[str, str]]:
@@ -45,7 +45,11 @@ def _pg_dump_args() -> tuple[list[str], dict[str, str]]:
 @router.get("", response_model=dict)
 async def list_backups():
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
-    files = sorted(BACKUP_DIR.glob("vpdtechnologies-*.dump"), key=lambda p: p.stat().st_mtime, reverse=True)
+    files = sorted(
+        [p for p in BACKUP_DIR.glob("*.dump") if _FILENAME_RE.match(p.name)],
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
     data = [
         {
             "filename": f.name,

@@ -10,9 +10,9 @@ from app.schemas.common import TimestampedRead
 
 def _validate_password_complexity(value: str) -> str:
     """Shared policy for every password field below: length is enforced by
-    Field(min_length=8), this adds the character-class requirements — at
+    Field(min_length=6), this adds the character-class requirements — at
     least one uppercase, one lowercase, one digit, and one symbol — so a
-    password like "aaaaaaaa" (technically 8 chars) is rejected."""
+    password lacking any character class is rejected."""
     if not re.search(r"[A-Z]", value):
         raise ValueError("Password must contain at least one uppercase letter")
     if not re.search(r"[a-z]", value):
@@ -34,7 +34,7 @@ class RegisterRequest(BaseModel):
 
     name: str = Field(min_length=1, max_length=150)
     email: EmailStr
-    password: str = Field(min_length=8, max_length=128)
+    password: str = Field(min_length=6, max_length=128)
     phone: str | None = None
 
     _validate_password = field_validator("password")(_validate_password_complexity)
@@ -51,7 +51,7 @@ class ForgotPasswordRequest(BaseModel):
 
 class ResetPasswordRequest(BaseModel):
     token: str
-    password: str = Field(min_length=8, max_length=128)
+    password: str = Field(min_length=6, max_length=128)
 
     _validate_password = field_validator("password")(_validate_password_complexity)
 
@@ -66,7 +66,7 @@ class ResendVerificationRequest(BaseModel):
 
 class ChangePasswordRequest(BaseModel):
     current_password: str
-    new_password: str = Field(min_length=8, max_length=128)
+    new_password: str = Field(min_length=6, max_length=128)
 
     _validate_new_password = field_validator("new_password")(_validate_password_complexity)
 

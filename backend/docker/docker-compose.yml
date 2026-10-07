@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: corefusion-fastapi
+    container_name: vpd-fastapi
     restart: unless-stopped
     env_file:
       - ../.env
@@ -19,7 +19,7 @@ services:
     ports:
       - '8000:8000'
     networks:
-      - corefusion-net
+      - vpd-net
 
   # NOTE: PostgreSQL is no longer run locally — this app connects directly to
   # your Supabase project's Postgres instance (see .env: DB_HOST etc.), which
@@ -27,18 +27,18 @@ services:
   # kept for optional local caching.
   redis:
     image: redis:7-alpine
-    container_name: corefusion-redis
+    container_name: vpd-redis
     restart: unless-stopped
     volumes:
       - redis_data:/data
     ports:
       - '6379:6379'
     networks:
-      - corefusion-net
+      - vpd-net
 
   nginx:
     image: nginx:1.27-alpine
-    container_name: corefusion-nginx
+    container_name: vpd-nginx
     restart: unless-stopped
     depends_on:
       - api
@@ -48,10 +48,10 @@ services:
     ports:
       - '80:80'
     networks:
-      - corefusion-net
+      - vpd-net
 
 networks:
-  corefusion-net:
+  vpd-net:
     driver: bridge
 
 volumes:

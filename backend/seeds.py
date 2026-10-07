@@ -272,7 +272,7 @@ async def seed_users_employees_clients(db: AsyncSession, dept_map: dict[str, uui
                 await db.flush()
 
         # Partner profile
-        if u_info["role"] == UserRole.partner:
+        if hasattr(UserRole, "partner") and u_info["role"] == getattr(UserRole, "partner"):
             res_prt = await db.execute(select(PartnerAccount).where(PartnerAccount.user_id == user.id))
             partner_obj = res_prt.scalar_one_or_none()
             if not partner_obj:

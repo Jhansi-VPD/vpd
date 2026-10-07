@@ -21,7 +21,7 @@ from app.services.project_provisioning import provision_project_for_accepted_pro
 from app.utils.pagination import PageParams, page_params
 from app.utils.responses import build_pagination_meta, success_response
 
-router = APIRouter(prefix="/proposals", tags=["CRM — Proposals"], dependencies=[Depends(require_roles("sales", "admin", "project_manager", "marketing"))])
+router = APIRouter(prefix="/proposals", tags=["CRM — Proposals"], dependencies=[Depends(require_roles("sales", "admin", "project_manager"))])
 
 crud = CRUDBase(Proposal, searchable_fields=["scope_summary"])
 lead_crud = CRUDBase(Lead)

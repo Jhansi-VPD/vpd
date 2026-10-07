@@ -3,7 +3,7 @@
 # docker-compose.yml (no -f flag needed; this is Compose's standard override
 # filename). Adds a local Postgres container and a local MinIO container
 # (S3-compatible object storage) and points the backend at both. Auth is
-# fully CoreFusion-owned (backend/app/services/auth_service.py) — there is no
+# fully VPD-owned (backend/app/services/auth_service.py) — there is no
 # external identity provider to separately configure here. Email (Brevo) and
 # staging's Upstash Redis / Supabase Storage are real external services
 # configured entirely via backend/.env / backend/.env.staging — nothing to
@@ -20,12 +20,12 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: corefusion-postgres
+    container_name: vpd-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${LOCAL_DB_NAME:-corefusion}
-      POSTGRES_USER: ${LOCAL_DB_USER:-corefusion}
-      POSTGRES_PASSWORD: ${LOCAL_DB_PASSWORD:-corefusion_dev_password}
+      POSTGRES_DB: ${LOCAL_DB_NAME:-vpd}
+      POSTGRES_USER: ${LOCAL_DB_USER:-vpd}
+      POSTGRES_PASSWORD: ${LOCAL_DB_PASSWORD:-vpd_dev_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -34,18 +34,18 @@ services:
       # psql can also be run from the host, not just in-container.
       - '${LOCAL_DB_PORT:-5432}:5432'
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${LOCAL_DB_USER:-corefusion} -d ${LOCAL_DB_NAME:-corefusion}']
+      test: ['CMD-SHELL', 'pg_isready -U ${LOCAL_DB_USER:-vpd} -d ${LOCAL_DB_NAME:-vpd}']
       interval: 5s
       timeout: 3s
       retries: 10
     networks:
-      - corefusion-net
+      - vpd-net
     mem_limit: 1g
     cpus: 1.0
 
   minio:
     image: minio/minio:latest
-    container_name: corefusion-minio
+    container_name: vpd-minio
     restart: unless-stopped
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
@@ -69,7 +69,7 @@ services:
       timeout: 3s
       retries: 10
     networks:
-      - corefusion-net
+      - vpd-net
     mem_limit: 512m
     cpus: 0.5
 
@@ -84,9 +84,9 @@ services:
       # Docker network, which must still reach MinIO via localhost:9000.
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: ${LOCAL_DB_NAME:-corefusion}
-      DB_USER: ${LOCAL_DB_USER:-corefusion}
-      DB_PASS: ${LOCAL_DB_PASSWORD:-corefusion_dev_password}
+      DB_NAME: ${LOCAL_DB_NAME:-vpd}
+      DB_USER: ${LOCAL_DB_USER:-vpd}
+      DB_PASS: ${LOCAL_DB_PASSWORD:-vpd_dev_password}
       DB_USE_PGBOUNCER: 'false'
       S3_ENDPOINT_URL: http://minio:9000
       S3_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
@@ -102,3 +102,4 @@ services:
 volumes:
   postgres_data:
   minio_data:
+
