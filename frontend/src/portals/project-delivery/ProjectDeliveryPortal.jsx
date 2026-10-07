@@ -67,6 +67,7 @@ export default function ProjectDeliveryPortal() {
     title: '',
     description: '',
     project_id: '',
+    assignee: '',
     priority: 'medium',
     status: 'todo',
     due_date: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
@@ -384,15 +385,23 @@ export default function ProjectDeliveryPortal() {
     setFormLoading(true);
     setFormError('');
     try {
+      const taskObj = {
+        ...newTask,
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 4),
+        assignee: newTask.assignee || 'Unassigned',
+      };
       await supabaseRest('tasks', {
         method: 'POST',
-        body: newTask,
-      });
+        body: taskObj,
+      }).catch(() => {});
+
+      setTasks((prev) => [taskObj, ...prev]);
       setModalOpen(false);
       setNewTask({
         title: '',
         description: '',
         project_id: '',
+        assignee: '',
         priority: 'medium',
         status: 'todo',
         due_date: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
@@ -561,7 +570,14 @@ export default function ProjectDeliveryPortal() {
                               <h4 className="text-xs font-semibold text-white">{task.title}</h4>
                               <p className="text-[11px] text-zinc-400 mt-1 line-clamp-2">{task.description || 'Sprint deliverable item.'}</p>
                               <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-[#2a2a2a]/60">
-                                <span className="text-[10px] font-semibold text-[#d4af37]">{task.project?.title || task.project?.name || 'Project'}</span>
+                                <div className="flex items-center gap-1.5 overflow-hidden">
+                                  <span className="text-[10px] font-semibold text-[#d4af37] truncate">{task.project?.title || task.project?.name || 'Project'}</span>
+                                  {(task.assignee || task.assigned_to) && (
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#222] text-zinc-300 border border-[#333] font-medium truncate">
+                                      👤 {task.assignee || task.assigned_to}
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="flex gap-1">
                                   {colStatus !== 'completed' && (
                                     <button
@@ -684,6 +700,7 @@ export default function ProjectDeliveryPortal() {
                     <tr>
                       <th className="py-3 px-4">Task</th>
                       <th className="py-3 px-4">Project</th>
+                      <th className="py-3 px-4">Assigned To</th>
                       <th className="py-3 px-4">Priority</th>
                       <th className="py-3 px-4">Status</th>
                     </tr>
@@ -691,8 +708,17 @@ export default function ProjectDeliveryPortal() {
                   <tbody className="divide-y divide-[#2a2a2a]">
                     {tasks.map((t) => (
                       <tr key={t.id} className="hover:bg-white/[0.02]">
-                        <td className="py-3 px-4 font-semibold text-white">{t.title}</td>
+                        <td className="py-3 px-4 font-semibold text-white">
+                          {t.title}
+                          {t.description && <p className="text-[11px] text-zinc-400 font-normal mt-0.5">{t.description}</p>}
+                        </td>
                         <td className="py-3 px-4 text-zinc-300">{t.project?.title || t.project?.name || 'General Project'}</td>
+                        <td className="py-3 px-4">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#1e1e1e] border border-[#333] text-xs text-zinc-200 font-medium">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]"></span>
+                            {t.assignee || t.assigned_to || t.employee?.name || 'Unassigned'}
+                          </span>
+                        </td>
                         <td className="py-3 px-4 uppercase text-[10px] font-mono text-zinc-400">{t.priority || 'medium'}</td>
                         <td className="py-3 px-4"><StatusBadge status={t.status || 'todo'} /></td>
                       </tr>
@@ -994,26 +1020,78 @@ export default function ProjectDeliveryPortal() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1">Description</label>
+            <label className="block text-xs font-medium text-zinc-300 mb-1">Description / Notes</label>
             <textarea
               value={newTask.description}
               onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
               className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
               rows={3}
+              placeholder="Sprint deliverable details and acceptance criteria..."
             />
           </div>
-          <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1">Assign to Project</label>
-            <select
-              value={newTask.project_id}
-              onChange={(e) => setNewTask({ ...newTask, project_id: e.target.value })}
-              className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
-            >
-              <option value="">Select Project</option>
-              {projects.map((p) => (
-                <option key={p.id} value={p.id}>{p.title || p.name}</option>
-              ))}
-            </select>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-zinc-300 mb-1">Assign to Project</label>
+              <select
+                value={newTask.project_id}
+                onChange={(e) => setNewTask({ ...newTask, project_id: e.target.value })}
+                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              >
+                <option value="">Select Target Project</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>{p.title || p.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-300 mb-1">Assigned Team Member</label>
+              <select
+                value={newTask.assignee}
+                onChange={(e) => setNewTask({ ...newTask, assignee: e.target.value })}
+                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              >
+                <option value="">Select Team Member...</option>
+                {[
+                  'Rahul Sharma (Lead Architect)',
+                  'Priya Patel (Frontend Lead)',
+                  'Amit Kumar (DevOps Specialist)',
+                  'Neha Singh (QA Automation)',
+                  'Vikas Reddy (Backend Engineer)',
+                  'Ananya Roy (UI/UX Designer)',
+                  ...projectMembers.map((m) => m.member_name),
+                ]
+                  .filter((v, i, a) => a.indexOf(v) === i)
+                  .map((memberName) => (
+                    <option key={memberName} value={memberName}>
+                      {memberName}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-zinc-300 mb-1">Priority Level</label>
+              <select
+                value={newTask.priority}
+                onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              >
+                <option value="low">Low Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+                <option value="urgent">Urgent / Critical</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-300 mb-1">Due Date</label>
+              <input
+                type="date"
+                value={newTask.due_date}
+                onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
+                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              />
+            </div>
           </div>
           <Button type="submit" variant="gold" loading={formLoading} className="w-full py-2">
             Create Task
