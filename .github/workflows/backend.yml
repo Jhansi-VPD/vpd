@@ -42,6 +42,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
       - name: Create minimal auth.users shim (CI only — Supabase provisions the real one)
         env:
           PGPASSWORD: test_pass
@@ -97,7 +100,7 @@ jobs:
 
   build-and-push:
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && secrets.DOCKERHUB_USERNAME != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -120,7 +123,7 @@ jobs:
 
   deploy:
     needs: build-and-push
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && secrets.DEPLOY_HOST != ''
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to server via SSH
