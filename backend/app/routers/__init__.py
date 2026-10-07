@@ -39,9 +39,6 @@ from app.routers import (
     oauth,
     office,
     page_content,
-    partner,
-    # Phase 6 — Partner Portal
-    partner_account,
     portfolio,
     product,
     projects,
@@ -90,7 +87,6 @@ api_router.include_router(category.router)
 api_router.include_router(faq.router)
 api_router.include_router(gallery.router)
 api_router.include_router(industry.router)
-api_router.include_router(partner.router)
 api_router.include_router(portfolio.router)
 api_router.include_router(product.router)
 api_router.include_router(resource.router)
@@ -125,9 +121,6 @@ api_router.include_router(comment.router)
 api_router.include_router(page_content.router)
 api_router.include_router(backups.router)
 
-# Phase 6 — Partner Portal (login-gated self-service, mirrors Client Portal's
-# shape) — distinct from the pre-existing public `/partners` CMS listing.
-api_router.include_router(partner_account.router)
 
 # Phase 7 — About/Company CMS: makes data/about.js + data/company.js
 # (previously hardcoded frontend constants) admin-editable.

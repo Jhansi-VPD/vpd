@@ -58,9 +58,7 @@ from app.models import (
     Office,
     PageContent,
     PageView,
-    Partner,
     PartnerAccount,
-    PartnerFile,
     PasswordResetToken,
     Payment,
     Payslip,
@@ -135,20 +133,16 @@ from app.models.enums import (
 DEFAULT_PASSWORD = "Password123!"
 
 SEED_USERS = [
-    {"role": UserRole.super_admin, "name": "Super Admin", "email": "superadmin@vpdtechnologies.com", "code": "EMP-001", "dept": "Management", "designation": "Executive Director"},
     {"role": UserRole.admin, "name": "System Admin", "email": "admin@vpdtechnologies.com", "code": "EMP-002", "dept": "Engineering", "designation": "Lead System Architect"},
+    {"role": UserRole.project_manager, "name": "Project Manager", "email": "pm@vpdtechnologies.com", "code": "EMP-006", "dept": "Engineering", "designation": "Senior Project Manager"},
     {"role": UserRole.hr, "name": "HR Manager", "email": "hr@vpdtechnologies.com", "code": "EMP-003", "dept": "Human Resources", "designation": "HR Director"},
     {"role": UserRole.sales, "name": "Sales Lead", "email": "sales@vpdtechnologies.com", "code": "EMP-004", "dept": "Sales", "designation": "Senior Sales Executive"},
-    {"role": UserRole.marketing, "name": "Marketing Lead", "email": "marketing@vpdtechnologies.com", "code": "EMP-005", "dept": "Marketing", "designation": "Marketing Manager"},
-    {"role": UserRole.project_manager, "name": "Project Manager", "email": "pm@vpdtechnologies.com", "code": "EMP-006", "dept": "Engineering", "designation": "Senior Project Manager"},
-    {"role": UserRole.developer, "name": "Dev Lead", "email": "developer@vpdtechnologies.com", "code": "EMP-007", "dept": "Engineering", "designation": "Lead Software Engineer"},
-    {"role": UserRole.qa, "name": "QA Lead", "email": "qa@vpdtechnologies.com", "code": "EMP-008", "dept": "Quality Assurance", "designation": "QA Engineering Lead"},
-    {"role": UserRole.support, "name": "Support Agent", "email": "support@vpdtechnologies.com", "code": "EMP-009", "dept": "Customer Support", "designation": "Support Engineer"},
-    {"role": UserRole.finance, "name": "Finance Lead", "email": "finance@vpdtechnologies.com", "code": "EMP-010", "dept": "Finance", "designation": "Financial Controller"},
-    {"role": UserRole.client, "name": "Acme Corp Client", "email": "client@acmecorp.com", "company": "Acme Corporation"},
-    {"role": UserRole.partner, "name": "TechPartner Inc", "email": "partner@techpartner.com", "company": "TechPartner Global"},
-    {"role": UserRole.employee, "name": "John Staff", "email": "john.staff@vpdtechnologies.com", "code": "EMP-011", "dept": "Engineering", "designation": "Full Stack Engineer"},
+    {"role": UserRole.client, "name": "Acme Corp Client", "email": "client@vpdtechnologies.com", "company": "Acme Corporation"},
+    {"role": UserRole.employee, "name": "John Staff", "email": "employee@vpdtechnologies.com", "code": "EMP-011", "dept": "Engineering", "designation": "Full Stack Engineer"},
 ]
+
+# Only SEED_USERS can ever log in (mirrors LOGIN_ALLOWLIST in app/routers/auth.py);
+# any other user already present in the database must stay deactivated.
 
 DEPARTMENTS = [
     "Engineering", "Design", "Sales", "Marketing", "Human Resources",

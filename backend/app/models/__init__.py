@@ -47,10 +47,8 @@ from app.models.notification import Notification  # noqa: F401
 from app.models.oauth_account import OAuthAccount  # noqa: F401
 from app.models.office import Office  # noqa: F401
 from app.models.page_content import PageContent  # noqa: F401
-from app.models.partner import Partner  # noqa: F401
-from app.models.partner_account import PartnerAccount  # noqa: F401
-from app.models.partner_file import PartnerFile  # noqa: F401
 from app.models.password_reset_token import PasswordResetToken  # noqa: F401
+from app.models.partner_account import PartnerAccount  # noqa: F401
 from app.models.payment import Payment  # noqa: F401
 from app.models.payslip import Payslip  # noqa: F401
 from app.models.performance_feedback import PerformanceFeedback  # noqa: F401
@@ -93,7 +91,7 @@ __all__ = [
     "User", "UserSession", "PasswordResetToken", "EmailVerificationToken",
     "MfaBackupCode", "MfaChallenge", "OAuthAccount", "Role", "Permission",
     "Department", "Employee", "Attendance", "Leave", "Timesheet", "Payslip", "EmployeeDocument",
-    "Client", "ClientFile", "ClientReport", "PartnerAccount", "PartnerFile", "Project", "Task", "Invoice", "Payment",
+    "Client", "ClientFile", "ClientReport", "PartnerAccount", "Project", "Task", "Invoice", "Payment",
     "Lead", "Proposal", "Contract",
     "Leadership", "Office",
     "Blog", "Category", "Comment", "Service",
@@ -101,7 +99,7 @@ __all__ = [
     "Testimonial", "Download",
     "Career", "Application", "Event",
     "Industry", "Technology", "Product", "Award", "Faq", "Gallery", "Portfolio",
-    "Partner", "Resource", "SeoMetadata", "PageContent",
+    "Resource", "SeoMetadata", "PageContent",
     "Ticket", "TicketReply", "Meeting", "Notification", "AuditLog", "Setting", "Media",
     "ContactSubmission",
     "Solution",

@@ -205,15 +205,16 @@ bash scripts/migrate.sh local downgrade -1 # extra args pass through to alembic
 
 Interactive API docs: `http://localhost:8000/docs` (Swagger) or `/redoc`.
 
-Default seeded accounts (change immediately in production):
+Default seeded accounts — these six are the only logins accepted by
+`POST /api/v1/auth/login` (see `LOGIN_ALLOWLIST` in `app/routers/auth.py` and
+`../docs/credentials.md` for details):
 ```
-Super Admin:
-email: superadmin@corefusiontech.com
-password: SuperAdmin@123
-
-Admin:
-email: admin@corefusiontech.com
-password: Admin@123
+Admin:          admin@vpdtechnologies.com          / Password123!
+Manager (PM):   pm@vpdtechnologies.com             / Password123!
+HR:             hr@vpdtechnologies.com             / Password123!
+Sales:          sales@vpdtechnologies.com          / Password123!
+Client:         client@vpdtechnologies.com         / Password123!
+Employee:       employee@vpdtechnologies.com       / Password123!
 ```
 
 ### Running with Docker

@@ -80,7 +80,9 @@ def write_credentials_md() -> None:
 
 async def _upsert_demo_users(db) -> None:
     for role_key in seed.ROLE_KEYS:
-        account = seed.CREDS[role_key]
+        account = seed.CREDS.get(role_key)
+        if account is None:
+            continue
         user = (
             await db.execute(select(User).where(User.email == account["email"]))
         ).scalar_one_or_none()
@@ -132,7 +134,9 @@ async def _ensure_supporting_profiles(db) -> None:
             dept_ids[name] = exists.id
 
     for role_key in seed.ROLE_KEYS:
-        account = seed.CREDS[role_key]
+        account = seed.CREDS.get(role_key)
+        if account is None:
+            continue
         user = (
             await db.execute(select(User).where(User.email == account["email"]))
         ).scalar_one_or_none()

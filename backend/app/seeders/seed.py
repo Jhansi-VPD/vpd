@@ -60,19 +60,26 @@ ROLE_KEYS = [
 
 # Back-compat module-level constants (EMAIL_DEPARTMENT lookups, credential-sheet
 # role-name derivation, etc. all key off these) — now sourced from creds.json.
-SUPER_ADMIN_EMAIL = CREDS["super_admin"]["email"]
-ADMIN_EMAIL = CREDS["admin"]["email"]
-EMPLOYEE_EMAIL = CREDS["employee"]["email"]
-SALES_EMAIL = CREDS["sales"]["email"]
-HR_EMAIL = CREDS["hr"]["email"]
-MARKETING_EMAIL = CREDS["marketing"]["email"]
-PM_EMAIL = CREDS["project_manager"]["email"]
-DEVELOPER_EMAIL = CREDS["developer"]["email"]
-QA_EMAIL = CREDS["qa"]["email"]
-SUPPORT_EMAIL = CREDS["support"]["email"]
-FINANCE_EMAIL = CREDS["finance"]["email"]
-PARTNER_EMAIL = CREDS["partner"]["email"]
-CLIENT_EMAIL = CREDS["client"]["email"]
+# Only the six accounts listed in vpd/docs/credentials.md exist there; roles
+# without a creds.json entry resolve to None and are skipped by the seeders.
+def _cred_email(role_key: str) -> str | None:
+    account = CREDS.get(role_key)
+    return account["email"] if account else None
+
+
+SUPER_ADMIN_EMAIL = _cred_email("super_admin")
+ADMIN_EMAIL = _cred_email("admin")
+EMPLOYEE_EMAIL = _cred_email("employee")
+SALES_EMAIL = _cred_email("sales")
+HR_EMAIL = _cred_email("hr")
+MARKETING_EMAIL = _cred_email("marketing")
+PM_EMAIL = _cred_email("project_manager")
+DEVELOPER_EMAIL = _cred_email("developer")
+QA_EMAIL = _cred_email("qa")
+SUPPORT_EMAIL = _cred_email("support")
+FINANCE_EMAIL = _cred_email("finance")
+PARTNER_EMAIL = _cred_email("partner")
+CLIENT_EMAIL = _cred_email("client")
 
 
 async def _seed_role_user(db, role_key: str, user_role: str):
@@ -107,6 +114,8 @@ async def run():
 
     async with AsyncSessionLocal() as db:
         for role_key in ROLE_KEYS:
+            if role_key not in CREDS:
+                continue
             await _seed_role_user(db, role_key, role_key)
         # Flush so newly created users are visible to the `select()` lookups
         # below regardless of whether the departments loop happens to flush
@@ -128,7 +137,9 @@ async def run():
         # Seed Employee records for every role that carries an employee_code in
         # creds.json, so self-service endpoints (attendance, payslips, etc.) work.
         for role_key in ROLE_KEYS:
-            account = CREDS[role_key]
+            account = CREDS.get(role_key)
+            if account is None:
+                continue
             if "employee_code" not in account:
                 continue
             user = (await db.execute(select(User).where(User.email == account["email"]))).scalar_one_or_none()
@@ -151,8 +162,12 @@ async def run():
 
         # Seed a partner_accounts profile for the demo Partner Portal login,
         # account-managed by the Sales employee for a realistic relationship.
-        partner_account_cfg = CREDS["partner"]
-        partner_user = (await db.execute(select(User).where(User.email == partner_account_cfg["email"]))).scalar_one_or_none()
+        partner_account_cfg = CREDS.get("partner")
+        partner_user = (
+            (await db.execute(select(User).where(User.email == partner_account_cfg["email"]))).scalar_one_or_none()
+            if partner_account_cfg
+            else None
+        )
         if partner_user:
             existing_partner_account = (
                 await db.execute(select(PartnerAccount).where(PartnerAccount.user_id == partner_user.id))
@@ -179,8 +194,12 @@ async def run():
 
         # Seed a clients profile for the demo Client Portal login, account-managed
         # by the Sales employee for a realistic relationship.
-        client_account_cfg = CREDS["client"]
-        client_user = (await db.execute(select(User).where(User.email == client_account_cfg["email"]))).scalar_one_or_none()
+        client_account_cfg = CREDS.get("client")
+        client_user = (
+            (await db.execute(select(User).where(User.email == client_account_cfg["email"]))).scalar_one_or_none()
+            if client_account_cfg
+            else None
+        )
         if client_user:
             existing_client = (
                 await db.execute(select(Client).where(Client.user_id == client_user.id))

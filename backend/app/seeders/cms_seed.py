@@ -1233,14 +1233,22 @@ async def run() -> None:
         )
 
     async with AsyncSessionLocal() as db:
-        super_admin = (await db.execute(select(User).where(User.email == user_seed.SUPER_ADMIN_EMAIL))).scalar_one_or_none()
-        marketing_user = (await db.execute(select(User).where(User.email == user_seed.MARKETING_EMAIL))).scalar_one_or_none()
-        developer_user = (await db.execute(select(User).where(User.email == user_seed.DEVELOPER_EMAIL))).scalar_one_or_none()
-        pm_user = (await db.execute(select(User).where(User.email == user_seed.PM_EMAIL))).scalar_one_or_none()
+        async def _find_user(email: str | None) -> User | None:
+            if not email:
+                return None
+            return (await db.execute(select(User).where(User.email == email))).scalar_one_or_none()
+
+        # Only the six accounts in vpd/docs/credentials.md are seeded; roles
+        # without a creds.json entry (super_admin, marketing, developer, ...)
+        # resolve to None and simply drop out of the author pools below.
+        super_admin = await _find_user(user_seed.SUPER_ADMIN_EMAIL) or await _find_user(user_seed.ADMIN_EMAIL)
+        marketing_user = await _find_user(user_seed.MARKETING_EMAIL)
+        developer_user = await _find_user(user_seed.DEVELOPER_EMAIL)
+        pm_user = await _find_user(user_seed.PM_EMAIL)
 
         if not super_admin:
             raise SystemExit(
-                "No seeded users found (superadmin@vpdtechnologies.com is missing). "
+                "No seeded users found (admin@vpdtechnologies.com is missing). "
                 "This script links to app/seeders/seed.py's demo users for authorship — "
                 "run `python scripts/migrations/002_seed_users.py` first."
             )

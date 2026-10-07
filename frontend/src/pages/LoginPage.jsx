@@ -7,22 +7,19 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('superadmin@vpdtechnologies.com');
+  const [email, setEmail] = useState('admin@vpdtechnologies.com');
   const [password, setPassword] = useState('Password123!');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showDemoLogins, setShowDemoLogins] = useState(true);
 
   const demoAccounts = [
-    { role: 'Super Admin', email: 'superadmin@vpdtechnologies.com', path: '/admin' },
-    { role: 'Super Admin (Alt)', email: 'superadmin@vpdtech.com', path: '/admin' },
     { role: 'Admin', email: 'admin@vpdtechnologies.com', path: '/admin' },
-    { role: 'HR Manager', email: 'hr@vpdtechnologies.com', path: '/hr' },
-    { role: 'Sales Lead', email: 'sales@vpdtechnologies.com', path: '/sales' },
-    { role: 'Marketing Lead', email: 'marketing@vpdtechnologies.com', path: '/sales' },
-    { role: 'Project Manager', email: 'pm@vpdtechnologies.com', path: '/delivery' },
-    { role: 'Employee', email: 'employee@vpdtechnologies.com', path: '/employee' },
+    { role: 'Manager', email: 'pm@vpdtechnologies.com', path: '/delivery' },
+    { role: 'HR', email: 'hr@vpdtechnologies.com', path: '/hr' },
+    { role: 'Sales', email: 'sales@vpdtechnologies.com', path: '/sales' },
     { role: 'Client', email: 'client@vpdtechnologies.com', path: '/client' },
+    { role: 'Employee', email: 'employee@vpdtechnologies.com', path: '/employee' },
   ];
 
   const handleSignIn = async (e) => {

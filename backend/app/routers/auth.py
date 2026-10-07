@@ -75,6 +75,24 @@ from app.utils.responses import success_response
 # the timing-equalization it exists for.
 _DUMMY_PASSWORD_HASH = hash_password("dummy")
 
+# Hard allowlist: the ONLY accounts permitted to establish a session — exactly
+# the six listed in vpd/docs/credentials.md. Compared case-insensitively after
+# the password check (so timing/behaviour for wrong passwords is unchanged).
+# Every other account — seeded, self-registered, or reactivated by an admin —
+# is rejected at login even with a valid password.
+LOGIN_ALLOWLIST = frozenset({
+    "admin@vpdtechnologies.com",
+    "pm@vpdtechnologies.com",
+    "hr@vpdtechnologies.com",
+    "sales@vpdtechnologies.com",
+    "client@vpdtechnologies.com",
+    "employee@vpdtechnologies.com",
+})
+
+
+def _login_allowed(email: str | None) -> bool:
+    return bool(email) and email.strip().lower() in LOGIN_ALLOWLIST
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 EMAIL_VERIFICATION_TOKEN_TTL = timedelta(hours=24)
@@ -222,6 +240,11 @@ async def login(request: Request, response: Response, payload: LoginRequest, db:
             await record_failed_login(db, user)
         raise ApiError.unauthorized("Invalid email or password")
 
+    if not _login_allowed(user.email):
+        # Same message as a wrong password on purpose: outside the allowlist,
+        # the account must be indistinguishable from a non-existent one.
+        raise ApiError.unauthorized("Invalid email or password")
+
     if not user.is_active:
         raise ApiError.forbidden("Your account has been deactivated")
 
@@ -275,6 +298,9 @@ async def mfa_verify_login(request: Request, response: Response, payload: MfaVer
 
     if is_account_locked(user):
         raise ApiError.forbidden("Account temporarily locked due to repeated failed login attempts. Try again later.")
+
+    if not _login_allowed(user.email):
+        raise ApiError.unauthorized("Invalid email or password")
 
     if not await _verify_mfa_code(db, user, payload.code):
         await record_failed_login(db, user)
