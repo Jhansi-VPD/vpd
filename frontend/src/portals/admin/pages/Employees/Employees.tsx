@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { employeesApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
@@ -20,11 +22,13 @@ export const Employees: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Employee Directory</h2>
-        <p className="text-xs text-zinc-400">Formal employment profiles, designations, and departments</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Employee Directory"
+        description="Formal employment profiles, designations, and departments"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Employee Directory' }]}
+        
+      />
 
       <DataTable
         loading={loading}
@@ -37,8 +41,6 @@ export const Employees: React.FC = () => {
           { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'active'} /> },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default Employees;
+}

@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { documentsApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
@@ -24,11 +26,13 @@ export const Documents: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Enterprise Document Vault</h2>
-        <p className="text-xs text-zinc-400">Encrypted organizational storage, agreements, and policies</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Enterprise Document Vault"
+        description="Encrypted organizational storage, agreements, and policies"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Enterprise Document Vault' }]}
+        
+      />
 
       <FileUpload onFileSelect={(file) => alert(`Uploading: ${file.name}`)} label="Upload Document" />
 
@@ -42,8 +46,6 @@ export const Documents: React.FC = () => {
           { header: 'Last Modified', accessor: 'updated_at' },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default Documents;
+}

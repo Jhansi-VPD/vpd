@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../../../../shared/components/Button';
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import Input from '../../../../shared/components/Input';
 
 export const Announcements: React.FC = () => {
@@ -17,11 +19,13 @@ export const Announcements: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Broadcast Announcements</h2>
-        <p className="text-xs text-zinc-400">Publish organization-wide notices across all employee portals</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Broadcast Announcements"
+        description="Publish organization-wide notices across all employee portals"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Broadcast Announcements' }]}
+        
+      />
 
       <form onSubmit={handlePost} className="p-5 bg-[#121214] border border-zinc-800 rounded-xl space-y-3">
         <Input label="New Announcement Title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Annual Holiday Schedule" required />
@@ -41,8 +45,6 @@ export const Announcements: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
-};
-
-export default Announcements;
+}

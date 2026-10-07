@@ -1,13 +1,17 @@
 import React from 'react';
 import Button from '../../../../shared/components/Button';
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 
 export const Settings: React.FC = () => {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Platform Settings & Security Parameters</h2>
-        <p className="text-xs text-zinc-400">Environment configurations, authentication rules, and API gateways</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Platform Settings & Security Parameters"
+        description="Environment configurations, authentication rules, and API gateways"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Platform Settings & Security Parameters' }]}
+        
+      />
 
       <div className="p-6 bg-[#121214] border border-zinc-800 rounded-xl space-y-4">
         <h3 className="text-sm font-semibold text-zinc-200">Database & Replication</h3>
@@ -36,8 +40,6 @@ export const Settings: React.FC = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
-};
-
-export default Settings;
+}

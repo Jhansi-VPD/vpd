@@ -1,13 +1,17 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React from 'react';
 import { MetricCard } from '../../../../shared/components/Charts';
 
 export const Reports: React.FC = () => {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Operational & Compliance Reports</h2>
-        <p className="text-xs text-zinc-400">Quarterly telemetry, SLA attainment, and resource allocations</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Operational & Compliance Reports"
+        description="Quarterly telemetry, SLA attainment, and resource allocations"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Operational & Compliance Reports' }]}
+        
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <MetricCard title="Contract Fulfillment" value="99.4%" change="+0.8%" isPositive={true} />
@@ -25,8 +29,6 @@ export const Reports: React.FC = () => {
           Download Signed Audit Dossier
         </button>
       </div>
-    </div>
+    </PageContainer>
   );
-};
-
-export default Reports;
+}

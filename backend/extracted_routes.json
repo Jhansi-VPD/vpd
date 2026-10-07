@@ -795,7 +795,7 @@
   },
   {
     "path": "/api/v1/clients/me/projects/{project_id}/approve-delivery",
-    "name": "approve_project_delivery",
+    "name": "approve_project_manager",
     "methods": [
       "POST"
     ],

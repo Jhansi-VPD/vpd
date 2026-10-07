@@ -123,7 +123,25 @@ async def deactivate_user(user_id: uuid.UUID, db: AsyncSession = Depends(get_db)
     return success_response(data=UserOut.model_validate(user), message="User deactivated")
 
 
-@router.delete("/{user_id}", response_model=dict, dependencies=[Depends(require_roles("admin"))])
-async def delete_user(user_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+@router.delete("/{user_id}", response_model=dict)
+async def delete_user(user_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    target = await crud.get(db, user_id)
+    if not target:
+        from app.core.errors import ApiError
+        raise ApiError.not_found("User not found")
+        
+    if target.role in ("admin", "super_admin") and current_user.role != "super_admin":
+        from app.core.errors import ApiError
+        raise ApiError.forbidden("Only a Super Admin can delete an Admin or Super Admin account")
+        
+    if target.role == "super_admin":
+        from sqlalchemy import select, func
+        from app.core.errors import ApiError
+        stmt = select(func.count()).select_from(User).where(User.role == "super_admin")
+        result = await db.execute(stmt)
+        count = result.scalar()
+        if count <= 1:
+            raise ApiError.bad_request("Cannot delete the last Super Admin")
+            
     await crud.delete(db, user_id)
     return success_response(message="User deleted successfully")

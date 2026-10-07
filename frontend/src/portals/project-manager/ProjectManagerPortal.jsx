@@ -4,7 +4,7 @@ import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Mod
 import { supabaseRest } from '../../api/supabaseClient.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 
-export default function ProjectDeliveryPortal() {
+export default function ProjectManagerPortal() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('kanban');
   const [loading, setLoading] = useState(true);

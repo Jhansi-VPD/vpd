@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { departmentsApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
 import Button from '../../../../shared/components/Button';
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
 
@@ -44,14 +46,15 @@ export const Departments: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-white">Organizational Departments</h2>
-          <p className="text-xs text-zinc-400">Department structures, team leads, and headcounts</p>
-        </div>
-        <Button variant="primary" size="sm" onClick={() => setModalOpen(true)}>+ Add Department</Button>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Organizational Departments"
+        description="Department structures, team leads, and headcounts"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Organizational Departments' }]}
+        actions={
+          <Button variant="primary" size="sm" onClick={() => setModalOpen(true)}>+ Add Department</Button>
+        }
+      />
 
       <DataTable
         loading={loading}
@@ -72,8 +75,6 @@ export const Departments: React.FC = () => {
           </div>
         </form>
       </Modal>
-    </div>
+    </PageContainer>
   );
-};
-
-export default Departments;
+}

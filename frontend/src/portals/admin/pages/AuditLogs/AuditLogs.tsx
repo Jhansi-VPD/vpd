@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React from 'react';
 import DataTable from '../../../../shared/components/DataTable';
 
@@ -9,11 +11,13 @@ export const AuditLogs: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Immutable Security Audit Logs</h2>
-        <p className="text-xs text-zinc-400">SOC 2 compliant request records, IP origins, and user access trails</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Immutable Security Audit Logs"
+        description="SOC 2 compliant request records, IP origins, and user access trails"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Immutable Security Audit Logs' }]}
+        
+      />
 
       <DataTable
         data={sampleLogs}
@@ -25,8 +29,6 @@ export const AuditLogs: React.FC = () => {
           { header: 'Result', accessor: (row) => <span className="text-xs font-semibold text-emerald-400">{row.status}</span> },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default AuditLogs;
+}

@@ -336,7 +336,7 @@ class TestFinalDeliveryClientApproval:
     @pytest.mark.asyncio
     async def test_approve_delivery_requires_pending_review(self):
         from app.models.client import Client
-        from app.routers.clients import approve_project_delivery
+        from app.routers.clients import approve_project_manager
 
         user = _make_user("client")
         client = Client(id=uuid.uuid4(), user_id=user.id, company_name="Acme")
@@ -350,13 +350,13 @@ class TestFinalDeliveryClientApproval:
 
         with patch("app.routers.clients._get_client_for_user", new_callable=AsyncMock, return_value=client):
             with pytest.raises(ApiError) as exc_info:
-                await approve_project_delivery(project.id, mock_db, user)
+                await approve_project_manager(project.id, mock_db, user)
         assert exc_info.value.status_code == 400
 
     @pytest.mark.asyncio
     async def test_approve_delivery_succeeds_when_pending(self):
         from app.models.client import Client
-        from app.routers.clients import approve_project_delivery
+        from app.routers.clients import approve_project_manager
 
         user = _make_user("client")
         client = Client(id=uuid.uuid4(), user_id=user.id, company_name="Acme")
@@ -370,7 +370,7 @@ class TestFinalDeliveryClientApproval:
 
         with patch("app.routers.clients._get_client_for_user", new_callable=AsyncMock, return_value=client):
             with patch("app.routers.clients.notify_roles", new_callable=AsyncMock):
-                result = await approve_project_delivery(project.id, mock_db, user)
+                result = await approve_project_manager(project.id, mock_db, user)
         assert project.client_review_status == "approved"
         assert project.final_delivery_version == 1
         assert project.client_approved_at is not None

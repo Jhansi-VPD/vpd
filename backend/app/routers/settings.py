@@ -39,23 +39,36 @@ async def get_setting(key: str, db: AsyncSession = Depends(get_db)):
 
 
 @router.put("/{key}", response_model=dict)
-async def upsert_setting(key: str, payload: SettingUpsert, db: AsyncSession = Depends(get_db)):
+async def upsert_setting(key: str, payload: SettingUpsert, db: AsyncSession = Depends(get_db), current_user = Depends(require_roles("admin", "super_admin"))):
+    if payload.group == "security" and current_user.role != "super_admin":
+        from app.core.errors import ApiError
+        raise ApiError.forbidden("Only a Super Admin can modify security settings")
+        
     existing = await crud.get_optional(db, key=key)
     data = payload.model_dump()
     data["key"] = key
     if existing is None:
         setting = await crud.create(db, data)
         return success_response(data=SettingOut.model_validate(setting), message="Setting created", status_code=201)
+    
+    if existing.group == "security" and current_user.role != "super_admin":
+        from app.core.errors import ApiError
+        raise ApiError.forbidden("Only a Super Admin can modify security settings")
+        
     setting = await crud.update(db, existing.id, {"value": data["value"], "group": data["group"]})
     return success_response(data=SettingOut.model_validate(setting), message="Setting updated")
 
 
 @router.delete("/{key}", response_model=dict)
-async def delete_setting(key: str, db: AsyncSession = Depends(get_db)):
+async def delete_setting(key: str, db: AsyncSession = Depends(get_db), current_user = Depends(require_roles("admin", "super_admin"))):
     from app.core.errors import ApiError
 
     existing = await crud.get_optional(db, key=key)
     if existing is None:
         raise ApiError.not_found(f"Setting '{key}' not found")
+        
+    if existing.group == "security" and current_user.role != "super_admin":
+        raise ApiError.forbidden("Only a Super Admin can delete security settings")
+        
     await crud.delete(db, existing.id)
     return success_response(message="Setting deleted")

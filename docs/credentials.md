@@ -11,7 +11,7 @@
 | Portal | URL Route |
 |--------|-----------|
 | Admin | `/admin` |
-| Project Manager (Manager) | `/delivery` |
+| Project Manager (Manager) | `/project-manager` |
 | HR | `/hr` |
 | Sales | `/sales` |
 | Client | `/client` |
@@ -24,7 +24,7 @@
 | Role | Portal | Email | Password |
 |------|--------|-------|----------|
 | admin | Admin | admin@vpdtechnologies.com | `Password123!` |
-| project_manager | Manager (Project Delivery) | pm@vpdtechnologies.com | `Password123!` |
+| project_manager | Manager (Project Manager) | pm@vpdtechnologies.com | `Password123!` |
 | hr | HR | hr@vpdtechnologies.com | `Password123!` |
 | sales | Sales | sales@vpdtechnologies.com | `Password123!` |
 | client | Client | client@vpdtechnologies.com | `Password123!` |
@@ -47,3 +47,4 @@
    (no direct-database fallback).
 
 > **Note:** Passwords are hashed using **Argon2id** in the database. The plain-text value shown above is for demo/testing purposes only. Do not use these credentials in production.
+

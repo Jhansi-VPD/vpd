@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { attendanceApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
@@ -20,11 +22,13 @@ export const Attendance: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Workforce Attendance Registry</h2>
-        <p className="text-xs text-zinc-400">Employee clock-in timestamps, status, and duration records</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Workforce Attendance Registry"
+        description="Employee clock-in timestamps, status, and duration records"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Attendance Registry' }]}
+        
+      />
 
       <DataTable
         loading={loading}
@@ -37,8 +41,6 @@ export const Attendance: React.FC = () => {
           { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'present'} /> },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default Attendance;
+}

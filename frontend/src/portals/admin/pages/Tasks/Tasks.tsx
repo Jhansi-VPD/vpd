@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { tasksApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
@@ -20,11 +22,13 @@ export const Tasks: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Central Task Registry</h2>
-        <p className="text-xs text-zinc-400">Cross-project task backlogs, deadlines, and ownership</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Central Task Registry"
+        description="Cross-project task backlogs, deadlines, and ownership"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Central Task Registry' }]}
+        
+      />
 
       <DataTable
         loading={loading}
@@ -37,8 +41,6 @@ export const Tasks: React.FC = () => {
           { header: 'Due Date', accessor: 'due_date' },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default Tasks;
+}

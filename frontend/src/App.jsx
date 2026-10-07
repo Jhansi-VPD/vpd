@@ -7,10 +7,9 @@ import ProtectedRoute from './components/portal-shared/ProtectedRoute.jsx';
 import AdminPortal from './portals/admin/AdminPortal.jsx';
 import SalesCrmPortal from './portals/sales-crm/SalesCrmPortal.jsx';
 import HrPortal from './portals/hr/HrPortal.jsx';
-import ProjectDeliveryPortal from './portals/project-delivery/ProjectDeliveryPortal.jsx';
+import ProjectManagerPortal from './portals/project-manager/ProjectManagerPortal.jsx';
 import EmployeePortal from './portals/employee/EmployeePortal.jsx';
 import ClientPortal from './portals/client/ClientPortal.jsx';
-import PartnerPortal from './portals/partner/PartnerPortal.jsx';
 
 export default function App() {
   return (
@@ -50,12 +49,12 @@ export default function App() {
         }
       />
 
-      {/* 4. Project / Delivery Portal */}
+      {/* 4. Project Manager Portal */}
       <Route
-        path="/delivery/*"
+        path="/project-manager/*"
         element={
           <ProtectedRoute allowedRoles={['super_admin', 'project_manager', 'developer', 'qa']}>
-            <ProjectDeliveryPortal />
+            <ProjectManagerPortal />
           </ProtectedRoute>
         }
       />
@@ -80,18 +79,9 @@ export default function App() {
         }
       />
 
-      {/* 7. Partner Portal */}
-      <Route
-        path="/partner/*"
-        element={
-          <ProtectedRoute allowedRoles={['super_admin', 'partner']}>
-            <PartnerPortal />
-          </ProtectedRoute>
-        }
-      />
-
       {/* Catch-all route redirects to /login */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
+

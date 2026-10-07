@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { usersApi, projectsApi, attendanceApi } from '../../../../api';
 import { MetricCard, MiniBarChart } from '../../../../shared/components/Charts';
@@ -35,13 +37,13 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-white">Enterprise Administration Overview</h2>
-          <p className="text-xs text-zinc-400">High-level telemetry across operations, personnel, and delivery</p>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Enterprise Administration Overview"
+        description="High-level telemetry across operations, personnel, and delivery"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Enterprise Administration Overview' }]}
+        
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <MetricCard title="Total Personnel" value={stats.users} change="+12% this month" isPositive={true} />
@@ -71,8 +73,6 @@ export const Dashboard: React.FC = () => {
           <MiniBarChart data={[40, 65, 80, 55, 90, 70, 95, 110, 85, 120]} />
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
-};
-
-export default Dashboard;
+}

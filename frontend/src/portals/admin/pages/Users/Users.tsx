@@ -3,6 +3,8 @@ import { usersApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
 import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
 import Select from '../../../../shared/components/Select';
@@ -42,16 +44,17 @@ export const Users: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-white">Workforce Users Directory</h2>
-          <p className="text-xs text-zinc-400">Manage all registered accounts across VPD portals</p>
-        </div>
-        <Button variant="primary" size="sm" onClick={() => setModalOpen(true)}>
+    <PageContainer>
+      <PageHeader
+        title="Workforce Users Directory"
+        description="Manage all registered accounts across VPD portals"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Users Directory' }]}
+        actions={
+          <Button variant="primary" size="sm" onClick={() => setModalOpen(true)}>
           + Add User
         </Button>
-      </div>
+        }
+      />
 
       <DataTable
         loading={loading}
@@ -89,8 +92,6 @@ export const Users: React.FC = () => {
           </div>
         </form>
       </Modal>
-    </div>
+    </PageContainer>
   );
-};
-
-export default Users;
+}

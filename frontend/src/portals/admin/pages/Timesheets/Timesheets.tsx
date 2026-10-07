@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { timesheetsApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
@@ -20,11 +22,13 @@ export const Timesheets: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Workforce Timesheets</h2>
-        <p className="text-xs text-zinc-400">Billable hours logged against enterprise contracts</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Workforce Timesheets"
+        description="Billable hours logged against enterprise contracts"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Timesheets' }]}
+        
+      />
 
       <DataTable
         loading={loading}
@@ -37,8 +41,6 @@ export const Timesheets: React.FC = () => {
           { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'submitted'} /> },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default Timesheets;
+}

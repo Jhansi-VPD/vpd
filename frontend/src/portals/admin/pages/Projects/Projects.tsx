@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';
 import { projectsApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
@@ -20,11 +22,13 @@ export const Projects: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">All Operational Projects</h2>
-        <p className="text-xs text-zinc-400">Enterprise accounts, delivery health, and budget tracking</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="All Operational Projects"
+        description="Enterprise accounts, delivery health, and budget tracking"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'All Operational Projects' }]}
+        
+      />
 
       <DataTable
         loading={loading}
@@ -43,8 +47,6 @@ export const Projects: React.FC = () => {
           },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default Projects;
+}

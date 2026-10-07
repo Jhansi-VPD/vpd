@@ -24,6 +24,9 @@ from app.routers import (
     department,
     download,
     employees,
+    attendance,
+    leave,
+    timesheets,
     event,
     faq,
     finance,
@@ -39,7 +42,6 @@ from app.routers import (
     oauth,
     office,
     page_content,
-    partner,
     portfolio,
     product,
     projects,
@@ -128,3 +130,8 @@ api_router.include_router(backups.router)
 api_router.include_router(leadership.router)
 api_router.include_router(office.router)
 api_router.include_router(site_content.router)
+
+# Added missing endpoints
+api_router.include_router(attendance.router)
+api_router.include_router(leave.router)
+api_router.include_router(timesheets.router)

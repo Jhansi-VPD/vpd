@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React from 'react';
 
 export const Notifications: React.FC = () => {
@@ -8,11 +10,13 @@ export const Notifications: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">System Notification Hub</h2>
-        <p className="text-xs text-zinc-400">Critical operational alerts and compliance notifications</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="System Notification Hub"
+        description="Critical operational alerts and compliance notifications"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'System Notification Hub' }]}
+        
+      />
 
       <div className="space-y-3">
         {alerts.map((a) => (
@@ -25,9 +29,6 @@ export const Notifications: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
-};
-
-export default Notifications;
-
+}

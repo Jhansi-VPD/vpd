@@ -3,6 +3,8 @@ import { leaveApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
 import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 
 export const LeaveManagement: React.FC = () => {
   const [leaves, setLeaves] = useState<any[]>([]);
@@ -33,11 +35,13 @@ export const LeaveManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Leave Approvals Management</h2>
-        <p className="text-xs text-zinc-400">Review pending paid time off, sick leave, and casual leave applications</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Leave Approvals Management"
+        description="Review pending paid time off, sick leave, and casual leave applications"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Leave Approvals Management' }]}
+        
+      />
 
       <DataTable
         loading={loading}
@@ -67,8 +71,6 @@ export const LeaveManagement: React.FC = () => {
           },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default LeaveManagement;
+}

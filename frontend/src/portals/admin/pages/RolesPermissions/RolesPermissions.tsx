@@ -1,3 +1,5 @@
+import PageContainer from '../../../../shared/components/PageContainer';
+import PageHeader from '../../../../shared/components/PageHeader';
 import React from 'react';
 import { ROLE_PERMISSIONS } from '../../../../shared/hooks/usePermissions';
 import DataTable from '../../../../shared/components/DataTable';
@@ -11,11 +13,13 @@ export const RolesPermissions: React.FC = () => {
   }));
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white">Roles & Permissions Matrix</h2>
-        <p className="text-xs text-zinc-400">Enterprise role access boundaries and privilege assignment</p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Roles & Permissions Matrix"
+        description="Enterprise role access boundaries and privilege assignment"
+        breadcrumbs={[{ label: 'Admin' }, { label: 'Roles & Permissions Matrix' }]}
+        
+      />
 
       <DataTable
         data={rolesData}
@@ -35,9 +39,6 @@ export const RolesPermissions: React.FC = () => {
           },
         ]}
       />
-    </div>
+    </PageContainer>
   );
-};
-
-export default RolesPermissions;
-
+}

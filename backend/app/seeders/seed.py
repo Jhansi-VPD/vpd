@@ -83,7 +83,9 @@ CLIENT_EMAIL = _cred_email("client")
 
 
 async def _seed_role_user(db, role_key: str, user_role: str):
-    account = CREDS[role_key]
+    account = CREDS.get(role_key)
+    if not account:
+        return
     existing = (await db.execute(select(User).where(User.email == account["email"]))).scalar_one_or_none()
     if existing:
         print(f"i  {user_role} user already exists")
@@ -160,37 +162,7 @@ async def run():
             db.add(emp)
             print(f"  Employee record created for {account['email']}")
 
-        # Seed a partner_accounts profile for the demo Partner Portal login,
-        # account-managed by the Sales employee for a realistic relationship.
-        partner_account_cfg = CREDS.get("partner")
-        partner_user = (
-            (await db.execute(select(User).where(User.email == partner_account_cfg["email"]))).scalar_one_or_none()
-            if partner_account_cfg
-            else None
-        )
-        if partner_user:
-            existing_partner_account = (
-                await db.execute(select(PartnerAccount).where(PartnerAccount.user_id == partner_user.id))
-            ).scalar_one_or_none()
-            if not existing_partner_account:
-                sales_user = (await db.execute(select(User).where(User.email == SALES_EMAIL))).scalar_one_or_none()
-                account_manager = None
-                if sales_user:
-                    account_manager = (
-                        await db.execute(select(Employee).where(Employee.user_id == sales_user.id))
-                    ).scalar_one_or_none()
-                db.add(PartnerAccount(
-                    user_id=partner_user.id,
-                    company_name=partner_account_cfg.get("company_name"),
-                    partnership_type=PartnerType(partner_account_cfg.get("partnership_type", "reseller")),
-                    industry=partner_account_cfg.get("industry"),
-                    country=partner_account_cfg.get("country"),
-                    website=partner_account_cfg.get("website"),
-                    account_manager_id=account_manager.id if account_manager else None,
-                ))
-                print(f"  Partner account profile created for {partner_account_cfg['email']}")
-            else:
-                print(f"  Partner account profile already exists for {partner_account_cfg['email']}")
+
 
         # Seed a clients profile for the demo Client Portal login, account-managed
         # by the Sales employee for a realistic relationship.

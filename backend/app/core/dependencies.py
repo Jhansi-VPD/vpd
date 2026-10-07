@@ -99,3 +99,36 @@ def get_client_ip(request: Request) -> str:
         if forwarded:
             return forwarded.split(",")[0].strip()
     return request.client.host if request.client else "unknown"
+
+def require_permissions(*permissions: str):
+    """
+    Usage: Depends(require_permissions("users:read", "users:write"))
+    """
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+    from app.models.role import Role
+
+    async def dependency(
+        current_user: User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db)
+    ) -> User:
+        if current_user.role == "super_admin":
+            return current_user
+        
+        stmt = select(Role).where(Role.slug == current_user.role).options(selectinload(Role.permissions))
+        result = await db.execute(stmt)
+        role = result.scalars().first()
+        
+        if not role:
+            from app.core.errors import ApiError
+            raise ApiError.forbidden("Role configuration missing. Contact super admin.")
+            
+        user_perms = {p.name for p in role.permissions}
+        for req in permissions:
+            if req not in user_perms:
+                from app.core.errors import ApiError
+                raise ApiError.forbidden(f"Missing permission: {req}")
+                
+        return current_user
+        
+    return dependency

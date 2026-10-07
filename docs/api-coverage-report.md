@@ -14,8 +14,8 @@
 | **Authentication** | `/auth/login`, `/auth/me`, `/users` | Sign in form, demo role buttons | Live feedback, error badge, session persist | `LoginPage.jsx` |
 | **Employees** | `employees`, `users`, `/employees` | List table, create employee form | Skeletons, form validation, reload on create | `AdminPortal.jsx`, `HrPortal.jsx` |
 | **Departments** | `departments`, `/department` | Department grid, add department modal | Loading state, inline error handling | `AdminPortal.jsx` |
-| **Projects** | `projects`, `/projects` | Project table, delivery progress bar | Progress calculation, real metrics | `AdminPortal.jsx`, `ProjectDeliveryPortal.jsx`, `ClientPortal.jsx` |
-| **Tasks** | `tasks`, `/task` | Sprint Kanban board, task advance, create task | Dynamic column counts, state mutation | `ProjectDeliveryPortal.jsx`, `EmployeePortal.jsx` |
+| **Projects** | `projects`, `/projects` | Project table, delivery progress bar | Progress calculation, real metrics | `AdminPortal.jsx`, `ProjectManagerPortal.jsx`, `ClientPortal.jsx` |
+| **Tasks** | `tasks`, `/task` | Sprint Kanban board, task advance, create task | Dynamic column counts, state mutation | `ProjectManagerPortal.jsx`, `EmployeePortal.jsx` |
 | **Leads & CRM** | `leads`, `/leads` | Kanban pipeline, stage progression, add lead | Stage counters, value aggregation | `SalesCrmPortal.jsx` |
 | **Proposals** | `proposals`, `/proposals` | Proposal listings, date & amount formatting | Currency format, status tags | `SalesCrmPortal.jsx` |
 | **Contracts** | `contracts`, `/contracts` | Contract records table | Monospaced currency values, status badges | `SalesCrmPortal.jsx`, `ClientPortal.jsx` |

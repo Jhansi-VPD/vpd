@@ -23,7 +23,7 @@ export const faqCategories = [
     items: [
       {
         question: 'What engagement models do you offer?',
-        answer: 'We offer three primary engagement models: Dedicated Teams (Managed Services) for long-term partnerships, Fixed-Price Project Delivery for well-scoped initiatives, and Time & Materials for flexible R&D needs. Most enterprise engagements begin with a 2-3 month pilot phase.',
+        answer: 'We offer three primary engagement models: Dedicated Teams (Managed Services) for long-term partnerships, Fixed-Price Project Manager for well-scoped initiatives, and Time & Materials for flexible R&D needs. Most enterprise engagements begin with a 2-3 month pilot phase.',
       },
       {
         question: 'How do you ensure project quality?',

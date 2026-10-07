@@ -37,7 +37,7 @@ export const faqs = [
   {
     question: 'What is your standard engagement model?',
     answer:
-      'We offer flexible engagement models including Dedicated Teams (Managed Services), Fixed-Price Project Delivery, and Time & Materials for elastic R&D needs. Most enterprise partners start with a 3-month pilot phase.',
+      'We offer flexible engagement models including Dedicated Teams (Managed Services), Fixed-Price Project Manager, and Time & Materials for elastic R&D needs. Most enterprise partners start with a 3-month pilot phase.',
   },
   {
     question: 'How do you handle data security during development?',

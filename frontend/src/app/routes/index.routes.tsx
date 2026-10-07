@@ -11,7 +11,7 @@ import SessionExpired from '../../auth/pages/SessionExpired';
 import adminRoutes from './admin.routes';
 import hrRoutes from './hr.routes';
 import salesRoutes from './sales.routes';
-import deliveryRoutes from './delivery.routes';
+import deliveryRoutes from './manager.routes';
 import employeeRoutes from './employee.routes';
 import clientRoutes from './client.routes';
 

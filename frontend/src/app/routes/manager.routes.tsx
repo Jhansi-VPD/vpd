@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import DeliveryRoutes from '../../portals/project-delivery/routes';
+import DeliveryRoutes from '../../portals/project-manager/routes';
 import RoleRoute from '../../auth/role-route';
 
 export const deliveryRoutes = (
