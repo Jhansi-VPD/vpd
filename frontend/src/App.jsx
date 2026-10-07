@@ -10,7 +10,6 @@ import HrPortal from './portals/hr/HrPortal.jsx';
 import ProjectDeliveryPortal from './portals/project-delivery/ProjectDeliveryPortal.jsx';
 import EmployeePortal from './portals/employee/EmployeePortal.jsx';
 import ClientPortal from './portals/client/ClientPortal.jsx';
-import PartnerPortal from './portals/partner/PartnerPortal.jsx';
 
 export default function App() {
   return (
@@ -76,16 +75,6 @@ export default function App() {
         element={
           <ProtectedRoute allowedRoles={['super_admin', 'client']}>
             <ClientPortal />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* 7. Partner Portal */}
-      <Route
-        path="/partner/*"
-        element={
-          <ProtectedRoute allowedRoles={['super_admin', 'partner']}>
-            <PartnerPortal />
           </ProtectedRoute>
         }
       />

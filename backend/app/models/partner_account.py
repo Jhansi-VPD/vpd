@@ -31,4 +31,3 @@ class PartnerAccount(Base):
     )
 
     user = relationship("User", back_populates="partner_account")
-    tickets = relationship("Ticket", back_populates="partner_account")

@@ -81,6 +81,7 @@ _DUMMY_PASSWORD_HASH = hash_password("dummy")
 # Every other account — seeded, self-registered, or reactivated by an admin —
 # is rejected at login even with a valid password.
 LOGIN_ALLOWLIST = frozenset({
+    "superadmin@vpdtechnologies.com",
     "admin@vpdtechnologies.com",
     "pm@vpdtechnologies.com",
     "hr@vpdtechnologies.com",
