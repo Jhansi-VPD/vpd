@@ -957,33 +957,18 @@ export default function SalesCrmPortal() {
             <Card
               title="Compensation & Payslips"
               subtitle="Monthly salary and commission statements"
-              action={
-                <Button size="sm" variant="gold" onClick={() => setPayslipModalOpen(true)} icon={<span>+</span>}>
-                  Generate Payslip
-                </Button>
-              }
             >
-              <div className="mb-4 p-4 rounded-xl bg-[#121212] border border-[#2a2a2a] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <h4 className="text-xs font-semibold text-white">How Payslips are Generated</h4>
-                  <p className="text-[11px] text-zinc-300 mt-1">
-                    Payslips are generated monthly based on active employment contracts, logged billable hours from timesheets, and approved leave deductions.
-                  </p>
-                </div>
-                <Button variant="gold" size="xs" onClick={() => setPayslipModalOpen(true)}>
-                  Generate Payslip
-                </Button>
+              <div className="mb-4 p-4 rounded-xl bg-[#121212] border border-[#2a2a2a]">
+                <h4 className="text-xs font-semibold text-white">Monthly Payslip Statements</h4>
+                <p className="text-[11px] text-zinc-300 mt-1">
+                  Payslips are issued monthly by HR & Finance administrators based on active contracts, logged billable hours, and approved leaves.
+                </p>
               </div>
 
               {payslips.length === 0 ? (
                 <EmptyState
                   title="No Payslips Issued"
-                  message="Commercial team compensation statements will appear here."
-                  action={
-                    <Button size="sm" variant="gold" onClick={() => setPayslipModalOpen(true)}>
-                      + Generate First Payslip
-                    </Button>
-                  }
+                  message="Commercial team compensation statements issued by HR & Finance will appear here."
                 />
               ) : (
                 <div className="overflow-x-auto">
@@ -1210,73 +1195,6 @@ export default function SalesCrmPortal() {
         </form>
       </Modal>
 
-      {/* GENERATE PAYSLIP MODAL */}
-      <Modal isOpen={payslipModalOpen} onClose={() => setPayslipModalOpen(false)} title="Generate Monthly Payslip">
-        <form onSubmit={handleGeneratePayslip} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1">Employee / Team Member Name</label>
-            <input
-              required
-              type="text"
-              value={newPayslip.employee_name}
-              onChange={(e) => setNewPayslip({ ...newPayslip, employee_name: e.target.value })}
-              className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1">Pay Period</label>
-            <input
-              required
-              type="text"
-              value={newPayslip.pay_period}
-              onChange={(e) => setNewPayslip({ ...newPayslip, pay_period: e.target.value })}
-              className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
-              placeholder="October 2026"
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-zinc-300 mb-1">Basic Salary ($)</label>
-              <input
-                required
-                type="number"
-                value={newPayslip.basic_salary}
-                onChange={(e) => setNewPayslip({ ...newPayslip, basic_salary: e.target.value })}
-                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-zinc-300 mb-1">Allowances ($)</label>
-              <input
-                required
-                type="number"
-                value={newPayslip.allowances}
-                onChange={(e) => setNewPayslip({ ...newPayslip, allowances: e.target.value })}
-                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-zinc-300 mb-1">Deductions ($)</label>
-              <input
-                required
-                type="number"
-                value={newPayslip.deductions}
-                onChange={(e) => setNewPayslip({ ...newPayslip, deductions: e.target.value })}
-                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
-              />
-            </div>
-          </div>
-          <div className="p-3 bg-[#121212] border border-[#2a2a2a] rounded-lg flex justify-between items-center text-xs">
-            <span className="text-zinc-400 font-medium">Calculated Net Pay:</span>
-            <span className="font-mono text-base font-bold text-[#d4af37]">
-              ${(Number(newPayslip.basic_salary || 0) + Number(newPayslip.allowances || 0) - Number(newPayslip.deductions || 0)).toLocaleString()}
-            </span>
-          </div>
-          <Button type="submit" variant="gold" loading={payslipLoading} className="w-full py-2">
-            Generate & Issue Payslip
-          </Button>
-        </form>
-      </Modal>
     </PortalLayout>
   );
 }

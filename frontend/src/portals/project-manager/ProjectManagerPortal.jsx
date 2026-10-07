@@ -943,33 +943,18 @@ export default function ProjectManagerPortal() {
             <Card
               title="Team Compensation & Payslips"
               subtitle="Monthly salary statements and payslip records"
-              action={
-                <Button size="sm" variant="gold" onClick={() => setPayslipModalOpen(true)} icon={<span>+</span>}>
-                  Generate Payslip
-                </Button>
-              }
             >
-              <div className="mb-4 p-4 rounded-xl bg-[#121212] border border-[#2a2a2a] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <h4 className="text-xs font-semibold text-white">How Payslips are Generated</h4>
-                  <p className="text-[11px] text-zinc-300 mt-1">
-                    Payslips are generated monthly based on active employment contracts, logged billable hours from timesheets, and approved leave deductions.
-                  </p>
-                </div>
-                <Button variant="gold" size="xs" onClick={() => setPayslipModalOpen(true)}>
-                  Generate Payslip
-                </Button>
+              <div className="mb-4 p-4 rounded-xl bg-[#121212] border border-[#2a2a2a]">
+                <h4 className="text-xs font-semibold text-white">Monthly Payslip Statements</h4>
+                <p className="text-[11px] text-zinc-300 mt-1">
+                  Payslips are issued monthly by HR & Finance administrators based on active contracts, logged billable hours, and approved leaves.
+                </p>
               </div>
 
               {payslips.length === 0 ? (
                 <EmptyState
                   title="No Payslips Issued"
-                  message="Engineering team compensation statements will appear here."
-                  action={
-                    <Button size="sm" variant="gold" onClick={() => setPayslipModalOpen(true)}>
-                      + Generate First Payslip
-                    </Button>
-                  }
+                  message="Engineering team compensation statements issued by HR & Finance will appear here."
                 />
               ) : (
                 <div className="overflow-x-auto">

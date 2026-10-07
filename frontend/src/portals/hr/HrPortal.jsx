@@ -15,6 +15,19 @@ export default function HrPortal() {
   const [leaves, setLeaves] = useState([]);
   const [careers, setCareers] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [payslips, setPayslips] = useState([]);
+
+  // Payslip Generator Modal State
+  const [payslipModalOpen, setPayslipModalOpen] = useState(false);
+  const [payslipLoading, setPayslipLoading] = useState(false);
+  const [newPayslip, setNewPayslip] = useState({
+    employee_name: '',
+    pay_period: 'October 2026',
+    basic_salary: 6000,
+    allowances: 1200,
+    deductions: 600,
+    status: 'paid',
+  });
 
   // Modals
   const [modalOpen, setModalOpen] = useState(false);
@@ -33,12 +46,13 @@ export default function HrPortal() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [empRes, attRes, leaveRes, carRes, appRes] = await Promise.all([
+      const [empRes, attRes, leaveRes, carRes, appRes, payRes] = await Promise.all([
         supabaseRest('employees', { query: '?select=*,user:users(*)&limit=50' }).catch(() => []),
         supabaseRest('attendance', { query: '?select=*,employee:employees(employee_code,user:users(name))&order=date.desc&limit=50' }).catch(() => []),
         supabaseRest('leaves', { query: '?select=*,employee:employees(employee_code,user:users(name))&order=created_at.desc&limit=50' }).catch(() => []),
         supabaseRest('careers', { query: '?select=*&limit=50' }).catch(() => []),
         supabaseRest('applications', { query: '?select=*&limit=50' }).catch(() => []),
+        supabaseRest('payslips', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
       ]);
 
       setEmployees(empRes || []);
@@ -46,6 +60,7 @@ export default function HrPortal() {
       setLeaves(leaveRes || []);
       setCareers(carRes || []);
       setApplications(appRes || []);
+      setPayslips(payRes || []);
     } catch (err) {
       console.error('HR data fetch failed:', err);
     } finally {
@@ -95,6 +110,43 @@ export default function HrPortal() {
     }
   };
 
+  const handleGeneratePayslip = async (e) => {
+    e.preventDefault();
+    setPayslipLoading(true);
+    const net_pay = Number(newPayslip.basic_salary) + Number(newPayslip.allowances) - Number(newPayslip.deductions);
+    try {
+      await supabaseRest('payslips', {
+        method: 'POST',
+        body: {
+          employee_name: newPayslip.employee_name || 'Staff Member',
+          pay_period: newPayslip.pay_period,
+          basic_salary: Number(newPayslip.basic_salary),
+          allowances: Number(newPayslip.allowances),
+          deductions: Number(newPayslip.deductions),
+          net_pay: net_pay,
+          status: newPayslip.status,
+        },
+      });
+      setPayslips((prev) => [
+        {
+          id: Date.now().toString(),
+          employee_name: newPayslip.employee_name || 'Staff Member',
+          pay_period: newPayslip.pay_period,
+          net_pay: net_pay,
+          status: newPayslip.status,
+        },
+        ...prev,
+      ]);
+      setPayslipModalOpen(false);
+      alert(`Payslip generated and issued successfully for ${newPayslip.employee_name || 'employee'}!`);
+      await loadData();
+    } catch (err) {
+      alert(`Failed to generate payslip: ${err.message}`);
+    } finally {
+      setPayslipLoading(false);
+    }
+  };
+
   const navSections = [
     {
       title: 'Human Resources',
@@ -104,6 +156,7 @@ export default function HrPortal() {
         { label: 'Leave Requests', path: '#leaves', icon: '🏖️', badge: leaves.filter(l => l.status === 'pending').length },
         { label: 'Recruitment & Jobs', path: '#recruitment', icon: '💼', badge: careers.length },
         { label: 'Job Applications', path: '#applications', icon: '📄', badge: applications.length },
+        { label: 'Payroll & Payslips', path: '#payslips', icon: '💵', badge: payslips.length },
       ],
     },
   ];
@@ -113,7 +166,7 @@ export default function HrPortal() {
       {/* Navigation Bar Header (No extra top heading above navbar) */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b border-[#2a2a2a] mb-6 pb-2 gap-3 overflow-x-auto">
         <div className="flex items-center gap-2 overflow-x-auto">
-          {['employees', 'attendance', 'leaves', 'recruitment', 'applications'].map((tab) => (
+          {['employees', 'attendance', 'leaves', 'recruitment', 'applications', 'payslips'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -123,7 +176,7 @@ export default function HrPortal() {
                   : 'border-transparent text-zinc-400 hover:text-white'
               }`}
             >
-              {tab}
+              {tab === 'payslips' ? 'Payroll & Payslips' : tab}
             </button>
           ))}
         </div>
@@ -131,7 +184,10 @@ export default function HrPortal() {
           <Button variant="outline" size="sm" onClick={loadData} icon={<span>🔄</span>}>
             Refresh
           </Button>
-          <Button variant="gold" size="sm" onClick={() => { setModalType('job'); setModalOpen(true); }} icon={<span>+</span>}>
+          <Button variant="gold" size="sm" onClick={() => setPayslipModalOpen(true)} icon={<span>💵</span>}>
+            Generate Payslip
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => { setModalType('job'); setModalOpen(true); }} icon={<span>+</span>}>
             Post Opening
           </Button>
         </div>
@@ -340,6 +396,54 @@ export default function HrPortal() {
               )}
             </Card>
           )}
+
+          {/* TAB 6: PAYROLL & PAYSLIPS */}
+          {activeTab === 'payslips' && (
+            <Card
+              title="Payroll & Monthly Payslips Management"
+              subtitle="Issue and manage official employee compensation statements"
+              action={
+                <Button size="sm" variant="gold" onClick={() => setPayslipModalOpen(true)} icon={<span>+</span>}>
+                  Generate Payslip
+                </Button>
+              }
+            >
+              {payslips.length === 0 ? (
+                <EmptyState
+                  title="No Payslips Issued"
+                  message="HR & Payroll issued employee compensation statements will appear here."
+                  action={
+                    <Button size="sm" variant="gold" onClick={() => setPayslipModalOpen(true)}>
+                      + Generate First Payslip
+                    </Button>
+                  }
+                />
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-[#121212] text-zinc-400 uppercase text-[10px] tracking-wider border-b border-[#2a2a2a]">
+                      <tr>
+                        <th className="py-3 px-4">Pay Period</th>
+                        <th className="py-3 px-4">Employee</th>
+                        <th className="py-3 px-4">Net Compensation</th>
+                        <th className="py-3 px-4">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#2a2a2a]">
+                      {payslips.map((ps) => (
+                        <tr key={ps.id} className="hover:bg-white/[0.02]">
+                          <td className="py-3 px-4 font-semibold text-white">{ps.pay_period || 'Current Period'}</td>
+                          <td className="py-3 px-4 text-zinc-300">{ps.employee_name || 'Staff Member'}</td>
+                          <td className="py-3 px-4 font-mono text-[#d4af37] font-bold">${Number(ps.net_pay || ps.amount || 0).toLocaleString()}</td>
+                          <td className="py-3 px-4"><StatusBadge status={ps.status || 'paid'} /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </Card>
+          )}
         </>
       )}
 
@@ -383,6 +487,75 @@ export default function HrPortal() {
           </div>
           <Button type="submit" variant="gold" loading={formLoading} className="w-full py-2">
             Publish Opening
+          </Button>
+        </form>
+      </Modal>
+
+      {/* GENERATE PAYSLIP MODAL (HR PORTAL ACCESS) */}
+      <Modal isOpen={payslipModalOpen} onClose={() => setPayslipModalOpen(false)} title="Generate & Issue Monthly Payslip">
+        <form onSubmit={handleGeneratePayslip} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-zinc-300 mb-1">Employee / Staff Member Name</label>
+            <input
+              required
+              type="text"
+              value={newPayslip.employee_name}
+              onChange={(e) => setNewPayslip({ ...newPayslip, employee_name: e.target.value })}
+              className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              placeholder="e.g. Rahul Sharma"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-zinc-300 mb-1">Pay Period</label>
+            <input
+              required
+              type="text"
+              value={newPayslip.pay_period}
+              onChange={(e) => setNewPayslip({ ...newPayslip, pay_period: e.target.value })}
+              className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              placeholder="October 2026"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-zinc-300 mb-1">Basic Salary ($)</label>
+              <input
+                required
+                type="number"
+                value={newPayslip.basic_salary}
+                onChange={(e) => setNewPayslip({ ...newPayslip, basic_salary: e.target.value })}
+                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-300 mb-1">Allowances ($)</label>
+              <input
+                required
+                type="number"
+                value={newPayslip.allowances}
+                onChange={(e) => setNewPayslip({ ...newPayslip, allowances: e.target.value })}
+                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-300 mb-1">Deductions ($)</label>
+              <input
+                required
+                type="number"
+                value={newPayslip.deductions}
+                onChange={(e) => setNewPayslip({ ...newPayslip, deductions: e.target.value })}
+                className="w-full px-3 py-2 bg-[#121212] border border-[#2a2a2a] rounded-lg text-xs text-white focus:outline-none focus:border-[#d4af37]"
+              />
+            </div>
+          </div>
+          <div className="p-3 bg-[#121212] border border-[#2a2a2a] rounded-lg flex justify-between items-center text-xs">
+            <span className="text-zinc-400 font-medium">Calculated Net Pay:</span>
+            <span className="font-mono text-base font-bold text-[#d4af37]">
+              ${(Number(newPayslip.basic_salary || 0) + Number(newPayslip.allowances || 0) - Number(newPayslip.deductions || 0)).toLocaleString()}
+            </span>
+          </div>
+          <Button type="submit" variant="gold" loading={payslipLoading} className="w-full py-2">
+            Generate & Issue Payslip
           </Button>
         </form>
       </Modal>
