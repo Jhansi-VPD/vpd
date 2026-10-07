@@ -7,10 +7,10 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.core.config import settings
 
-# Pin TLS for the managed (Supabase) Postgres connection in non-local
-# environments — asyncpg does not default to requiring SSL, and this is the
-# credential path to production data (CF-AUD-011).
-_ssl_connect_args = {"ssl": "require"} if settings.env.lower() not in {"development", "test", "local"} else {}
+# Pin TLS for the managed (Supabase) Postgres connection.
+# When connecting to Supabase hosts (*.supabase.co or *.supabase.com), SSL is always required.
+_is_supabase = "supabase" in (settings.db_host or "").lower() or "supabase" in (settings.database_url or "").lower()
+_ssl_connect_args = {"ssl": "require"} if (_is_supabase or settings.env.lower() not in {"development", "test", "local"}) else {}
 
 # CF-BE-009 root-cause finding (backend/performance/pool_matrix_test.py):
 # under concurrency exceeding pool_size+max_overflow, requests queue waiting

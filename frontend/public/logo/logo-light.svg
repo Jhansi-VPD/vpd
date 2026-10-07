@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="100%" height="100%">
+  <!-- Light variant with dark text for light containers -->
+  <g transform="translate(15, 10)">
+    <polygon points="40,5 75,25 75,65 40,85 5,65 5,25" fill="#f4f4f5" stroke="#b89326" stroke-width="2.5" />
+    <path d="M 22 30 L 40 62 L 58 30" fill="none" stroke="#b89326" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="40" cy="24" r="4" fill="#b89326" />
+  </g>
+  <text x="110" y="52" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="34" letter-spacing="2" fill="#09090b">
+    VPD <tspan fill="#b89326">TECH</tspan>
+  </text>
+  <text x="112" y="74" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="11" letter-spacing="4" fill="#71717a">
+    ENTERPRISE SUITE
+  </text>
+</svg>
+

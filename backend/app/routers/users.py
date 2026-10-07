@@ -43,7 +43,7 @@ async def get_user(user_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
 
 @router.post("", response_model=dict, status_code=201)
 async def create_user(payload: UserCreate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """Creates the local account directly — CoreFusion owns identity end to
+    """Creates the local account directly — VPD owns identity end to
     end, there is no external auth provider to also register with.
 
     Only a Super Admin may grant `admin`/`super_admin` — an Admin or HR caller

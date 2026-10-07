@@ -1,0 +1,3396 @@
+[
+  {
+    "path": "/openapi.json",
+    "name": "openapi",
+    "methods": [
+      "GET",
+      "HEAD"
+    ],
+    "tags": []
+  },
+  {
+    "path": "/docs",
+    "name": "swagger_ui_html",
+    "methods": [
+      "GET",
+      "HEAD"
+    ],
+    "tags": []
+  },
+  {
+    "path": "/docs/oauth2-redirect",
+    "name": "swagger_ui_redirect",
+    "methods": [
+      "GET",
+      "HEAD"
+    ],
+    "tags": []
+  },
+  {
+    "path": "/redoc",
+    "name": "redoc_html",
+    "methods": [
+      "GET",
+      "HEAD"
+    ],
+    "tags": []
+  },
+  {
+    "path": "/login",
+    "name": "login_page",
+    "methods": [
+      "GET"
+    ],
+    "tags": []
+  },
+  {
+    "path": "/health",
+    "name": "health_check",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Health"
+    ]
+  },
+  {
+    "path": "/",
+    "name": "health_check",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Health"
+    ]
+  },
+  {
+    "path": "/ready",
+    "name": "readiness_check",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Health"
+    ]
+  },
+  {
+    "path": "/sitemap.xml",
+    "name": "sitemap",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "SEO"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/register",
+    "name": "register",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/login",
+    "name": "login",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/mfa/verify-login",
+    "name": "mfa_verify_login",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/refresh",
+    "name": "refresh",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/logout",
+    "name": "logout",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/logout-all",
+    "name": "logout_all",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/me",
+    "name": "me",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/forgot-password",
+    "name": "forgot_password",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/reset-password",
+    "name": "reset_password",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/verify-email",
+    "name": "verify_email",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/resend-verification",
+    "name": "resend_verification",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/change-password",
+    "name": "change_password",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/sessions",
+    "name": "list_sessions",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/sessions/{session_id}",
+    "name": "revoke_one_session",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/mfa/status",
+    "name": "mfa_status",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/mfa/setup",
+    "name": "mfa_setup",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/mfa/enable",
+    "name": "mfa_enable",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/mfa/disable",
+    "name": "mfa_disable",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/mfa/backup-codes/regenerate",
+    "name": "mfa_regenerate_backup_codes",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Auth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/oauth/{provider}/login",
+    "name": "oauth_login",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "OAuth"
+    ]
+  },
+  {
+    "path": "/api/v1/auth/oauth/{provider}/callback",
+    "name": "oauth_callback",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "OAuth"
+    ]
+  },
+  {
+    "path": "/api/v1/users",
+    "name": "list_users",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Users"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "name": "get_user",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Users"
+    ]
+  },
+  {
+    "path": "/api/v1/users",
+    "name": "create_user",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Users"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "name": "update_user",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Users"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}/deactivate",
+    "name": "deactivate_user",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Users"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "name": "delete_user",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Users"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}/export",
+    "name": "export_user_data",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "GDPR"
+    ]
+  },
+  {
+    "path": "/api/v1/users/{user_id}/anonymize",
+    "name": "anonymize_user",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "GDPR"
+    ]
+  },
+  {
+    "path": "/api/v1/stats",
+    "name": "get_stats",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Stats"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/profile",
+    "name": "my_profile",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/attendance",
+    "name": "my_attendance",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/attendance/today",
+    "name": "today_attendance",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/attendance/check-in",
+    "name": "check_in",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/attendance/check-out",
+    "name": "check_out",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/leaves",
+    "name": "my_leaves",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/leaves",
+    "name": "apply_leave",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/timesheets",
+    "name": "my_timesheets",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/payslips",
+    "name": "my_payslips",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/timesheets",
+    "name": "submit_timesheet",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/payslips",
+    "name": "my_payslips",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/payslips/{payslip_id}/download",
+    "name": "download_my_payslip",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/{employee_id}/payslips",
+    "name": "create_payslip",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/documents",
+    "name": "my_documents",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/documents",
+    "name": "upload_my_document",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/{employee_id}/documents",
+    "name": "assign_employee_document",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/documents/{document_id}/download",
+    "name": "download_employee_document",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/performance-reviews",
+    "name": "my_performance_reviews",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/performance-reviews/{review_id}/acknowledge",
+    "name": "acknowledge_performance_review",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/performance-reviews",
+    "name": "create_performance_review",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/performance-reviews",
+    "name": "list_performance_reviews",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/performance-reviews/{review_id}",
+    "name": "update_performance_review",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/performance-goals",
+    "name": "create_performance_goal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/performance-goals",
+    "name": "my_performance_goals",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/performance-goals",
+    "name": "list_performance_goals",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/performance-goals/{goal_id}",
+    "name": "update_performance_goal",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/{employee_id}/feedback",
+    "name": "give_performance_feedback",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/me/feedback",
+    "name": "my_performance_feedback",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/attendance",
+    "name": "list_attendance",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/leaves",
+    "name": "list_leaves",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/leaves/{leave_id}/approve",
+    "name": "review_leave",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/timesheets",
+    "name": "list_all_timesheets",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees/timesheets/{timesheet_id}/approve",
+    "name": "review_timesheet",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees",
+    "name": "list_employees",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/employees",
+    "name": "create_employee",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Employees"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/profile",
+    "name": "my_profile",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/projects",
+    "name": "my_projects",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/projects/{project_id}/updates",
+    "name": "my_project_updates",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/projects/{project_id}/milestones",
+    "name": "my_project_milestones",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/projects/{project_id}/deliverables",
+    "name": "my_project_deliverables",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/projects/{project_id}/deliverables/{deliverable_id}/review",
+    "name": "review_deliverable",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/projects/{project_id}/approve-delivery",
+    "name": "approve_project_delivery",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/projects/{project_id}/request-changes",
+    "name": "request_project_changes",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/invoices",
+    "name": "my_invoices",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/tickets",
+    "name": "my_tickets",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/tickets",
+    "name": "create_ticket",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/proposals",
+    "name": "my_proposals",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/contracts",
+    "name": "my_contracts",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/proposals/{proposal_id}/accept",
+    "name": "accept_my_proposal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/proposals/{proposal_id}/reject",
+    "name": "reject_my_proposal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/payments",
+    "name": "my_payments",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/meetings",
+    "name": "my_meetings",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/files",
+    "name": "my_files",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/files",
+    "name": "upload_my_file",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/files/{file_id}/download",
+    "name": "download_client_file",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/{client_id}/files",
+    "name": "staff_upload_client_file",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/reports",
+    "name": "my_reports",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients/me/reports",
+    "name": "create_client_report",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients",
+    "name": "list_clients",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/clients",
+    "name": "create_client",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Clients"
+    ]
+  },
+  {
+    "path": "/api/v1/projects",
+    "name": "list_projects",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{identifier}",
+    "name": "get_project",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects",
+    "name": "create_project",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}",
+    "name": "update_project",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/team",
+    "name": "assign_team",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}",
+    "name": "delete_project",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/updates",
+    "name": "post_project_update",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/updates",
+    "name": "list_project_updates",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/updates/{update_id}/visibility",
+    "name": "set_update_visibility",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones",
+    "name": "create_milestone",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones",
+    "name": "list_milestones",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones/{milestone_id}",
+    "name": "update_milestone",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones/{milestone_id}",
+    "name": "delete_milestone",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables",
+    "name": "create_deliverable",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables",
+    "name": "list_deliverables",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables/{deliverable_id}",
+    "name": "update_deliverable",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables/{deliverable_id}/submit",
+    "name": "submit_deliverable",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/submit-for-client-review",
+    "name": "submit_project_for_client_review",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Projects"
+    ]
+  },
+  {
+    "path": "/api/v1/tasks",
+    "name": "list_tasks",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Tasks"
+    ]
+  },
+  {
+    "path": "/api/v1/tasks",
+    "name": "create_task",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Tasks"
+    ]
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}",
+    "name": "update_task",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Tasks"
+    ]
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}",
+    "name": "delete_task",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Tasks"
+    ]
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}/status",
+    "name": "update_task_status",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Tasks"
+    ]
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}/activities",
+    "name": "list_task_activities",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Tasks"
+    ]
+  },
+  {
+    "path": "/api/v1/finance/invoices",
+    "name": "list_invoices",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Finance"
+    ]
+  },
+  {
+    "path": "/api/v1/finance/invoices/{invoice_id}",
+    "name": "get_invoice",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Finance"
+    ]
+  },
+  {
+    "path": "/api/v1/finance/invoices",
+    "name": "create_invoice",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Finance"
+    ]
+  },
+  {
+    "path": "/api/v1/finance/invoices/{invoice_id}",
+    "name": "update_invoice",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Finance"
+    ]
+  },
+  {
+    "path": "/api/v1/finance/invoices/sweep-overdue",
+    "name": "sweep_overdue_invoices",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Finance"
+    ]
+  },
+  {
+    "path": "/api/v1/finance/invoices/{invoice_id}/payments",
+    "name": "record_payment",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Finance"
+    ]
+  },
+  {
+    "path": "/api/v1/careers",
+    "name": "list_open_positions",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Careers"
+    ]
+  },
+  {
+    "path": "/api/v1/careers/{career_id}/apply",
+    "name": "apply",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Careers"
+    ]
+  },
+  {
+    "path": "/api/v1/careers",
+    "name": "create_position",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Careers"
+    ]
+  },
+  {
+    "path": "/api/v1/careers/admin/applications",
+    "name": "list_applications",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Careers"
+    ]
+  },
+  {
+    "path": "/api/v1/careers/admin/applications/{application_id}/status",
+    "name": "update_application_status",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Careers"
+    ]
+  },
+  {
+    "path": "/api/v1/careers/admin/applications/{application_id}/resume",
+    "name": "download_resume",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Careers"
+    ]
+  },
+  {
+    "path": "/api/v1/contact",
+    "name": "submit",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Contact"
+    ]
+  },
+  {
+    "path": "/api/v1/contact",
+    "name": "list_submissions",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Contact"
+    ]
+  },
+  {
+    "path": "/api/v1/contact/{submission_id}",
+    "name": "update_status",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Contact"
+    ]
+  },
+  {
+    "path": "/api/v1/blogs",
+    "name": "list_blogs",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Blog"
+    ]
+  },
+  {
+    "path": "/api/v1/blogs",
+    "name": "create_blog",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Blog"
+    ]
+  },
+  {
+    "path": "/api/v1/blogs/{blog_id}",
+    "name": "update_blog",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Blog"
+    ]
+  },
+  {
+    "path": "/api/v1/blogs/{blog_id}",
+    "name": "delete_blog",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Blog"
+    ]
+  },
+  {
+    "path": "/api/v1/services",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Services"
+    ]
+  },
+  {
+    "path": "/api/v1/services/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Services"
+    ]
+  },
+  {
+    "path": "/api/v1/services",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Services"
+    ]
+  },
+  {
+    "path": "/api/v1/services/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Services"
+    ]
+  },
+  {
+    "path": "/api/v1/services/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Services"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Case Studies"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Case Studies"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Case Studies"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Case Studies"
+    ]
+  },
+  {
+    "path": "/api/v1/case-studies/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Case Studies"
+    ]
+  },
+  {
+    "path": "/api/v1/testimonials",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Testimonials"
+    ]
+  },
+  {
+    "path": "/api/v1/testimonials/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Testimonials"
+    ]
+  },
+  {
+    "path": "/api/v1/testimonials",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Testimonials"
+    ]
+  },
+  {
+    "path": "/api/v1/testimonials/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Testimonials"
+    ]
+  },
+  {
+    "path": "/api/v1/testimonials/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Testimonials"
+    ]
+  },
+  {
+    "path": "/api/v1/downloads",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Downloads"
+    ]
+  },
+  {
+    "path": "/api/v1/downloads/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Downloads"
+    ]
+  },
+  {
+    "path": "/api/v1/downloads",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Downloads"
+    ]
+  },
+  {
+    "path": "/api/v1/downloads/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Downloads"
+    ]
+  },
+  {
+    "path": "/api/v1/downloads/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Downloads"
+    ]
+  },
+  {
+    "path": "/api/v1/events",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Events"
+    ]
+  },
+  {
+    "path": "/api/v1/events/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Events"
+    ]
+  },
+  {
+    "path": "/api/v1/events",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Events"
+    ]
+  },
+  {
+    "path": "/api/v1/events/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Events"
+    ]
+  },
+  {
+    "path": "/api/v1/events/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Events"
+    ]
+  },
+  {
+    "path": "/api/v1/tickets",
+    "name": "list_tickets",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Tickets"
+    ]
+  },
+  {
+    "path": "/api/v1/tickets/{ticket_id}",
+    "name": "get_ticket",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Tickets"
+    ]
+  },
+  {
+    "path": "/api/v1/tickets/{ticket_id}",
+    "name": "update_ticket",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Tickets"
+    ]
+  },
+  {
+    "path": "/api/v1/tickets/{ticket_id}/replies",
+    "name": "add_reply",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Tickets"
+    ]
+  },
+  {
+    "path": "/api/v1/awards",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Awards"
+    ]
+  },
+  {
+    "path": "/api/v1/awards/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Awards"
+    ]
+  },
+  {
+    "path": "/api/v1/awards",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Awards"
+    ]
+  },
+  {
+    "path": "/api/v1/awards/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Awards"
+    ]
+  },
+  {
+    "path": "/api/v1/awards/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Awards"
+    ]
+  },
+  {
+    "path": "/api/v1/announcements",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Announcements"
+    ]
+  },
+  {
+    "path": "/api/v1/announcements/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Announcements"
+    ]
+  },
+  {
+    "path": "/api/v1/announcements",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Announcements"
+    ]
+  },
+  {
+    "path": "/api/v1/announcements/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Announcements"
+    ]
+  },
+  {
+    "path": "/api/v1/announcements/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Announcements"
+    ]
+  },
+  {
+    "path": "/api/v1/categories",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Categories"
+    ]
+  },
+  {
+    "path": "/api/v1/categories/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Categories"
+    ]
+  },
+  {
+    "path": "/api/v1/categories",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Categories"
+    ]
+  },
+  {
+    "path": "/api/v1/categories/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Categories"
+    ]
+  },
+  {
+    "path": "/api/v1/categories/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Categories"
+    ]
+  },
+  {
+    "path": "/api/v1/faqs",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "FAQs"
+    ]
+  },
+  {
+    "path": "/api/v1/faqs/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "FAQs"
+    ]
+  },
+  {
+    "path": "/api/v1/faqs",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "FAQs"
+    ]
+  },
+  {
+    "path": "/api/v1/faqs/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "FAQs"
+    ]
+  },
+  {
+    "path": "/api/v1/faqs/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "FAQs"
+    ]
+  },
+  {
+    "path": "/api/v1/gallery",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Gallery"
+    ]
+  },
+  {
+    "path": "/api/v1/gallery/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Gallery"
+    ]
+  },
+  {
+    "path": "/api/v1/gallery",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Gallery"
+    ]
+  },
+  {
+    "path": "/api/v1/gallery/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Gallery"
+    ]
+  },
+  {
+    "path": "/api/v1/gallery/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Gallery"
+    ]
+  },
+  {
+    "path": "/api/v1/industries",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Industries"
+    ]
+  },
+  {
+    "path": "/api/v1/industries/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Industries"
+    ]
+  },
+  {
+    "path": "/api/v1/industries",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Industries"
+    ]
+  },
+  {
+    "path": "/api/v1/industries/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Industries"
+    ]
+  },
+  {
+    "path": "/api/v1/industries/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Industries"
+    ]
+  },
+  {
+    "path": "/api/v1/partners",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Partners"
+    ]
+  },
+  {
+    "path": "/api/v1/partners/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Partners"
+    ]
+  },
+  {
+    "path": "/api/v1/partners",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Partners"
+    ]
+  },
+  {
+    "path": "/api/v1/partners/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Partners"
+    ]
+  },
+  {
+    "path": "/api/v1/partners/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Partners"
+    ]
+  },
+  {
+    "path": "/api/v1/portfolio",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Portfolio"
+    ]
+  },
+  {
+    "path": "/api/v1/portfolio/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Portfolio"
+    ]
+  },
+  {
+    "path": "/api/v1/portfolio",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Portfolio"
+    ]
+  },
+  {
+    "path": "/api/v1/portfolio/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Portfolio"
+    ]
+  },
+  {
+    "path": "/api/v1/portfolio/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Portfolio"
+    ]
+  },
+  {
+    "path": "/api/v1/products",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Products"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Products"
+    ]
+  },
+  {
+    "path": "/api/v1/products",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Products"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Products"
+    ]
+  },
+  {
+    "path": "/api/v1/products/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Products"
+    ]
+  },
+  {
+    "path": "/api/v1/resources",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Resources"
+    ]
+  },
+  {
+    "path": "/api/v1/resources/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Resources"
+    ]
+  },
+  {
+    "path": "/api/v1/resources",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Resources"
+    ]
+  },
+  {
+    "path": "/api/v1/resources/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Resources"
+    ]
+  },
+  {
+    "path": "/api/v1/resources/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Resources"
+    ]
+  },
+  {
+    "path": "/api/v1/technologies",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Technologies"
+    ]
+  },
+  {
+    "path": "/api/v1/technologies/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Technologies"
+    ]
+  },
+  {
+    "path": "/api/v1/technologies",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Technologies"
+    ]
+  },
+  {
+    "path": "/api/v1/technologies/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Technologies"
+    ]
+  },
+  {
+    "path": "/api/v1/technologies/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Technologies"
+    ]
+  },
+  {
+    "path": "/api/v1/notifications",
+    "name": "list_notifications",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Notifications"
+    ]
+  },
+  {
+    "path": "/api/v1/notifications/read-all",
+    "name": "mark_all_read",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Notifications"
+    ]
+  },
+  {
+    "path": "/api/v1/notifications/{notification_id}/read",
+    "name": "mark_read",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Notifications"
+    ]
+  },
+  {
+    "path": "/api/v1/notifications",
+    "name": "create_notification",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Notifications"
+    ]
+  },
+  {
+    "path": "/api/v1/media",
+    "name": "list_media",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Media"
+    ]
+  },
+  {
+    "path": "/api/v1/media/upload",
+    "name": "upload_files",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Media"
+    ]
+  },
+  {
+    "path": "/api/v1/media/{media_id}",
+    "name": "delete_media",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Media"
+    ]
+  },
+  {
+    "path": "/api/v1/audit-logs",
+    "name": "list_audit_logs",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Audit Logs"
+    ]
+  },
+  {
+    "path": "/api/v1/dashboard/overview",
+    "name": "overview",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Dashboard"
+    ]
+  },
+  {
+    "path": "/api/v1/dashboard/projects/status-breakdown",
+    "name": "project_status_breakdown",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Dashboard"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/roles",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Roles"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/roles/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Roles"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/roles",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Roles"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/roles/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Roles"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/roles/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Roles"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/permissions",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Permissions"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/permissions/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Permissions"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/permissions",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Permissions"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/permissions/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Permissions"
+    ]
+  },
+  {
+    "path": "/api/v1/access-control/permissions/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Permissions"
+    ]
+  },
+  {
+    "path": "/api/v1/solutions",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Solutions"
+    ]
+  },
+  {
+    "path": "/api/v1/solutions/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Solutions"
+    ]
+  },
+  {
+    "path": "/api/v1/solutions",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Solutions"
+    ]
+  },
+  {
+    "path": "/api/v1/solutions/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Solutions"
+    ]
+  },
+  {
+    "path": "/api/v1/solutions/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Solutions"
+    ]
+  },
+  {
+    "path": "/api/v1/trainings/courses",
+    "name": "list_courses",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Training"
+    ]
+  },
+  {
+    "path": "/api/v1/trainings/courses/{course_id}",
+    "name": "get_course",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Training"
+    ]
+  },
+  {
+    "path": "/api/v1/trainings/enroll",
+    "name": "enroll",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Training"
+    ]
+  },
+  {
+    "path": "/api/v1/trainings/my-enrollments",
+    "name": "my_enrollments",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Training"
+    ]
+  },
+  {
+    "path": "/api/v1/trainings/courses",
+    "name": "create_course",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Training"
+    ]
+  },
+  {
+    "path": "/api/v1/trainings",
+    "name": "create_course",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Training"
+    ]
+  },
+  {
+    "path": "/api/v1/trainings/enrollments",
+    "name": "list_enrollments",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Training"
+    ]
+  },
+  {
+    "path": "/api/v1/analytics/track",
+    "name": "track_page_view",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Analytics"
+    ]
+  },
+  {
+    "path": "/api/v1/analytics/summary",
+    "name": "analytics_summary",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Analytics"
+    ]
+  },
+  {
+    "path": "/api/v1/reports",
+    "name": "list_reports",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Reports"
+    ]
+  },
+  {
+    "path": "/api/v1/reports/generate",
+    "name": "generate_report",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Reports"
+    ]
+  },
+  {
+    "path": "/api/v1/reports/{report_id}",
+    "name": "delete_report",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Reports"
+    ]
+  },
+  {
+    "path": "/api/v1/leads",
+    "name": "list_leads",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}",
+    "name": "get_lead",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads",
+    "name": "create_lead",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}",
+    "name": "update_lead",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}",
+    "name": "delete_lead",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/activities",
+    "name": "list_lead_activities",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/log-call",
+    "name": "log_call",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/requirement-gathering",
+    "name": "mark_requirement_gathering",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/disqualify",
+    "name": "disqualify_lead",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/convert",
+    "name": "convert_lead",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Leads"
+    ]
+  },
+  {
+    "path": "/api/v1/proposals",
+    "name": "list_proposals",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "CRM \u2014 Proposals"
+    ]
+  },
+  {
+    "path": "/api/v1/proposals",
+    "name": "create_proposal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Proposals"
+    ]
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/submit-for-review",
+    "name": "submit_proposal_for_review",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Proposals"
+    ]
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/review",
+    "name": "review_proposal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Proposals"
+    ]
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/send",
+    "name": "send_proposal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Proposals"
+    ]
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/accept",
+    "name": "accept_proposal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Proposals"
+    ]
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/reject",
+    "name": "reject_proposal",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Proposals"
+    ]
+  },
+  {
+    "path": "/api/v1/contracts",
+    "name": "list_contracts",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "CRM \u2014 Contracts"
+    ]
+  },
+  {
+    "path": "/api/v1/contracts",
+    "name": "create_contract",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Contracts"
+    ]
+  },
+  {
+    "path": "/api/v1/contracts/{contract_id}/sign",
+    "name": "sign_contract",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CRM \u2014 Contracts"
+    ]
+  },
+  {
+    "path": "/api/v1/meetings",
+    "name": "list_meetings",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Sales CRM \u2014 Meetings"
+    ]
+  },
+  {
+    "path": "/api/v1/meetings/{meeting_id}",
+    "name": "get_meeting",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Sales CRM \u2014 Meetings"
+    ]
+  },
+  {
+    "path": "/api/v1/meetings",
+    "name": "create_meeting",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Sales CRM \u2014 Meetings"
+    ]
+  },
+  {
+    "path": "/api/v1/meetings/{meeting_id}",
+    "name": "update_meeting",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Sales CRM \u2014 Meetings"
+    ]
+  },
+  {
+    "path": "/api/v1/meetings/{meeting_id}",
+    "name": "cancel_meeting",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Sales CRM \u2014 Meetings"
+    ]
+  },
+  {
+    "path": "/api/v1/departments",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Departments"
+    ]
+  },
+  {
+    "path": "/api/v1/departments/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Departments"
+    ]
+  },
+  {
+    "path": "/api/v1/departments",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Departments"
+    ]
+  },
+  {
+    "path": "/api/v1/departments/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Departments"
+    ]
+  },
+  {
+    "path": "/api/v1/departments/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Departments"
+    ]
+  },
+  {
+    "path": "/api/v1/seo",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "SEO"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "SEO"
+    ]
+  },
+  {
+    "path": "/api/v1/seo",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "SEO"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "SEO"
+    ]
+  },
+  {
+    "path": "/api/v1/seo/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "SEO"
+    ]
+  },
+  {
+    "path": "/api/v1/settings",
+    "name": "list_settings",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Settings"
+    ]
+  },
+  {
+    "path": "/api/v1/settings/{key}",
+    "name": "get_setting",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Settings"
+    ]
+  },
+  {
+    "path": "/api/v1/settings/{key}",
+    "name": "upsert_setting",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Settings"
+    ]
+  },
+  {
+    "path": "/api/v1/settings/{key}",
+    "name": "delete_setting",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Settings"
+    ]
+  },
+  {
+    "path": "/api/v1/newsletter/subscribe",
+    "name": "subscribe",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Newsletter"
+    ]
+  },
+  {
+    "path": "/api/v1/newsletter/unsubscribe",
+    "name": "unsubscribe",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Newsletter"
+    ]
+  },
+  {
+    "path": "/api/v1/newsletter",
+    "name": "list_subscribers",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Newsletter"
+    ]
+  },
+  {
+    "path": "/api/v1/comments",
+    "name": "list_comments",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Blog Comments"
+    ]
+  },
+  {
+    "path": "/api/v1/comments",
+    "name": "create_comment",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Blog Comments"
+    ]
+  },
+  {
+    "path": "/api/v1/comments/{comment_id}",
+    "name": "moderate_comment",
+    "methods": [
+      "PATCH"
+    ],
+    "tags": [
+      "Blog Comments"
+    ]
+  },
+  {
+    "path": "/api/v1/comments/{comment_id}",
+    "name": "delete_comment",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Blog Comments"
+    ]
+  },
+  {
+    "path": "/api/v1/page-content",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "CMS"
+    ]
+  },
+  {
+    "path": "/api/v1/page-content/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "CMS"
+    ]
+  },
+  {
+    "path": "/api/v1/page-content",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "CMS"
+    ]
+  },
+  {
+    "path": "/api/v1/page-content/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "CMS"
+    ]
+  },
+  {
+    "path": "/api/v1/page-content/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "CMS"
+    ]
+  },
+  {
+    "path": "/api/v1/backups",
+    "name": "list_backups",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Backups"
+    ]
+  },
+  {
+    "path": "/api/v1/backups/trigger",
+    "name": "trigger_backup",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Backups"
+    ]
+  },
+  {
+    "path": "/api/v1/backups/{filename}/download",
+    "name": "download_backup",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Backups"
+    ]
+  },
+  {
+    "path": "/api/v1/backups/{filename}",
+    "name": "delete_backup",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Backups"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts/me/profile",
+    "name": "my_profile",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts/me/profile",
+    "name": "update_my_profile",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts/me/files",
+    "name": "my_files",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts/me/files",
+    "name": "upload_partner_file",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts/me/tickets",
+    "name": "my_tickets",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts/me/tickets",
+    "name": "create_ticket",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts",
+    "name": "list_partner_accounts",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/partner-accounts",
+    "name": "create_partner_account",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Partner Portal"
+    ]
+  },
+  {
+    "path": "/api/v1/leadership",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Leadership"
+    ]
+  },
+  {
+    "path": "/api/v1/leadership/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Leadership"
+    ]
+  },
+  {
+    "path": "/api/v1/leadership",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Leadership"
+    ]
+  },
+  {
+    "path": "/api/v1/leadership/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Leadership"
+    ]
+  },
+  {
+    "path": "/api/v1/leadership/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Leadership"
+    ]
+  },
+  {
+    "path": "/api/v1/offices",
+    "name": "list_items",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Offices"
+    ]
+  },
+  {
+    "path": "/api/v1/offices/{item_id}",
+    "name": "get_item",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Offices"
+    ]
+  },
+  {
+    "path": "/api/v1/offices",
+    "name": "create_item",
+    "methods": [
+      "POST"
+    ],
+    "tags": [
+      "Offices"
+    ]
+  },
+  {
+    "path": "/api/v1/offices/{item_id}",
+    "name": "update_item",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Offices"
+    ]
+  },
+  {
+    "path": "/api/v1/offices/{item_id}",
+    "name": "delete_item",
+    "methods": [
+      "DELETE"
+    ],
+    "tags": [
+      "Offices"
+    ]
+  },
+  {
+    "path": "/api/v1/site-content/company-info",
+    "name": "get_company_info",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Site Content"
+    ]
+  },
+  {
+    "path": "/api/v1/site-content/company-info",
+    "name": "update_company_info",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Site Content"
+    ]
+  },
+  {
+    "path": "/api/v1/site-content/about-content",
+    "name": "get_about_content",
+    "methods": [
+      "GET"
+    ],
+    "tags": [
+      "Site Content"
+    ]
+  },
+  {
+    "path": "/api/v1/site-content/about-content",
+    "name": "update_about_content",
+    "methods": [
+      "PUT"
+    ],
+    "tags": [
+      "Site Content"
+    ]
+  }
+]

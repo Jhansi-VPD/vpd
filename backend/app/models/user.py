@@ -10,7 +10,7 @@ from app.models.enums import UserRole
 
 
 class User(Base):
-    """Identity + profile table. CoreFusion owns this record end-to-end —
+    """Identity + profile table. VPD owns this record end-to-end —
     password hashing, sessions, email verification, and lockout are all
     application-controlled (see core/password.py, models/user_session.py,
     models/password_reset_token.py, models/email_verification_token.py).

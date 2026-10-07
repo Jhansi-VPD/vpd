@@ -1,0 +1,25 @@
+:root {
+  --vpd-bg-primary: #111111;
+  --vpd-bg-secondary: #171717;
+  --vpd-bg-surface: #171717;
+  --vpd-bg-card: #1D1D1D;
+  --vpd-bg-hover: #262626;
+  --vpd-bg-sidebar: #141414;
+  --vpd-bg-header: #141414;
+
+  --vpd-gold: #D4AF37;
+  --vpd-gold-hover: #DFC067;
+  --vpd-gold-muted: rgba(212, 175, 55, 0.15);
+  --vpd-gold-border: rgba(212, 175, 55, 0.3);
+
+  --vpd-text-primary: #FFFFFF;
+  --vpd-text-secondary: #A1A1AA;
+  --vpd-text-muted: #71717A;
+
+  --vpd-border: #2A2A2A;
+  --vpd-border-hover: #3F3F46;
+
+  --vpd-sidebar-width: 260px;
+  --vpd-header-height: 64px;
+}
+

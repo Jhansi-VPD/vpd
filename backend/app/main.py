@@ -5,7 +5,7 @@ import uuid
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
@@ -53,7 +53,7 @@ def normalize_allowed_origins(origins: list[str] | tuple[str, ...] | set[str] | 
 
 app = FastAPI(
     title=settings.app_name,
-    description="CoreFusion Technologies — Website, Admin Panel, Client Portal & Employee Portal API",
+    description="VPD Technologies — Enterprise Operations Platform & Business Portals API",
     version="1.0.0",
     # Swagger/Redoc leak the full route/schema surface; keep them out of production.
     docs_url=None if _is_production else "/docs",
@@ -213,6 +213,18 @@ app.add_middleware(
 upload_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), settings.upload_dir)
 os.makedirs(upload_root, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=upload_root), name="uploads")
+
+static_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+if os.path.exists(static_root):
+    app.mount("/static", StaticFiles(directory=static_root), name="static")
+
+
+@app.get("/login", include_in_schema=False)
+async def login_page():
+    login_html = os.path.join(static_root, "login.html")
+    if os.path.exists(login_html):
+        return FileResponse(login_html)
+    return JSONResponse(status_code=404, content={"message": "Login page not found"})
 
 
 # ---------- Error handling ----------

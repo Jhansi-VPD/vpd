@@ -1,7 +1,7 @@
-"""Password hashing for CoreFusion-owned authentication.
+"""Password hashing for VPD-owned authentication.
 
 Argon2id (the OWASP-recommended default) via `argon2-cffi`, replacing
-Supabase Auth's password handling entirely — CoreFusion now owns the
+Supabase Auth's password handling entirely — VPD now owns the
 credential, not a third-party identity provider. Parameters follow
 argon2-cffi's own "reasonably secure default for 2024+ hardware" profile
 (19 MiB memory, 2 iterations, 1 parallelism lane — argon2-cffi's own

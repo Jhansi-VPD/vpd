@@ -206,11 +206,11 @@ async def run():
                 print(f"  Client profile already exists for {client_account_cfg['email']}")
 
         settings_data = [
-            ("site.title", "CoreFusion Technologies", "public"),
+            ("site.title", "VPD Technologies", "public"),
             ("site.tagline", "Transforming Businesses Through Intelligent Digital Solutions", "public"),
-            ("contact.email", "info@corefusiontech.com", "public"),
+            ("contact.email", "info@vpdtechnologies.com", "public"),
             ("contact.phone", "+91-11-0000-0000", "public"),
-            ("social.linkedin", "https://linkedin.com/company/corefusiontech", "public"),
+            ("social.linkedin", "https://linkedin.com/company/vpdtech", "public"),
         ]
         for key, value, group in settings_data:
             exists = (await db.execute(select(Setting).where(Setting.key == key))).scalar_one_or_none()

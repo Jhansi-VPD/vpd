@@ -11,7 +11,7 @@ from app.services.auth_service import get_session_by_access_token
 
 
 async def _user_from_access_token(token: str, db: AsyncSession) -> User | None:
-    """Looks up the live session for this access token (CoreFusion-owned —
+    """Looks up the live session for this access token (VPD-owned —
     no external identity provider involved) and loads its user. Returns
     None for a missing/expired/revoked session, an unknown user, or a
     deactivated account — callers decide how to report that."""
@@ -30,6 +30,10 @@ async def get_current_user(
 ) -> User:
     token = request.cookies.get(ACCESS_TOKEN_COOKIE)
     if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
+    if not token:
         raise ApiError.unauthorized("Authentication token missing")
 
     user = await _user_from_access_token(token, db)
@@ -43,6 +47,10 @@ async def get_optional_user(
     db: AsyncSession = Depends(get_db),
 ) -> User | None:
     token = request.cookies.get(ACCESS_TOKEN_COOKIE)
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
     if not token:
         return None
     try:

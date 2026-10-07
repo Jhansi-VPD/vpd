@@ -1,7 +1,7 @@
 """Session cookie constants and helpers.
 
 Auth is httpOnly-cookie-based, not Authorization-header Bearer tokens, and
-the session itself is CoreFusion-owned (app/services/auth_service.py) — an
+the session itself is VPD-owned (app/services/auth_service.py) — an
 opaque, database-backed token, not a third-party-issued JWT. An httpOnly
 cookie is never readable by page JavaScript, closing the XSS-token-theft
 exposure that comes with keeping a token in memory/localStorage for a

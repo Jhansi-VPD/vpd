@@ -20,7 +20,7 @@ from app.utils.responses import success_response
 router = APIRouter(prefix="/backups", tags=["Backups"], dependencies=[Depends(require_roles("super_admin"))])
 
 BACKUP_DIR = BACKEND_ROOT / "backups"
-_FILENAME_RE = re.compile(r"^corefusion-[a-z]+-\d{8}T\d{6}Z\.dump$")
+_FILENAME_RE = re.compile(r"^vpd-[a-z]+-\d{8}T\d{6}Z\.dump$")
 
 
 def _pg_dump_args() -> tuple[list[str], dict[str, str]]:

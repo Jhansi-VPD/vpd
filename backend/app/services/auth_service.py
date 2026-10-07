@@ -1,5 +1,5 @@
-"""CoreFusion-owned session/account-security logic — the core of the
-Supabase Auth → CoreFusion Auth migration. No external identity provider is
+"""VPD-owned session/account-security logic — the core of the
+Supabase Auth → VPD Auth migration. No external identity provider is
 consulted anywhere in this file; every decision (session validity, lockout,
 rotation) is made against this application's own database.
 """

@@ -92,7 +92,7 @@ class Settings(BaseSettings):
     # environment (local dev and staging both send through Brevo per
     # explicit instruction) — there is no separate "local" email path.
     brevo_api_key: str = ""
-    brevo_sender_email: str = "no-reply@corefusiontech.com"
+    brevo_sender_email: str = "no-reply@vpdtechnologies.com"
     brevo_sender_name: str = "VPD Technologies"
 
     # Uploads / file storage. "local" (default) writes to local disk exactly
@@ -112,7 +112,7 @@ class Settings(BaseSettings):
     s3_bucket: str = "vpdtechnologies-uploads"
     s3_region: str = "us-east-1"
     s3_force_path_style: bool = True  # required by MinIO; harmless elsewhere
-    s3_public_url_base: str = ""  # e.g. http://localhost:9000/corefusion-uploads (local) or https://<project-ref>.supabase.co/storage/v1/object/public/corefusion-uploads (staging)
+    s3_public_url_base: str = ""  # e.g. http://localhost:9000/vpd-uploads (local) or https://<project-ref>.supabase.co/storage/v1/object/public/vpd-uploads (staging)
     s3_auto_create_bucket: bool = True  # convenient for MinIO's empty local volume; a no-op (caught, ignored) if the bucket already exists, e.g. on Supabase
 
     # Site
@@ -141,7 +141,7 @@ class Settings(BaseSettings):
     # print(Fernet.generate_key().decode())"`) before mfa_enabled=True is used
     # for real — app/core/mfa.py raises clearly at call time if it's missing.
     mfa_enabled: bool = False
-    mfa_issuer: str = "CoreFusion Technologies"
+    mfa_issuer: str = "VPD Technologies"
     mfa_encryption_key: str = ""
 
     # OAuth / social login — OFF by default. oauth_enabled is the same kind
@@ -164,15 +164,23 @@ class Settings(BaseSettings):
 
     def _get_async_database_url(self) -> str:
         """Get the async PostgreSQL URL."""
-        return _as_scheme(self.database_url, "postgresql+asyncpg://") if self.database_url else (
-            f"postgresql+asyncpg://{self.db_user}:{self.db_pass}"
+        from urllib.parse import quote_plus
+        if self.database_url:
+            return _as_scheme(self.database_url, "postgresql+asyncpg://")
+        encoded_pass = quote_plus(self.db_pass) if self.db_pass else ""
+        return (
+            f"postgresql+asyncpg://{self.db_user}:{encoded_pass}"
             f"@{self.db_host}:{self.db_port}/{self.db_name}"
         )
 
     def _get_sync_database_url(self) -> str:
         """Get the sync PostgreSQL URL (for Alembic migrations)."""
-        return _as_scheme(self.database_url, "postgresql+psycopg2://") if self.database_url else (
-            f"postgresql+psycopg2://{self.db_user}:{self.db_pass}"
+        from urllib.parse import quote_plus
+        if self.database_url:
+            return _as_scheme(self.database_url, "postgresql+psycopg2://")
+        encoded_pass = quote_plus(self.db_pass) if self.db_pass else ""
+        return (
+            f"postgresql+psycopg2://{self.db_user}:{encoded_pass}"
             f"@{self.db_host}:{self.db_port}/{self.db_name}"
         )
 
