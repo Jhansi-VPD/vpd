@@ -24,11 +24,12 @@ from app.routers.auth import login, logout, refresh
 from app.schemas.auth import LoginRequest
 
 
-def _mock_request(cookies: dict | None = None, method: str = "GET") -> MagicMock:
+def _mock_request(cookies: dict | None = None, method: str = "GET", path: str = "/api/v1/protected") -> MagicMock:
     request = MagicMock(spec=Request)
     request.cookies = cookies or {}
     request.method = method
     request.headers = {}
+    request.url.path = path
     return request
 
 

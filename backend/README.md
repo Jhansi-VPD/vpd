@@ -73,7 +73,7 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-<<<<<<< HEAD
+
 ### Migrations: local vs. staging
 `backend/scripts/migrate.sh` runs Alembic against either environment's `.env`
 file, via the `ENV_FILE` mechanism in `app/core/config.py` (not bash
@@ -206,6 +206,3 @@ GET    /api/v1/dashboard/overview           (Admin Panel, admin/PM/finance/sales
 - Rotate the default seeded admin password immediately.
 - MFA/2FA and OAuth are implemented but off by default — turn on with `MFA_ENABLED`/`OAUTH_ENABLED` in `.env` when the product is ready for them; `MFA_ENCRYPTION_KEY` must be a real Fernet key before `MFA_ENABLED=true` (see `.env.example`).
 - Gunicorn worker count in `docker/Dockerfile` should scale with CPU cores (`2 * cores + 1`).
-=======
-Interactive API Documentation is available at `http://localhost:8000/docs`.
->>>>>>> 4207aae36edb798bb789d2eb0814ea1ced2a944b

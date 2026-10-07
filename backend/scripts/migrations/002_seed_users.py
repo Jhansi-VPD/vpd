@@ -39,11 +39,7 @@ def write_credentials_md(newly_created: dict[str, str]) -> None:
         rows.append((role_label, account.get("department", "—"), account["email"], account["password"]))
 
     lines = [
-<<<<<<< HEAD
         "# VPD Technologies Demo Credentials",
-=======
-        "# VPD Demo Credentials",
->>>>>>> 4207aae36edb798bb789d2eb0814ea1ced2a944b
         "",
         "**Generated locally by `scripts/migrations/002_seed_users.py` — never commit this file.**",
         f"Generated at: {datetime.now(UTC).isoformat()}",
