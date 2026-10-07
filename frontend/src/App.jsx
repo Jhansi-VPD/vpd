@@ -6,7 +6,7 @@ import ProtectedRoute from './components/portal-shared/ProtectedRoute.jsx';
 // Authenticated Portals
 import AdminPortal from './portals/admin/AdminPortal.jsx';
 import SalesCrmPortal from './portals/sales-crm/SalesCrmPortal.jsx';
-import HrPortal from './portals/hr/HrPortal.jsx';
+import HRRoutes from './portals/hr/routes';
 import ProjectManagerPortal from './portals/project-manager/ProjectManagerPortal.jsx';
 import EmployeePortal from './portals/employee/EmployeePortal.jsx';
 import ClientPortal from './portals/client/ClientPortal.jsx';
@@ -44,7 +44,7 @@ export default function App() {
         path="/hr/*"
         element={
           <ProtectedRoute allowedRoles={['super_admin', 'hr', 'admin']}>
-            <HrPortal />
+            <HRRoutes />
           </ProtectedRoute>
         }
       />
