@@ -1,4 +1,4 @@
-# Engineering Rules — CoreFusion Technologies
+# Engineering Rules — VPD Technologies
 
 This repo is two applications: a FastAPI backend (`backend/`) and a React/Vite
 frontend (`frontend/`). There is no Next.js app and no Flutter app in this

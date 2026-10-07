@@ -53,9 +53,8 @@ def normalize_allowed_origins(origins: list[str] | tuple[str, ...] | set[str] | 
 
 app = FastAPI(
     title=settings.app_name,
-    description="VPD Technologies — Enterprise Operations Platform & Business Portals API",
+    description="VPD Technologies — Enterprise API Specification",
     version="1.0.0",
-    # Swagger/Redoc leak the full route/schema surface; keep them out of production.
     docs_url=None if _is_production else "/docs",
     redoc_url=None if _is_production else "/redoc",
     openapi_url=None if _is_production else "/openapi.json",
@@ -287,6 +286,16 @@ async def health_check():
     """Liveness only — does not touch the database. A load balancer/orchestrator
     should use this to decide whether to restart the process."""
     return {"status": "ok", "service": settings.app_name}
+
+
+@app.get("/", tags=["Root"])
+async def root():
+    return {
+        "app_name": settings.app_name,
+        "status": "online",
+        "docs_url": "/docs",
+        "api_prefix": settings.api_prefix,
+    }
 
 
 @app.get("/ready", tags=["Health"])

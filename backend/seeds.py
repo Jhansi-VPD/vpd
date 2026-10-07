@@ -146,7 +146,6 @@ SEED_USERS = [
     {"role": UserRole.support, "name": "Support Agent", "email": "support@vpdtechnologies.com", "code": "EMP-009", "dept": "Customer Support", "designation": "Support Engineer"},
     {"role": UserRole.finance, "name": "Finance Lead", "email": "finance@vpdtechnologies.com", "code": "EMP-010", "dept": "Finance", "designation": "Financial Controller"},
     {"role": UserRole.client, "name": "Acme Corp Client", "email": "client@acmecorp.com", "company": "Acme Corporation"},
-    {"role": UserRole.partner, "name": "TechPartner Inc", "email": "partner@techpartner.com", "company": "TechPartner Global"},
     {"role": UserRole.employee, "name": "John Staff", "email": "john.staff@vpdtechnologies.com", "code": "EMP-011", "dept": "Engineering", "designation": "Full Stack Engineer"},
 ]
 
@@ -278,7 +277,7 @@ async def seed_users_employees_clients(db: AsyncSession, dept_map: dict[str, uui
                 await db.flush()
 
         # Partner profile
-        if u_info["role"] == UserRole.partner:
+        if hasattr(UserRole, "partner") and u_info["role"] == getattr(UserRole, "partner"):
             res_prt = await db.execute(select(PartnerAccount).where(PartnerAccount.user_id == user.id))
             partner_obj = res_prt.scalar_one_or_none()
             if not partner_obj:

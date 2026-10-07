@@ -28,7 +28,7 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     phone: Mapped[str | None] = mapped_column(String(30))
     avatar: Mapped[str | None] = mapped_column(String(500))
-    role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="user_role"), default=UserRole.guest, nullable=False)
+    role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="user_role"), default=UserRole.employee, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
@@ -51,7 +51,6 @@ class User(Base):
 
     employee_profile = relationship("Employee", back_populates="user", uselist=False)
     client_profile = relationship("Client", back_populates="user", uselist=False)
-    partner_account = relationship("PartnerAccount", back_populates="user", uselist=False)
     notifications = relationship("Notification", back_populates="user")
     audit_logs = relationship("AuditLog", back_populates="user")
     sessions = relationship("UserSession", back_populates="user")

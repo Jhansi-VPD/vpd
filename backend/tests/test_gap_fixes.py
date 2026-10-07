@@ -16,15 +16,12 @@ from app.core.errors import ApiError
 from app.models.client import Client
 from app.models.employee import Employee
 from app.models.meeting import Meeting
-from app.models.partner_account import PartnerAccount
 from app.models.user import User
 from app.routers.clients import create_client_report, staff_upload_client_file
 from app.routers.finance import sweep_overdue_invoices
 from app.routers.meetings import cancel_meeting
-from app.routers.partner_account import upload_partner_file
 from app.routers.training import enroll
 from app.schemas.finance import ClientReportCreate
-from app.schemas.partner_account import PartnerFileCreate
 
 
 def _make_user(role: str, **overrides) -> User:
@@ -116,38 +113,6 @@ class TestClientFileOwnership:
                 )
         assert exc_info.value.status_code == 403
 
-
-class TestPartnerFileOwnership:
-    @pytest.mark.asyncio
-    async def test_unassigned_staff_member_rejected(self):
-        sales_user = _make_user("sales")
-        partner = PartnerAccount(id=uuid.uuid4(), user_id=uuid.uuid4(), company_name="Partner Co", account_manager_id=uuid.uuid4())
-        mock_db = AsyncMock()
-        mock_db.add = MagicMock()
-        mock_db.execute.return_value = MagicMock(scalar_one_or_none=MagicMock(return_value=None))
-
-        with patch("app.routers.partner_account.crud.get", new_callable=AsyncMock, return_value=partner):
-            with pytest.raises(ApiError) as exc_info:
-                await upload_partner_file(
-                    partner.id, PartnerFileCreate(name="doc", category="contract", file_url="http://x/doc.pdf"),
-                    mock_db, sales_user,
-                )
-        assert exc_info.value.status_code == 403
-
-    @pytest.mark.asyncio
-    async def test_admin_bypasses_ownership_check(self):
-        admin = _make_user("admin")
-        partner = PartnerAccount(id=uuid.uuid4(), user_id=uuid.uuid4(), company_name="Partner Co", account_manager_id=uuid.uuid4())
-        mock_db = AsyncMock()
-        mock_db.add = MagicMock()
-        mock_db.refresh.side_effect = _stamp_on_refresh
-
-        with patch("app.routers.partner_account.crud.get", new_callable=AsyncMock, return_value=partner):
-            result = await upload_partner_file(
-                partner.id, PartnerFileCreate(name="doc", category="contract", file_url="http://x/doc.pdf"),
-                mock_db, admin,
-            )
-        assert result["message"] == "File uploaded"
 
 
 class TestMeetingCancelActuallyCancels:

@@ -1,5 +1,5 @@
 
-# CoreFusion Technologies -- BASE stack definition.
+# VPD Technologies -- BASE stack definition.
 #
 # This file alone describes the shared shape of every environment: backend +
 # redis + frontend. It intentionally does NOT hardcode a database host/local
@@ -25,7 +25,7 @@ services:
     build:
       context: ./backend
       dockerfile: docker/Dockerfile
-    container_name: corefusion-backend
+    container_name: vpd-backend
     restart: unless-stopped
     env_file:
       - ./backend/.env
@@ -58,7 +58,7 @@ services:
       # already taken by another project; committed default stays 8000.
       - '${BACKEND_PORT:-8000}:8000' # direct access for API testing/Swagger docs; safe to remove in production if only the frontend proxy should be reachable
     networks:
-      - corefusion-net
+      - vpd-net
     # SONAR M2: without a cap, a runaway process in this container (e.g. a
     # pg_dump-backed backup request, or a leak in a long-lived worker) can
     # consume all host memory/CPU and take down every other container on the
@@ -70,12 +70,12 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: corefusion-redis
+    container_name: vpd-redis
     restart: unless-stopped
     volumes:
       - redis_data:/data
     networks:
-      - corefusion-net
+      - vpd-net
     mem_limit: 256m
     cpus: 0.5
 
@@ -83,7 +83,7 @@ services:
     build:
       context: ./frontend
       dockerfile: docker/Dockerfile
-    container_name: corefusion-frontend
+    container_name: vpd-frontend
     restart: unless-stopped
     depends_on:
       - backend
@@ -92,13 +92,14 @@ services:
       # already taken by another project; committed default stays 80.
       - '${FRONTEND_PORT:-80}:80'
     networks:
-      - corefusion-net
+      - vpd-net
     mem_limit: 128m
     cpus: 0.5
 
 networks:
-  corefusion-net:
+  vpd-net:
     driver: bridge
 
 volumes:
   redis_data:
+

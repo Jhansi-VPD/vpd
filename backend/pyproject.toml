@@ -27,3 +27,8 @@ known-first-party = ["app"]
 
 [tool.ruff.format]
 quote-style = "double"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+

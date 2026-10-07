@@ -23,7 +23,7 @@ async def run_e2e_verification():
         if not admin_user:
             admin_user = (await session.execute(select(User).where(User.role == "admin"))).scalars().first()
 
-        dev_user = (await session.execute(select(User).where(User.email == "developer@corefusiontech.com"))).scalars().first()
+        dev_user = (await session.execute(select(User).where(User.role == "developer"))).scalars().first()
         pm_user = (await session.execute(select(User).where(User.role == "project_manager"))).scalars().first()
         hr_user = (await session.execute(select(User).where(User.role == "hr"))).scalars().first() or admin_user
         support_user = (await session.execute(select(User).where(User.role == "support"))).scalars().first() or admin_user
@@ -32,7 +32,7 @@ async def run_e2e_verification():
         dept_id = str(dept.id) if dept else str(uuid.uuid4())
         client_obj = (await session.execute(select(Client).where(Client.user_id == client_user.id))).scalar_one_or_none() if client_user else None
 
-    print(f"Admin: {admin_user.email} | PM: {pm_user.email} | Dev: {dev_user.email} | Client: {client_user.email if client_user else None}")
+    print(f"Admin: {admin_user.email} | PM: {pm_user.email} | Dev: {dev_user.email if dev_user else None} | Client: {client_user.email if client_user else None}")
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         # =========================================================================
@@ -42,7 +42,7 @@ async def run_e2e_verification():
         app.dependency_overrides[get_current_user] = lambda: admin_user
 
         # 1. Admin creates User account
-        test_email = f"sales.test.{uuid.uuid4().hex[:6]}@corefusiontech.com"
+        test_email = f"sales.test.{uuid.uuid4().hex[:6]}@vpdtechnologies.com"
         u_res = await ac.post("/api/v1/users", json={
             "name": "Test Sales Executive",
             "email": test_email,

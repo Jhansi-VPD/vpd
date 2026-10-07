@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: corefusion-backend
+    name: vpd-backend
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt && alembic upgrade head
@@ -13,7 +13,7 @@ services:
       - key: ENV
         value: production
       - key: APP_NAME
-        value: CoreFusion Technologies
+        value: VPD Technologies
       - key: API_PREFIX
         value: /api/v1
       - key: DB_HOST

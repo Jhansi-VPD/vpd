@@ -1,4 +1,4 @@
-# COREFUSION — ENTERPRISE AUDIT & RELEASE STATUS
+# VPD — ENTERPRISE AUDIT & RELEASE STATUS
 
 > **2026-08-21 remediation pass (this session):** A subset of P0/P1/P2 findings below were
 > fixed, tested, and verified in this pass — see **§16 Remediation Log** at the bottom for the

@@ -311,47 +311,6 @@ class TestClientsEndpoints:
         assert response.status_code == 401
 
 
-class TestPartnerAccountsEndpoints:
-    """Partner Portal endpoints — /api/v1/partner-accounts/* (mirrors Client
-    Portal's shape; distinct from the public /api/v1/partners CMS listing)."""
-
-    async def test_list_partner_accounts_requires_auth(self, async_client):
-        response = await async_client.get("/api/v1/partner-accounts")
-        assert response.status_code == 401
-
-    async def test_create_partner_account_requires_auth(self, async_client):
-        response = await async_client.post(
-            "/api/v1/partner-accounts",
-            json={"company_name": "Acme"},
-        )
-        assert response.status_code == 401
-
-    async def test_partner_me_profile_requires_auth(self, async_client):
-        response = await async_client.get("/api/v1/partner-accounts/me/profile")
-        assert response.status_code == 401
-
-    async def test_partner_update_profile_requires_auth(self, async_client):
-        response = await async_client.put(
-            "/api/v1/partner-accounts/me/profile",
-            json={"industry": "Reselling"},
-        )
-        assert response.status_code == 401
-
-    async def test_partner_me_files_requires_auth(self, async_client):
-        response = await async_client.get("/api/v1/partner-accounts/me/files")
-        assert response.status_code == 401
-
-    async def test_partner_me_tickets_requires_auth(self, async_client):
-        response = await async_client.get("/api/v1/partner-accounts/me/tickets")
-        assert response.status_code == 401
-
-    async def test_partner_create_ticket_requires_auth(self, async_client):
-        response = await async_client.post(
-            "/api/v1/partner-accounts/me/tickets",
-            json={"subject": "Issue"},
-        )
-        assert response.status_code == 401
-
 
 class TestProjectsEndpoints:
     """Project endpoints — /api/v1/projects/*"""

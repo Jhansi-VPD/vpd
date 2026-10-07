@@ -22,8 +22,8 @@ from app.core.database import AsyncSessionLocal
 from app.core.password import hash_password
 from app.models.user import User
 
-SUPER_ADMIN_EMAIL = "superadmin@corefusiontech.com"
-ADMIN_EMAIL = "admin@corefusiontech.com"
+SUPER_ADMIN_EMAIL = "superadmin@vpdtechnologies.com"
+ADMIN_EMAIL = "admin@vpdtechnologies.com"
 
 SUPER_ADMIN_PASSWORD = os.environ.get("SUPER_ADMIN_PASSWORD") or getpass(f"Password for {SUPER_ADMIN_EMAIL}: ")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD") or getpass(f"Password for {ADMIN_EMAIL}: ")
@@ -31,27 +31,27 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD") or getpass(f"Password for {ADM
 
 async def main():
     async with AsyncSessionLocal() as db:
-        # 1. Update existing admin@corefusiontech.com -> role=admin + new password
+        # 1. Update existing admin@vpdtechnologies.com -> role=admin + new password
         existing_admin = (await db.execute(select(User).where(User.email == ADMIN_EMAIL))).scalar_one_or_none()
         if existing_admin:
             await db.execute(
                 update(User).where(User.id == existing_admin.id).values(
-                    role="admin", name="CoreFusion Admin", password_hash=hash_password(ADMIN_PASSWORD),
+                    role="admin", name="VPD Admin", password_hash=hash_password(ADMIN_PASSWORD),
                 )
             )
             await db.commit()
-            print(f"[OK] Updated {ADMIN_EMAIL}: role -> admin, name -> CoreFusion Admin, password updated")
+            print(f"[OK] Updated {ADMIN_EMAIL}: role -> admin, name -> VPD Admin, password updated")
         else:
             print(f"[INFO] {ADMIN_EMAIL} not found in local DB — will be created by seed script")
 
-        # 2. Create superadmin@corefusiontech.com if it doesn't exist
+        # 2. Create superadmin@vpdtechnologies.com if it doesn't exist
         existing_super = (await db.execute(select(User).where(User.email == SUPER_ADMIN_EMAIL))).scalar_one_or_none()
         if existing_super:
             print(f"[OK] {SUPER_ADMIN_EMAIL} already exists")
         else:
             super_admin = User(
                 id=uuid.uuid4(),
-                name="CoreFusion Super Admin",
+                name="VPD Super Admin",
                 email=SUPER_ADMIN_EMAIL,
                 password_hash=hash_password(SUPER_ADMIN_PASSWORD),
                 role="super_admin",

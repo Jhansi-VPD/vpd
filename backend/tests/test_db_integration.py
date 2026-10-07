@@ -15,7 +15,7 @@ async def db():
             email TEXT NOT NULL UNIQUE,
             phone TEXT,
             avatar TEXT,
-            role TEXT DEFAULT 'guest',
+            role TEXT DEFAULT 'employee',
             is_active INTEGER DEFAULT 1,
             is_email_verified INTEGER DEFAULT 0,
             last_login_at TEXT,
