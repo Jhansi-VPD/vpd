@@ -234,38 +234,6 @@ export default function AdminPortal() {
         ))}
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <MetricCard
-          label="Total Employees"
-          value={employees.length}
-          trend="up"
-          change="+100% active"
-          icon={<span>👥</span>}
-        />
-        <MetricCard
-          label="Active Projects"
-          value={projects.length}
-          trend="neutral"
-          change={`${tasks.length} tasks`}
-          icon={<span>📁</span>}
-        />
-        <MetricCard
-          label="Pending Leaves"
-          value={leaves.filter(l => l.status === 'pending').length}
-          trend={leaves.filter(l => l.status === 'pending').length > 0 ? 'down' : 'up'}
-          change="Awaiting action"
-          icon={<span>⏳</span>}
-        />
-        <MetricCard
-          label="Total Invoiced"
-          value={`$${invoices.reduce((a, b) => a + Number(b.amount || 0), 0).toLocaleString()}`}
-          trend="up"
-          change={`${invoices.length} billing items`}
-          icon={<span>💰</span>}
-        />
-      </div>
-
       {loading ? (
         <LoadingSkeleton count={4} height="h-28" />
       ) : (
@@ -273,6 +241,38 @@ export default function AdminPortal() {
           {/* TAB 1: DASHBOARD / OVERVIEW */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
+              {/* Metrics Row (Dashboard Only) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <MetricCard
+                  label="Total Employees"
+                  value={employees.length}
+                  trend="up"
+                  change="+100% active"
+                  icon={<span>👥</span>}
+                />
+                <MetricCard
+                  label="Active Projects"
+                  value={projects.length}
+                  trend="neutral"
+                  change={`${tasks.length} tasks`}
+                  icon={<span>📁</span>}
+                />
+                <MetricCard
+                  label="Pending Leaves"
+                  value={leaves.filter(l => l.status === 'pending').length}
+                  trend={leaves.filter(l => l.status === 'pending').length > 0 ? 'down' : 'up'}
+                  change="Awaiting action"
+                  icon={<span>⏳</span>}
+                />
+                <MetricCard
+                  label="Total Invoiced"
+                  value={`$${invoices.reduce((a, b) => a + Number(b.amount || 0), 0).toLocaleString()}`}
+                  trend="up"
+                  change={`${invoices.length} billing items`}
+                  icon={<span>💰</span>}
+                />
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card title="Recent Workforce Additions" subtitle="Latest employee profiles registered in VPD">
                   <div className="space-y-3">

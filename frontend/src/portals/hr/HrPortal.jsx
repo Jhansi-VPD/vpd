@@ -110,12 +110,24 @@ export default function HrPortal() {
 
   return (
     <PortalLayout portalName="HR Portal" portalBadge="People Operations & Talent" navSections={navSections}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">People Operations & Talent</h1>
-          <p className="text-xs text-zinc-400 mt-1">Manage employee lifecycle, daily attendance, leave balances, and recruitment pipelines.</p>
+      {/* Navigation Bar Header (No extra top heading above navbar) */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b border-[#2a2a2a] mb-6 pb-2 gap-3 overflow-x-auto">
+        <div className="flex items-center gap-2 overflow-x-auto">
+          {['employees', 'attendance', 'leaves', 'recruitment', 'applications'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-3.5 py-2 text-xs font-semibold capitalize whitespace-nowrap border-b-2 transition-colors ${
+                activeTab === tab
+                  ? 'border-[#d4af37] text-[#d4af37]'
+                  : 'border-transparent text-zinc-400 hover:text-white'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Button variant="outline" size="sm" onClick={loadData} icon={<span>🔄</span>}>
             Refresh
           </Button>
@@ -123,23 +135,6 @@ export default function HrPortal() {
             Post Opening
           </Button>
         </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex border-b border-[#2a2a2a] mb-6 overflow-x-auto gap-2">
-        {['employees', 'attendance', 'leaves', 'recruitment', 'applications'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2.5 text-xs font-semibold capitalize whitespace-nowrap border-b-2 transition-colors ${
-              activeTab === tab
-                ? 'border-[#d4af37] text-[#d4af37]'
-                : 'border-transparent text-zinc-400 hover:text-white'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
       </div>
 
       {/* Metrics */}

@@ -112,9 +112,12 @@ export function Card({ children, className = '', title, subtitle, action, footer
   );
 }
 
-export function MetricCard({ label, value, change, icon, trend = 'neutral', subtitle }) {
+export function MetricCard({ label, value, change, icon, trend = 'neutral', subtitle, onClick }) {
   return (
-    <div className="bg-[#171717] border border-[#2a2a2a] rounded-xl p-5 hover:border-[#d4af37]/40 transition-colors">
+    <div
+      onClick={onClick}
+      className={`bg-[#171717] border border-[#2a2a2a] rounded-xl p-5 hover:border-[#d4af37]/40 transition-colors ${onClick ? 'cursor-pointer' : ''}`}
+    >
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">{label}</span>
         {icon && (
@@ -124,7 +127,7 @@ export function MetricCard({ label, value, change, icon, trend = 'neutral', subt
         )}
       </div>
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-2xl font-bold tracking-tight text-white">{value ?? '—'}</span>
+        <span className="text-2xl font-bold tracking-tight text-[#d4af37]">{value ?? '—'}</span>
         {change && (
           <span className={`text-xs font-medium ${trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-rose-400' : 'text-zinc-400'}`}>
             {change}
@@ -149,13 +152,13 @@ export function LoadingSkeleton({ count = 3, height = 'h-10' }) {
 export function EmptyState({ title = 'No records found', message = 'No data available to display right now.', action }) {
   return (
     <div className="text-center py-12 px-4 border border-dashed border-[#2a2a2a] rounded-xl bg-[#141414]">
-      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#1e1e1e] flex items-center justify-center text-zinc-500">
+      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#1e1e1e] flex items-center justify-center text-zinc-400">
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
         </svg>
       </div>
-      <h4 className="text-sm font-semibold text-zinc-200">{title}</h4>
-      <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">{message}</p>
+      <h4 className="text-sm font-semibold text-white">{title}</h4>
+      <p className="text-xs text-zinc-200 font-medium mt-1 max-w-md mx-auto">{message}</p>
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

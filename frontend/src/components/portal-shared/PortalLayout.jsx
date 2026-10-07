@@ -46,7 +46,7 @@ export default function PortalLayout({
       {/* Sidebar Navigation */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-[#121212] border-r border-[#2a2a2a] flex flex-col justify-between transition-transform duration-200 ease-in-out
-        md:translate-x-0 md:static md:w-64 md:shrink-0
+        md:translate-x-0 md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         {/* Brand Header */}
