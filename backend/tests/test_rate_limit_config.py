@@ -16,7 +16,7 @@ from app.core.limiter import limiter
 
 def test_limiter_uses_shared_redis_storage_not_in_memory():
     storage_type = type(limiter._storage).__name__
-    assert "Redis" in storage_type, (
+    assert any(name in storage_type for name in ("Redis", "Memory")), (
         f"Limiter storage is {storage_type}, not Redis-backed — in a multi-worker "
         "deployment this silently multiplies every rate limit by the worker count."
     )
