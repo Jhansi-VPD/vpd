@@ -44,3 +44,4 @@ export const Employees: React.FC = () => {
     </PageContainer>
   );
 }
+export default Employees;

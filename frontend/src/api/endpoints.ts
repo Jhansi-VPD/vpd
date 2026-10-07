@@ -11,6 +11,10 @@ export const API_ENDPOINTS = {
   USERS: {
     BASE: '/users',
     BY_ID: (id: string) => `/users/${id}`,
+    LOCK: (id: string) => `/users/${id}/lock`,
+    UNLOCK: (id: string) => `/users/${id}/unlock`,
+    FORCE_PASSWORD_RESET: (id: string) => `/users/${id}/force-password-reset`,
+    REVOKE_SESSIONS: (id: string) => `/users/${id}/revoke-sessions`,
   },
   EMPLOYEES: {
     BASE: '/employees',
@@ -65,10 +69,21 @@ export const API_ENDPOINTS = {
     BASE: '/notifications',
     MARK_READ: (id: string) => `/notifications/${id}/read`,
   },
+  BACKUPS: {
+    BASE: '/backups',
+    BY_FILENAME: (filename: string) => `/backups/${filename}`,
+    DOWNLOAD: (filename: string) => `/backups/${filename}/download`,
+  },
+  ACCESS_CONTROL: {
+    ROLES: '/access-control/roles',
+    PERMISSIONS: '/access-control/permissions',
+  },
+  DASHBOARD: {
+    OVERVIEW: '/dashboard/overview',
+  },
   AUDIT: {
     LOGS: '/audit-logs',
   },
 };
 
 export default API_ENDPOINTS;
-

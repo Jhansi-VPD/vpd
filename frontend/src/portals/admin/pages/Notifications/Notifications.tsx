@@ -32,3 +32,4 @@ export const Notifications: React.FC = () => {
     </PageContainer>
   );
 }
+export default Notifications;

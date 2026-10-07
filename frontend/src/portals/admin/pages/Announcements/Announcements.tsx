@@ -48,3 +48,4 @@ export const Announcements: React.FC = () => {
     </PageContainer>
   );
 }
+export default Announcements;

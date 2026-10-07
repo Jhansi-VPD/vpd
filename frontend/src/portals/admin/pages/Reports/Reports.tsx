@@ -32,3 +32,4 @@ export const Reports: React.FC = () => {
     </PageContainer>
   );
 }
+export default Reports;

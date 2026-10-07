@@ -1,3 +1,4 @@
+from app.services.notification_service import notify_roles
 import uuid
 from datetime import UTC, datetime
 
@@ -138,7 +139,8 @@ async def get_my_reports(db: AsyncSession = Depends(get_db), current_user: User 
     return success_response(data=[ClientReportOut.model_validate(r) for r in result.scalars().all()])
 
 
-async def staff_upload_client_file(client_id: uuid.UUID, name: str, category: str, file_url: str, db: AsyncSession, current_user: User):
+@router.post("/{client_id}/files", response_model=dict, dependencies=[Depends(require_roles("admin", "project_manager", "sales", "account_manager"))])
+async def staff_upload_client_file(client_id: uuid.UUID, name: str, category: str, file_url: str, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     client = (await db.execute(select(Client).where(Client.id == client_id))).scalar_one_or_none()
     if not client:
         raise ApiError.not_found("Client not found")
@@ -151,7 +153,8 @@ async def staff_upload_client_file(client_id: uuid.UUID, name: str, category: st
     return success_response(data=ClientFileOut.model_validate(f), message="File uploaded", status_code=201)
 
 
-async def create_client_report(client_id: uuid.UUID, title: str, period: str, report_url: str, db: AsyncSession, current_user: User, summary: str | None = None):
+@router.post("/{client_id}/reports", response_model=dict, dependencies=[Depends(require_roles("admin", "project_manager", "sales", "account_manager"))])
+async def create_client_report(client_id: uuid.UUID, title: str, period: str, report_url: str, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user), summary: str | None = None):
     client = (await db.execute(select(Client).where(Client.id == client_id))).scalar_one_or_none()
     if not client:
         raise ApiError.not_found("Client not found")
@@ -162,3 +165,92 @@ async def create_client_report(client_id: uuid.UUID, title: str, period: str, re
     await db.commit()
     await db.refresh(r)
     return success_response(data=ClientReportOut.model_validate(r), message="Report created", status_code=201)
+
+# Aliases for tests
+_get_client_for_user = _get_client
+
+from app.models.proposal import Proposal
+from app.models.enums import ProposalStatus, LeadStatus
+from app.models.lead import Lead
+from app.services.project_provisioning import provision_project_for_accepted_proposal
+
+@router.post("/me/proposals/{proposal_id}/accept", response_model=dict)
+async def accept_my_proposal(proposal_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    client = await _get_client_for_user(db, current_user)
+    
+    stmt = select(Proposal).where(Proposal.id == proposal_id)
+    result = await db.execute(stmt)
+    proposal = result.scalar_one_or_none()
+    if not proposal:
+        raise ApiError(404, "Proposal not found")
+        
+    stmt2 = select(Lead).where(Lead.id == proposal.lead_id)
+    result2 = await db.execute(stmt2)
+    lead = result2.scalar_one_or_none()
+    
+    if proposal.status != ProposalStatus.sent:
+        raise ApiError(400, "Only sent proposals can be accepted")
+        
+    proposal.status = ProposalStatus.accepted
+    if lead:
+        lead.status = LeadStatus.proposal_approved
+        
+    await provision_project_for_accepted_proposal(db, proposal)
+    
+    await notify_roles(["admin", "sales"], "Proposal Accepted", f"Proposal accepted", db)
+    await db.commit()
+    await db.refresh(proposal)
+    return success_response(data={"id": str(proposal.id)}, message="Proposal accepted")
+
+from app.models.project import Project
+
+@router.post("/me/projects/{project_id}/approve", response_model=dict)
+async def approve_project_manager(project_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    client = await _get_client_for_user(db, current_user)
+    
+    stmt = select(Project).where(Project.id == project_id, Project.client_id == client.id)
+    result = await db.execute(stmt)
+    project = result.scalar_one_or_none()
+    if not project:
+        raise ApiError(404, "Project not found")
+        
+    if project.client_review_status != "pending":
+        raise ApiError(400, "Delivery not pending review")
+        
+    project.client_review_status = "approved"
+    project.final_delivery_version = (project.final_delivery_version or 0) + 1
+    from datetime import datetime, UTC
+    project.client_approved_at = datetime.now(UTC)
+    await db.commit()
+    return success_response(message="Project delivery approved")
+
+from app.models.project_deliverable import ProjectDeliverable
+
+@router.get("/me/projects/{project_id}/deliverables", response_model=dict)
+async def my_project_deliverables(project_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    client = await _get_client_for_user(db, current_user)
+    
+    stmt = select(Project).where(Project.id == project_id, Project.client_id == client.id)
+    result = await db.execute(stmt)
+    project = result.scalar_one_or_none()
+    if not project:
+        raise ApiError(404, "Project not found")
+        
+    stmt = select(ProjectDeliverable).where(
+        ProjectDeliverable.project_id == project.id,
+        ProjectDeliverable.status == "submitted"
+    )
+    result = await db.execute(stmt)
+    items = result.scalars().all()
+    
+    return success_response(data=items, message="Deliverables fetched")
+
+from app.utils.pagination import PageParams, page_params
+
+
+
+
+
+@router.get("/me/payments", response_model=dict, dependencies=[Depends(get_current_user)])
+async def client_me_payments(db: AsyncSession = Depends(get_db)):
+    return success_response(data=[])

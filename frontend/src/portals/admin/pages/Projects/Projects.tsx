@@ -50,3 +50,4 @@ export const Projects: React.FC = () => {
     </PageContainer>
   );
 }
+export default Projects;

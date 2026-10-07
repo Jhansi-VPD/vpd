@@ -145,3 +145,44 @@ async def delete_user(user_id: uuid.UUID, db: AsyncSession = Depends(get_db), cu
             
     await crud.delete(db, user_id)
     return success_response(message="User deleted successfully")
+
+@router.post("/{user_id}/lock", response_model=dict)
+async def lock_user(user_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    target = await crud.get(db, user_id)
+    if target.role in ("admin", "super_admin") and current_user.role != "super_admin":
+        from app.core.errors import ApiError
+        raise ApiError.forbidden("Only a Super Admin can lock an Admin or Super Admin account")
+    user = await crud.update(db, user_id, {"is_active": False})
+    await revoke_all_sessions(db, user_id)
+    return success_response(data=UserOut.model_validate(user), message="User locked")
+
+@router.post("/{user_id}/unlock", response_model=dict)
+async def unlock_user(user_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    target = await crud.get(db, user_id)
+    if target.role in ("admin", "super_admin") and current_user.role != "super_admin":
+        from app.core.errors import ApiError
+        raise ApiError.forbidden("Only a Super Admin can unlock an Admin or Super Admin account")
+    user = await crud.update(db, user_id, {"is_active": True})
+    return success_response(data=UserOut.model_validate(user), message="User unlocked")
+
+@router.post("/{user_id}/revoke-sessions", response_model=dict)
+async def revoke_user_sessions(user_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    target = await crud.get(db, user_id)
+    if target.role in ("admin", "super_admin") and current_user.role != "super_admin":
+        from app.core.errors import ApiError
+        raise ApiError.forbidden("Only a Super Admin can revoke sessions of an Admin or Super Admin")
+    await revoke_all_sessions(db, user_id)
+    return success_response(message="Sessions revoked successfully")
+
+@router.post("/{user_id}/force-password-reset", response_model=dict)
+async def force_password_reset(user_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    target = await crud.get(db, user_id)
+    if target.role in ("admin", "super_admin") and current_user.role != "super_admin":
+        from app.core.errors import ApiError
+        raise ApiError.forbidden("Only a Super Admin can force password reset for an Admin or Super Admin")
+    # For now, just generate a new password or set a flag (if supported)
+    from app.core.password import hash_password
+    import secrets
+    new_pass = secrets.token_urlsafe(12)
+    user = await crud.update(db, user_id, {"password_hash": hash_password(new_pass)})
+    return success_response(message=f"Password reset to: {new_pass}")

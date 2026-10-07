@@ -28,11 +28,30 @@ async def submit(request: Request, payload: ContactSubmit, db: AsyncSession = De
     except Exception as exc:
         logger.error("Failed to send contact notification email: %s", exc)
 
-    # Lead creation is a manual staff action (Mark In Progress -> Convert to
-    # Lead -> Resolve in the Sales/Marketing Contact Submissions views), not
-    # automatic on submission — see POST /leads (contact_submission_id links
-    # the new lead back to this submission).
+    import uuid
+    from app.models.lead import Lead
+    from app.models.enums import LeadSource
+    lead = Lead(
+        id=uuid.uuid4(),
+        contact_submission_id=submission.id,
+        company=submission.company,
+        contact_name=submission.name,
+        email=submission.email,
+        phone=submission.phone,
+        source=LeadSource.contact_form,
+        estimated_value=submission.expected_budget,
+        notes=submission.requirements,
+        service_id=submission.service_id,
+        industry_id=submission.industry_id
+    )
+    db.add(lead)
+    submission.lead_id = lead.id
+    await db.commit()
+
     return success_response(message="Thank you for reaching out — our team will get back to you shortly.", status_code=201)
+
+
+
 
 
 @router.get("", response_model=dict, dependencies=[Depends(require_roles("admin", "sales", "marketing", "support"))])

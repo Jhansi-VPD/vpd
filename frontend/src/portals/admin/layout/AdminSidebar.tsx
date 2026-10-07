@@ -4,10 +4,12 @@ import { useLayout } from '../../../app/providers/LayoutProvider';
 
 const adminNav = [
   { label: 'Dashboard', path: '/admin' },
+  { label: 'Organization', path: '/admin/organization' },
   { label: 'Workforce Users', path: '/admin/users' },
   { label: 'Employees', path: '/admin/employees' },
   { label: 'Departments', path: '/admin/departments' },
   { label: 'Roles & Permissions', path: '/admin/roles-permissions' },
+  { label: 'Active Sessions', path: '/admin/sessions' },
   { label: 'Attendance Logs', path: '/admin/attendance' },
   { label: 'Leave Approvals', path: '/admin/leave-management' },
   { label: 'Projects', path: '/admin/projects' },
@@ -17,9 +19,11 @@ const adminNav = [
   { label: 'Announcements', path: '/admin/announcements' },
   { label: 'Reports', path: '/admin/reports' },
   { label: 'Finance (Restricted)', path: '/admin/finance' },
+  { label: 'Integrations', path: '/admin/integrations' },
   { label: 'Notifications', path: '/admin/notifications' },
   { label: 'Audit Logs', path: '/admin/audit-logs' },
   { label: 'System Settings', path: '/admin/settings' },
+  { label: 'Disaster Recovery', path: '/admin/backups' },
 ];
 
 export const AdminSidebar: React.FC = () => {
@@ -52,7 +56,7 @@ export const AdminSidebar: React.FC = () => {
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-[#A1A1AA] hover:text-white p-1"
           >
-            ✕
+            ×
           </button>
         </div>
         <nav className="p-3 space-y-1 flex-1">
@@ -79,4 +83,3 @@ export const AdminSidebar: React.FC = () => {
 };
 
 export default AdminSidebar;
-

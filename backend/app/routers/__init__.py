@@ -61,6 +61,8 @@ from app.routers import (
     ticket,
     training,
     users,
+    partners,
+    admin_clients,
 )
 
 api_router = APIRouter()
@@ -135,3 +137,7 @@ api_router.include_router(site_content.router)
 api_router.include_router(attendance.router)
 api_router.include_router(leave.router)
 api_router.include_router(timesheets.router)
+
+api_router.include_router(partners.router)
+
+api_router.include_router(admin_clients.router)

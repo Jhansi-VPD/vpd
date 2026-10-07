@@ -38,7 +38,8 @@ async def list_attendance(request: Request, db: AsyncSession = Depends(get_db), 
     if target_date := request.query_params.get("date"):
         filters["date"] = target_date
 
-    return await crud.get_paginated(db, page, filters=filters)
+    items, total = await crud.list(db, page, filters=filters)
+    return {"items": items, "total": total, "page": page.page, "size": page.size}
 
 @router.post("", response_model=dict)
 async def create_attendance(data: AttendanceCreate, db: AsyncSession = Depends(get_db)):
@@ -49,3 +50,4 @@ async def create_attendance(data: AttendanceCreate, db: AsyncSession = Depends(g
 async def update_attendance(id: uuid.UUID, data: AttendanceUpdate, db: AsyncSession = Depends(get_db)):
     record = await crud.update(db, id, obj_in=data.model_dump(exclude_unset=True))
     return success_response(data=AttendanceOut.model_validate(record).model_dump(mode="json"), message="Attendance updated.")
+

@@ -43,3 +43,4 @@ export const Settings: React.FC = () => {
     </PageContainer>
   );
 }
+export default Settings;

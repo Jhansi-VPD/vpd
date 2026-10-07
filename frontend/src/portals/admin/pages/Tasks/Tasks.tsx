@@ -44,3 +44,4 @@ export const Tasks: React.FC = () => {
     </PageContainer>
   );
 }
+export default Tasks;

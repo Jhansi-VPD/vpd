@@ -26,7 +26,8 @@ async def list_timesheets(request: Request, db: AsyncSession = Depends(get_db), 
     if status := request.query_params.get("status"):
         filters["status"] = status
 
-    return await crud.get_paginated(db, page, filters=filters)
+    items, total = await crud.list(db, page, filters=filters)
+    return {"items": items, "total": total, "page": page.page, "size": page.size}
 
 @router.post("", response_model=dict)
 async def create_timesheet(data: TimesheetCreate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -46,3 +47,4 @@ async def update_timesheet(id: uuid.UUID, data: TimesheetCreate, db: AsyncSessio
 async def update_timesheet_status(id: uuid.UUID, data: TimesheetStatusUpdate, db: AsyncSession = Depends(get_db)):
     record = await crud.update(db, id, obj_in={"status": data.status})
     return success_response(data=TimesheetOut.model_validate(record).model_dump(mode="json"), message=f"Timesheet {data.status}.")
+

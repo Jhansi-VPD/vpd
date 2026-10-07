@@ -48,7 +48,7 @@ async def list_leads(request: Request, db: AsyncSession = Depends(get_db), page:
 @router.get("/{lead_id}", response_model=dict)
 async def get_lead(lead_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     lead = await crud.get(db, lead_id)
-    if current_user.role == "sales" and lead.owner_id != current_user.id:
+    if hasattr(current_user, "role") and current_user.role == "sales" and lead.owner_id != current_user.id:
         raise ApiError.forbidden("You do not have access to this lead")
     return success_response(data=LeadOut.model_validate(lead))
 
@@ -114,7 +114,7 @@ async def delete_lead(lead_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
 @router.get("/{lead_id}/activities", response_model=dict)
 async def list_lead_activities(lead_id: uuid.UUID, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     lead = await crud.get(db, lead_id)
-    if current_user.role == "sales" and lead.owner_id != current_user.id:
+    if hasattr(current_user, "role") and current_user.role == "sales" and lead.owner_id != current_user.id:
         raise ApiError.forbidden("You do not have access to this lead")
     items = (
         await db.execute(select(LeadActivity).where(LeadActivity.lead_id == lead_id).order_by(LeadActivity.created_at))
@@ -129,7 +129,7 @@ async def log_call(lead_id: uuid.UUID, payload: LeadLogCallRequest, db: AsyncSes
     only ever advances status forward out of `new`, never backward, and
     never once the lead is disqualified/converted."""
     lead = await crud.get(db, lead_id)
-    if current_user.role == "sales" and lead.owner_id != current_user.id:
+    if hasattr(current_user, "role") and current_user.role == "sales" and lead.owner_id != current_user.id:
         raise ApiError.forbidden("You do not have access to this lead")
     existing_note = f"{lead.notes}\n" if lead.notes else ""
     lead.notes = f"{existing_note}[Call Log] {payload.notes}"
@@ -149,7 +149,7 @@ async def mark_requirement_gathering(lead_id: uuid.UUID, payload: LeadRequiremen
     meeting, so the pipeline stage reflects that requirements are being
     actively gathered ahead of drafting a proposal."""
     lead = await crud.get(db, lead_id)
-    if current_user.role == "sales" and lead.owner_id != current_user.id:
+    if hasattr(current_user, "role") and current_user.role == "sales" and lead.owner_id != current_user.id:
         raise ApiError.forbidden("You do not have access to this lead")
     await advance_lead_status(db, lead, LeadStatus.requirement_gathering)
     await log_lead_activity(db, lead.id, "requirement_gathering", payload.notes, current_user.id)
@@ -165,7 +165,7 @@ async def disqualify_lead(lead_id: uuid.UUID, payload: LeadDisqualifyRequest, db
     for that specific path). Once a proposal is approved the only valid next
     step is converting the lead to a client, not disqualifying it."""
     lead = await crud.get(db, lead_id)
-    if current_user.role == "sales" and lead.owner_id != current_user.id:
+    if hasattr(current_user, "role") and current_user.role == "sales" and lead.owner_id != current_user.id:
         raise ApiError.forbidden("You do not have access to this lead")
     if lead.status in (LeadStatus.converted, LeadStatus.disqualified):
         raise ApiError.bad_request("This lead is already closed and cannot be disqualified")
@@ -195,7 +195,7 @@ async def convert_lead(lead_id: uuid.UUID, db: AsyncSession = Depends(get_db), c
     a rapid double-click produces exactly one client either way.
     """
     lead = await crud.get(db, lead_id)
-    if current_user.role == "sales" and lead.owner_id != current_user.id:
+    if hasattr(current_user, "role") and current_user.role == "sales" and lead.owner_id != current_user.id:
         raise ApiError.forbidden("You do not have access to this lead")
 
     # UAT closure pass §4: nothing blocked converting a disqualified

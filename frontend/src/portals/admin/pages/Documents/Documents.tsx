@@ -49,3 +49,4 @@ export const Documents: React.FC = () => {
     </PageContainer>
   );
 }
+export default Documents;

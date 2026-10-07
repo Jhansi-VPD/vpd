@@ -32,3 +32,4 @@ export const AuditLogs: React.FC = () => {
     </PageContainer>
   );
 }
+export default AuditLogs;

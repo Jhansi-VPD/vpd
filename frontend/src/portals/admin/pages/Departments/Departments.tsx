@@ -78,3 +78,4 @@ export const Departments: React.FC = () => {
     </PageContainer>
   );
 }
+export default Departments;

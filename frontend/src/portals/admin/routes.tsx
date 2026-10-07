@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AdminLayout from './layout/AdminLayout';
 import Dashboard from './pages/Dashboard';
+import Organization from './pages/Organization';
 import Users from './pages/Users';
 import Employees from './pages/Employees';
 import Departments from './pages/Departments';
@@ -18,12 +19,16 @@ import Finance from './pages/Finance';
 import Notifications from './pages/Notifications';
 import AuditLogs from './pages/AuditLogs';
 import Settings from './pages/Settings';
+import Backups from './pages/Backups';
+import Sessions from './pages/Sessions';
+import Integrations from './pages/Integrations';
 
 export const AdminRoutes: React.FC = () => {
   return (
     <Routes>
       <Route element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
+        <Route path="organization" element={<Organization />} />
         <Route path="users" element={<Users />} />
         <Route path="employees" element={<Employees />} />
         <Route path="departments" element={<Departments />} />
@@ -40,10 +45,12 @@ export const AdminRoutes: React.FC = () => {
         <Route path="notifications" element={<Notifications />} />
         <Route path="audit-logs" element={<AuditLogs />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="backups" element={<Backups />} />
+        <Route path="sessions" element={<Sessions />} />
+        <Route path="integrations" element={<Integrations />} />
       </Route>
     </Routes>
   );
 };
 
 export default AdminRoutes;
-

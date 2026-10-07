@@ -44,3 +44,4 @@ export const Attendance: React.FC = () => {
     </PageContainer>
   );
 }
+export default Attendance;

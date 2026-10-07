@@ -44,3 +44,4 @@ export const Timesheets: React.FC = () => {
     </PageContainer>
   );
 }
+export default Timesheets;

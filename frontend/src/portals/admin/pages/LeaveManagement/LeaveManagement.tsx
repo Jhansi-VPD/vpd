@@ -74,3 +74,4 @@ export const LeaveManagement: React.FC = () => {
     </PageContainer>
   );
 }
+export default LeaveManagement;
