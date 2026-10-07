@@ -49,7 +49,15 @@ export default function App() {
         }
       />
 
-      {/* 4. Project Manager Portal */}
+      {/* 4. Project Manager / Delivery Portal */}
+      <Route
+        path="/delivery/*"
+        element={
+          <ProtectedRoute allowedRoles={['super_admin', 'project_manager', 'developer', 'qa']}>
+            <ProjectManagerPortal />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/project-manager/*"
         element={

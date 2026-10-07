@@ -363,7 +363,11 @@ export default function ProjectManagerPortal() {
         }).catch(() => {});
       }
 
-      setProjectMembers((prev) => [...prev, ...newEntries]);
+      // Sync/Replace existing entries for this project if editing
+      setProjectMembers((prev) => [
+        ...prev.filter((pm) => String(pm.project_id) !== String(newAssignment.project_id)),
+        ...newEntries,
+      ]);
       setAssignTeamModalOpen(false);
       setNewAssignment({
         project_id: '',
@@ -372,7 +376,7 @@ export default function ProjectManagerPortal() {
         role: 'Senior Software Engineer',
         allocation: '100% Full-time',
       });
-      alert(`Successfully assigned ${membersToAssign.length} team member(s) to the project!`);
+      alert(`Successfully saved ${membersToAssign.length} team member(s) to the project!`);
     } catch (err) {
       alert(`Assign team failed: ${err.message}`);
     } finally {
@@ -663,14 +667,33 @@ export default function ProjectManagerPortal() {
                             <td className="py-3 px-4 text-right">
                               <Button
                                 size="xs"
-                                variant="outline"
+                                variant={assignedMembers.length > 0 ? 'outline' : 'gold'}
                                 onClick={() => {
-                                  setNewAssignment((prev) => ({ ...prev, project_id: p.id }));
+                                  const currentlyAssignedNames = assignedMembers.map((m) => m.member_name);
+                                  const teamOptions = [
+                                    'Rahul Sharma (Lead Architect)',
+                                    'Priya Patel (Frontend Lead)',
+                                    'Amit Kumar (DevOps Specialist)',
+                                    'Neha Singh (QA Automation)',
+                                    'Vikas Reddy (Backend Engineer)',
+                                    'Ananya Roy (UI/UX Designer)',
+                                  ];
+                                  const preselected = teamOptions.filter((opt) =>
+                                    currentlyAssignedNames.some((n) => opt.toLowerCase().includes(n.toLowerCase()))
+                                  );
+
+                                  setNewAssignment({
+                                    project_id: p.id,
+                                    selected_members: preselected.length > 0 ? preselected : currentlyAssignedNames,
+                                    custom_member_name: '',
+                                    role: 'Senior Software Engineer',
+                                    allocation: '100% Full-time',
+                                  });
                                   setAssignTeamModalOpen(true);
                                 }}
-                                icon={<span>👥</span>}
+                                icon={<span>{assignedMembers.length > 0 ? '✏️' : '👥'}</span>}
                               >
-                                Assign Team
+                                {assignedMembers.length > 0 ? 'Edit Team' : 'Assign Team'}
                               </Button>
                             </td>
                           </tr>
@@ -1182,8 +1205,12 @@ export default function ProjectManagerPortal() {
         </form>
       </Modal>
 
-      {/* ASSIGN TEAM MODAL (MULTI-MEMBER ASSIGNMENT) */}
-      <Modal isOpen={assignTeamModalOpen} onClose={() => setAssignTeamModalOpen(false)} title="Assign Team Members to Project">
+      {/* ASSIGN / EDIT TEAM MODAL (MULTI-MEMBER ASSIGNMENT) */}
+      <Modal
+        isOpen={assignTeamModalOpen}
+        onClose={() => setAssignTeamModalOpen(false)}
+        title={projectMembers.some((pm) => String(pm.project_id) === String(newAssignment.project_id)) ? "Edit Team Members for Project" : "Assign Team Members to Project"}
+      >
         <form onSubmit={handleAssignTeam} className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-zinc-300 mb-1">Select Target Project</label>
