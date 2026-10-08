@@ -3,7 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from 'react';
 
 import { useAuth } from '../context/AuthContext.jsx';
-import { Button } from '../components/portal-shared/SharedComponents.jsx';
+import { Button } from '../components/portal-shared/SharedComponents';
 
 export default function LoginPage() {
   const { login } = useAuth();

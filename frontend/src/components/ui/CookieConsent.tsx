@@ -1,11 +1,19 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from 'react';
+import React from 'react';
 
 const STORAGE_KEY = 'vpd.cookies';
-const DEFAULT_PREFS = { essential: true, analytics: false, marketing: false };
 
-function useFocusTrap(active) {
-  const ref = useRef(null);
+interface CookiePrefs {
+  essential: boolean;
+  analytics: boolean;
+  marketing: boolean;
+}
+
+const DEFAULT_PREFS: CookiePrefs = { essential: true, analytics: false, marketing: false };
+
+function useFocusTrap(active: boolean) {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!active) return;
@@ -13,7 +21,7 @@ function useFocusTrap(active) {
     const trap = ref.current;
     if (!trap) return;
 
-    const focusable = trap.querySelectorAll(
+    const focusable = trap.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
     const first = focusable[0];
@@ -21,7 +29,7 @@ function useFocusTrap(active) {
 
     first?.focus();
 
-    function handler(e) {
+    function handler(e: KeyboardEvent) {
       if (e.key !== 'Tab') return;
       if (e.shiftKey) {
         if (document.activeElement === first) {
@@ -46,7 +54,7 @@ function useFocusTrap(active) {
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [prefs, setPrefs] = useState(DEFAULT_PREFS);
+  const [prefs, setPrefs] = useState<CookiePrefs>(DEFAULT_PREFS);
 
   useEffect(() => {
     try {
@@ -59,7 +67,7 @@ export default function CookieConsent() {
     }
   }, []);
 
-  const storeAndHide = useCallback((data) => {
+  const storeAndHide = useCallback((data: CookiePrefs) => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch {

@@ -1,16 +1,26 @@
-export default function Avatar({ name = '', size = 'md', className = '' }) {
+import React from 'react';
+
+type AvatarSize = 'sm' | 'md' | 'lg';
+
+const sizes: Record<AvatarSize, string> = {
+  sm: 'w-8 h-8 text-sm',
+  md: 'w-10 h-10 text-base',
+  lg: 'w-12 h-12 text-lg',
+};
+
+interface AvatarProps {
+  name?: string;
+  size?: AvatarSize;
+  className?: string;
+}
+
+export default function Avatar({ name = '', size = 'md', className = '' }: AvatarProps) {
   const initials = name
     .split(' ')
     .filter(Boolean)
     .slice(0, 2)
     .map((w) => w[0].toUpperCase())
     .join('');
-
-  const sizes = {
-    sm: 'w-8 h-8 text-sm',
-    md: 'w-10 h-10 text-base',
-    lg: 'w-12 h-12 text-lg',
-  };
 
   return (
     <div

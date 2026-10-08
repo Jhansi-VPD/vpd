@@ -1,14 +1,19 @@
 "use client";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from 'react';
 
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../context/AuthContext';
+
+interface ProtectedRouteProps {
+  allowedRoles?: string[];
+  children?: React.ReactNode;
+}
 
 /**
  * Higher-order component to enforce authentication and role-based access control.
  * Gating rejects unauthorized users and redirects them to their designated portal.
  */
-export default function ProtectedRoute({ allowedRoles = [], children }) {
+export default function ProtectedRoute({ allowedRoles = [], children }: ProtectedRouteProps) {
   const { user, isAuthenticated, initializing } = useAuth();
   const navigate = useRouter();
   const [authorized, setAuthorized] = useState(false);
@@ -22,7 +27,7 @@ export default function ProtectedRoute({ allowedRoles = [], children }) {
     }
 
     const userRole = String(user.role || '').toLowerCase();
-    
+
     // Super admin bypasses all role checks
     if (userRole === 'super_admin') {
       setAuthorized(true);
@@ -72,6 +77,5 @@ export default function ProtectedRoute({ allowedRoles = [], children }) {
     );
   }
 
-  return children;
+  return <>{children}</>;
 }
-

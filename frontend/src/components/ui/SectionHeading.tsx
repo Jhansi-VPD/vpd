@@ -1,4 +1,14 @@
-export default function SectionHeading({ eyebrow, title, description, align = 'left', className = '' }) {
+import React from 'react';
+
+interface SectionHeadingProps {
+  eyebrow?: React.ReactNode;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  align?: 'left' | 'center';
+  className?: string;
+}
+
+export default function SectionHeading({ eyebrow, title, description, align = 'left', className = '' }: SectionHeadingProps) {
   const alignment = align === 'center' ? 'text-center items-center' : 'text-left items-start';
   return (
     <div className={`flex flex-col gap-stack-sm ${alignment} ${className}`}>

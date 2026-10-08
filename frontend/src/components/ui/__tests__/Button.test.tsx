@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import Button from '../Button.jsx';
+import Button from '../Button';
 
 describe('Button', () => {
   it('renders with children', () => {
@@ -10,7 +10,7 @@ describe('Button', () => {
 
   it('accepts variant props and applies correct classes', () => {
     const { container } = render(<Button variant="outline">Outline</Button>);
-    const btn = container.firstChild;
+    const btn = container.firstChild as HTMLElement;
     expect(btn.className).toContain('border');
     expect(btn.className).toContain('border-outline-variant');
   });

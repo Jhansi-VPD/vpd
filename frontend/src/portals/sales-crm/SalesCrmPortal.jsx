@@ -2,8 +2,8 @@
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState, useEffect } from 'react';
 
-import PortalLayout from '../../components/portal-shared/PortalLayout.jsx';
-import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents.jsx';
+import PortalLayout from '../../components/portal-shared/PortalLayout';
+import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents';
 import { supabaseRest } from '../../api/supabaseClient.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import Icon from '../components/ui/Icon.jsx';
+import Icon from '../components/ui/Icon';
 import useDocumentTitle from '../hooks/useDocumentTitle.js';
 
 const QUICK_LINKS = [
