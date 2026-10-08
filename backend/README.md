@@ -102,7 +102,7 @@ Employee:       employee@vpdtechnologies.com       / Password123!
 
 ### Running with Docker
 
-The compose files live at the repo root (`F:\ADP\corefusion\CF-main`), not
+The compose files live at the repo root (`F:\ADP\vpdtechnologies\CF-main`), not
 under `backend/`, so this stack can bring up `backend` + `frontend` + `redis`
 + a local `postgres` + a local `minio` together.
 
@@ -126,10 +126,10 @@ docker compose -f docker-compose.yml -f docker-compose.staging.yml run --rm back
 docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d backend frontend
 ```
 
-### Pairing with the CoreFusion frontend
+### Pairing with the VPD Technologies frontend
 
-This backend is designed to pair with the CoreFusion frontend (Vite/React).
-If you're using the combined `corefusion-platform` monorepo, it's the sibling
+This backend is designed to pair with the VPD Technologies frontend (Vite/React).
+If you're using the combined `vpdtechnologies-platform` monorepo, it's the sibling
 `../frontend` folder and its dev server proxies straight to `uvicorn` on
 `:8000` — no CORS setup is needed for local dev. Just run both:
 

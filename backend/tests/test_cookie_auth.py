@@ -2,7 +2,7 @@
 and the CSRF double-submit middleware.
 
 Auth is httpOnly-cookie-based (core/cookies.py, core/dependencies.py) and,
-since the Supabase Auth -> CoreFusion Auth migration, session issuance and
+since the Supabase Auth -> VPD Technologies Auth migration, session issuance and
 verification are fully local (app/services/auth_service.py) — no external
 identity provider is mocked here anymore, the real local logic runs against
 a mocked database session.

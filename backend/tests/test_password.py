@@ -1,4 +1,4 @@
-"""Unit tests for CoreFusion-owned password hashing (Argon2id) — replaces
+"""Unit tests for VPD Technologies-owned password hashing (Argon2id) — replaces
 the deleted Supabase JWT/JWKS test suite (tests/test_security.py) now that
 identity verification is local, not a third-party token-verification call."""
 

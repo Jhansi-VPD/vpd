@@ -162,7 +162,7 @@ async def workflow_admin_user_management():
 
     # POST /users creates the account entirely locally (Argon2id hash,
     # app-generated UUID) — no external identity provider involved since the
-    # Supabase Auth -> CoreFusion Auth migration, so nothing needs stubbing
+    # Supabase Auth -> VPD Technologies Auth migration, so nothing needs stubbing
     # here anymore; this runs for real end to end against Postgres.
     new_email = f"e2e-created-{uuid.uuid4().hex[:8]}@example.com"
     async with _client_for(admin_user) as ac:

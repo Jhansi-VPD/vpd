@@ -57,8 +57,8 @@ jobs:
           file: frontend/docker/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/corefusion-frontend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/corefusion-frontend:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/vpdtechnologies-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/vpdtechnologies-frontend:${{ github.sha }}
 
   deploy:
     needs: build-and-push
@@ -72,6 +72,6 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            cd /opt/corefusion-platform
+            cd /opt/vpdtechnologies-platform
             docker compose pull frontend
             docker compose up -d frontend

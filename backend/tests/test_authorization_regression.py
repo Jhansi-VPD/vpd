@@ -1,5 +1,5 @@
 """Regression tests for the IDOR/authorization gaps closed during the
-CoreFusion Phase-1 remediation (see status.md, CF-AUD-005).
+VPD Technologies Phase-1 remediation (see status.md, CF-AUD-005).
 
 These exercise the router functions directly with a stubbed CRUDBase/db,
 mirroring the style of tests/test_auth.py, since the shared test harness

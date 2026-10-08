@@ -8,9 +8,9 @@ auth-required smoke test on the HTTP endpoint. These tests target the three
 extracted functions directly, which is the point of splitting them: each is
 now testable in isolation without mocking the entire chain at once.
 
-Updated for the Supabase Auth -> CoreFusion Auth migration: account creation
+Updated for the Supabase Auth -> VPD Technologies Auth migration: account creation
 is now fully local (no external identity provider call to mock), and the
-welcome email issues a real CoreFusion password-reset token instead of
+welcome email issues a real VPD Technologies password-reset token instead of
 calling Supabase's `reset_password_for_email`.
 """
 import uuid

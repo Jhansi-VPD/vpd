@@ -1,5 +1,5 @@
 """Unit tests for the opaque session/reset/verification token primitives
-(app/core/tokens.py) — the mechanism CoreFusion-owned sessions, password
+(app/core/tokens.py) — the mechanism VPD Technologies-owned sessions, password
 resets, and email verification all build on."""
 from app.core.tokens import generate_token, hash_token
 

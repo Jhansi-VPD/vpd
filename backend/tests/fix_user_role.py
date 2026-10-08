@@ -1,7 +1,7 @@
 """
 Run this once to fix a user's role in the database.
 Usage:
-    python fix_user_role.py employee@corefusion.com hr
+    python fix_user_role.py employee@vpdtechnologies.com hr
 """
 import asyncio
 import sys

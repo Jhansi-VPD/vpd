@@ -6,7 +6,7 @@ each portal needs are present.
 
 Unlike the seeder (app/seeders/seed.py), which only sets a password for
 accounts it *creates* on that run, this script forces every demo account to a
-known password. Typical use: after running the CoreFusion-owned auth migration
+known password. Typical use: after running the VPD Technologies-owned auth migration
 (alembic revision 370721f881ed), which backfills pre-existing users with an
 unusable placeholder hash, so every demo account now requires forgot-password
 for no other reason than it predates the migration.

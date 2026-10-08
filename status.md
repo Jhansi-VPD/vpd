@@ -10,7 +10,7 @@
 | | |
 |---|---|
 | **Document** | Master Audit Status — single source of truth for release readiness |
-| **Repository** | `F:\ADP\corefusion\CF-main` |
+| **Repository** | `F:\ADP\vpdtechnologies\CF-main` |
 | **Audit date** | 2026-08-21 |
 | **Audit mode** | Read-only static audit (no code modified) |
 | **Requirements baseline** | `docs/prd.txt` (extracted from *WEBSITE MASTER CONTENT.pdf*) + Master Enterprise Audit Standard |
@@ -284,7 +284,7 @@ Negative-path testing (expired tokens, concurrent modification, duplicate submis
 | Committed PDFs | Redundant (prd.txt exists) |
 | Two eslint configs | Hygiene |
 | **Not a git repository** | Process risk — initialize VCS before remediation begins |
-| Template remnants | None; CoreFusion identity consistent ✔ |
+| Template remnants | None; VPD Technologies identity consistent ✔ |
 
 ---
 
@@ -480,7 +480,7 @@ caught.
 [`tests/real_db_verification.py`](backend/tests/real_db_verification.py) is a standalone script (deliberately **not** pytest-collected, since `tests/conftest.py` mocks the SQLAlchemy engine for the whole pytest session — see CF-BE-004) that seeds real rows into a real Postgres and drives the actual FastAPI app over real HTTP (`httpx.ASGITransport`), with only `get_current_user` overridden (to avoid needing real Supabase Auth network calls) — every other layer, including all SQL, is real. Run this session:
 
 ```
-docker run -d --name corefusion-test-pg -e POSTGRES_DB=corefusion_test \
+docker run -d --name vpdtechnologies-test-pg -e POSTGRES_DB=vpdtechnologies_test \
   -e POSTGRES_USER=test_user -e POSTGRES_PASSWORD=test_pass -p 55432:5432 postgres:16-alpine
 # create auth.users shim, then:
 alembic upgrade head
@@ -556,7 +556,7 @@ checking actual import sites, not name matches (`createTicket`/`applyLeave`/
 `fetchProjectStatusBreakdown` all appeared to "match" by grep but resolved to distinct functions
 in `api/*.js` when traced to their import statements).
 
-**Architecture decision:** Preferred architecture (§5) adopted — browser → CoreFusion backend API
+**Architecture decision:** Preferred architecture (§5) adopted — browser → VPD Technologies backend API
 → auth → authz → tenant scope → Postgres, for 100% of business data. Direct Supabase access is
 now auth-only.
 
@@ -1011,7 +1011,7 @@ reproducible script (not a one-off manual session) that:
 3. Takes a real `pg_dump -Fc` backup.
 4. Restores it into a **genuinely separate, empty** Postgres container via `pg_restore`.
 5. Verifies restored row counts and FK-index counts match the source exactly.
-6. Verifies the **CoreFusion application itself** connects to the restored database and
+6. Verifies the **VPD Technologies application itself** connects to the restored database and
    successfully executes a real query.
 
 Run this session, output: `BACKUP/RESTORE DRILL: PASS — pg_dump -> pg_restore -> schema match ->
@@ -1702,7 +1702,7 @@ User request: rework the Docker/env setup so local development uses a local Post
 while staging keeps using Supabase's own Postgres, migrations can run against either or both,
 `.env`/`.env.staging` are correctly split, and — per two reference docs
 (`docs/WEBSITE MASTER CONTENT.pdf`, unreadable this session — `pdftoppm` not installed, no
-alternative extraction attempted; `docs/CoreFusion_Dashboard_Module_Workflows_Block_Format.pdf`,
+alternative extraction attempted; `docs/VPD Technologies_Dashboard_Module_Workflows_Block_Format.pdf`,
 read in full) — the backend continues toward "production level" DB/Redis with strict RBAC and
 <200ms responses. Per the user's own explicit ordering ("first complete backend"), this session's
 work was scoped to the docker/env infrastructure ask; the <200ms and RBAC asks restate goals
@@ -1758,7 +1758,7 @@ performance work logged under CF-BE-009) and were not freshly re-benchmarked thi
 ### Bugs found and fixed while building this
 
 1. **Bash `source`-ing `.env` breaks on `<` in values.** The first `migrate.sh` draft used `set -a;
-   source "$env_file"; set +a`. `SMTP_FROM=CoreFusion Technologies <corefusiontech.notifications@
+   source "$env_file"; set +a`. `SMTP_FROM=VPD Technologies <vpdtechnologies.notifications@
    gmail.com>` contains a bare `<`, which bash parsed as input redirection, corrupting the
    exported environment — surfaced as a confusing `AssertionError: A path prefix must start with
    '/'` deep in FastAPI's router setup (traced back to `settings.api_prefix` being empty). Fixed by
@@ -1842,7 +1842,7 @@ passed unchanged.
 ### Latency — real requests against a real running backend + local Postgres
 
 Built the actual Docker image (`docker build -f backend/docker/Dockerfile`) and ran it as a real
-container on the `corefusion-net` network talking to the just-migrated local Postgres and Redis
+container on the `vpdtechnologies-net` network talking to the just-migrated local Postgres and Redis
 (host port 8010, since the conventional 8000 was — again — already held by an unrelated project's
 container on this shared machine). Measured wall-clock time with `curl -w "%{time_total}"`, 10-20
 requests per endpoint, steady-state after discarding the documented first-hit connection-pool
@@ -1872,7 +1872,7 @@ either hiding it or claiming a false "<200ms everywhere."
 
 ### Minor data observation (not a bug introduced this session, not investigated further)
 
-While testing `/api/v1/users/me` with the existing seeded `superadmin@corefusiontech.com` account,
+While testing `/api/v1/users/me` with the existing seeded `superadmin@vpdtechnologies.com` account,
 its `public.users.role` came back as `"client"`, not `"super_admin"` — causing a `403` on an
 endpoint an actual super admin should be able to reach. This is pre-existing data on a real,
 shared Supabase project used across many prior sessions' testing (not something this session's
@@ -1904,7 +1904,7 @@ with real evidence rather than assumed unchanged.
 ## 27. Full Backend Audit Against the Workflow PDF (same session, continued)
 
 Follow-up user request: cross-check the actual backend against every module in
-`docs/CoreFusion_Dashboard_Module_Workflows_Block_Format.pdf` (Client Portal, Employee Portal,
+`docs/VPD Technologies_Dashboard_Module_Workflows_Block_Format.pdf` (Client Portal, Employee Portal,
 Admin Panel, Service/Careers/Blog content workflows), audit for gaps, fix them, and bring the whole
 stack up via the root `docker-compose.yml` and leave it running for future work.
 
@@ -2059,7 +2059,7 @@ fixing it is either annotating ~25 model columns or accepting the cosmetic autog
 forever; both are legitimate calls but neither was asked for here, and blindly applying that
 diagnostic migration would have actually dropped working indexes, which is why it was deleted
 rather than committed. The one real, security-relevant observation carried over from Session 10's
-RBAC/latency work — the real seeded `superadmin@corefusiontech.com` Supabase account's
+RBAC/latency work — the real seeded `superadmin@vpdtechnologies.com` Supabase account's
 `public.users.role` reads `"client"` instead of `"super_admin"` — is still unfixed on the shared
 Supabase project (out of scope: shared external test data, not this session's code).
 
@@ -2122,14 +2122,14 @@ picked the investigation back up exactly where it left off, using the live stack
 from this session's earlier work (real Postgres, real Redis, real Docker image — the same
 methodology every prior finding in this file has used).
 
-**Root cause #1 — DNS resolution, not the TCP/socket phase.** Killed `corefusion-redis` mid-traffic
+**Root cause #1 — DNS resolution, not the TCP/socket phase.** Killed `vpdtechnologies-redis` mid-traffic
 and measured raw `socket.getaddrinfo('redis', 6379)` *inside the running backend container* — not
 theorized, executed directly: **~8s on the first call, ~4s on each call after.** This is entirely
 upstream of anything `redis-py`'s `socket_connect_timeout`/`socket_timeout` govern (those only wrap
 the TCP `connect()`/`recv()` calls, which never even begin until `getaddrinfo()` returns) — which
 is exactly why Session 9's careful, correctly-implemented tuning of those settings produced no
 measurable improvement: it was tuning a phase that was never the bottleneck. `docker exec
-corefusion-backend cat /etc/resolv.conf` showed no `timeout`/`attempts` override, so glibc's
+vpdtechnologies-backend cat /etc/resolv.conf` showed no `timeout`/`attempts` override, so glibc's
 default (`timeout:5 attempts:2`, i.e. up to ~10s worst case) applied, compounded by Docker's
 embedded DNS resolver (127.0.0.11) itself taking real time to return a definitive NXDOMAIN for a
 just-killed container's service name.
@@ -2174,7 +2174,7 @@ requests total), then fast in-memory-backed limiting until Redis recovers."
 15 concurrent requests during outage, AFTER fix #2:                0.016s-2.4s, most <0.5s
   (second burst, same outage, backoff re-probe window):            0.85s-2.4s, still no crash
 Zero worker crashes/SIGABRT/timeout messages in backend logs across both bursts (was: present)
-Post-recovery (docker start corefusion-redis): latency back to ~0.25-0.4s within 3s of recovery
+Post-recovery (docker start vpdtechnologies-redis): latency back to ~0.25-0.4s within 3s of recovery
 Full regression: pytest tests/ -q → 984 passed (unchanged)
 tests/test_rate_limit_config.py -q → 2 passed (rate limiting itself still verified correct when Redis is healthy)
 ```
@@ -2676,7 +2676,7 @@ continuously via `docker-compose.yml` throughout this entire session's changes.
 
 ---
 
-## Session N+1: Supabase Auth to CoreFusion Auth full migration (self-owned identity, sessions, credentials)
+## Session N+1: Supabase Auth to VPD Technologies Auth full migration (self-owned identity, sessions, credentials)
 
 **Trigger:** an explicit "master backend production remediation" instruction, whose first-listed
 concrete requirement was to remove Supabase Auth entirely as the identity/session/credential source
@@ -2702,7 +2702,7 @@ table in docs/BACKEND_GAPS_AND_ISSUES.md), not silently claimed done.
   creation/lookup, refresh-token rotation with reuse detection (replaying an already-rotated token
   revokes the whole session as a theft signal), revoke/revoke-all, account lockout (5 failed
   attempts leading to a 15-minute auto-expiring lock), all against this app's own database only.
-- New tables (alembic/versions/370721f881ed_corefusion_auth_migration.py): user_sessions,
+- New tables (alembic/versions/370721f881ed_vpdtechnologies_auth_migration.py): user_sessions,
   password_reset_tokens, email_verification_tokens; new users columns: password_hash (NOT NULL,
   backfilled for pre-existing rows with an unusable random Argon2id-shaped hash via
   gen_random_uuid() -- pgcrypto's gen_random_bytes() isn't installed on this project's local
@@ -2742,7 +2742,7 @@ table in docs/BACKEND_GAPS_AND_ISSUES.md), not silently claimed done.
    migration. Fixed to read the session cookie and resolve the user via a dedicated short-lived
    AsyncSessionLocal() (middleware runs outside the route handler's own DB session lifecycle).
 
-### Live-drill evidence (real HTTP requests against the running corefusion-backend/postgres/redis containers, not assumed from passing unit tests)
+### Live-drill evidence (real HTTP requests against the running vpdtechnologies-backend/postgres/redis containers, not assumed from passing unit tests)
 
 Full chain executed end-to-end with real curl calls and DB inspection between steps: register (real
 Argon2id hash plus real EmailVerificationToken confirmed via psql) -> login (200, session cookies
@@ -2780,7 +2780,7 @@ session).
 
 | ID | Severity | Finding | Status |
 |---|---|---|---|
-| -- | P0 (architectural) | Supabase Auth was the identity/session/credential source of truth | CLOSED -- fully replaced by CoreFusion-owned auth, live-drill-verified end-to-end |
+| -- | P0 (architectural) | Supabase Auth was the identity/session/credential source of truth | CLOSED -- fully replaced by VPD Technologies-owned auth, live-drill-verified end-to-end |
 | -- | P1, new (found this session) | record_successful_login/record_failed_login missing db.refresh() after commit, causing MissingGreenlet 500 on every real login | FIXED, CLOSED -- found via live drill, root-caused, fixed, rebuilt, re-verified live |
 | -- | P2, new (found this session) | AuditMiddleware reading stale Authorization: Bearer header since the earlier cookie migration, so every audit-log entry has had user_id=None | FIXED, CLOSED |
 | -- | P2, previously open | No forgot-password/reset-password endpoint | CLOSED -- implemented, live-drill-verified |
@@ -2802,7 +2802,7 @@ summary table for the full honest accounting of what's closed vs. still open.
 
 ### Final status
 
-## **SUPABASE AUTH FULLY REMOVED, COREFUSION-OWNED AUTH LIVE-DRILL-VERIFIED END-TO-END, 1039/1039 UNIT TESTS PLUS 617/617 RBAC CHECKS PASSING, TWO REAL BUGS FOUND AND FIXED VIA LIVE TESTING (NOT ASSUMED), REST OF THE MASTER REMEDIATION SCOPE HONESTLY DOCUMENTED AS OPEN**
+## **SUPABASE AUTH FULLY REMOVED, VPD TECHNOLOGIES-OWNED AUTH LIVE-DRILL-VERIFIED END-TO-END, 1039/1039 UNIT TESTS PLUS 617/617 RBAC CHECKS PASSING, TWO REAL BUGS FOUND AND FIXED VIA LIVE TESTING (NOT ASSUMED), REST OF THE MASTER REMEDIATION SCOPE HONESTLY DOCUMENTED AS OPEN**
 
 ---
 
@@ -2967,14 +2967,14 @@ Redis connection string.
 ### Live-drill evidence (real requests against the running Docker stack and real third-party services)
 
 - **MinIO**: logged in as the real seeded admin, uploaded a real 1x1 PNG via `POST /media/upload` —
-  got back a real `http://localhost:9002/corefusion-uploads/public/media/...` URL; fetched that URL
+  got back a real `http://localhost:9002/vpdtechnologies-uploads/public/media/...` URL; fetched that URL
   and confirmed the downloaded bytes were byte-for-byte identical (`cmp`) to the original file.
   Submitted a real career application with a resume PDF — `resume_url` came back as a bare
   `careers/<file>` reference (not a URL, confirming private routing); a direct guess at that object's
   bucket URL correctly `403`'d; the authenticated `GET /careers/admin/applications/{id}/resume`
   endpoint correctly returned the exact original PDF bytes.
 - **Supabase Storage (staging bucket, real credentials)**: ran `head_bucket`, `put_object`,
-  `get_object`, and `delete_object` directly against the real `corefusion` bucket on project
+  `get_object`, and `delete_object` directly against the real `vpdtechnologies` bucket on project
   `kimfexrhqjinlrmwukik` — all succeeded. Cross-checked the object was real via the **authenticated**
   Supabase REST object endpoint with the service-role key (`200`, correct content) — but the
   **public** REST object endpoint returned `404 Bucket not found` for the same object, even though
@@ -3007,7 +3007,7 @@ Redis connection string.
 | -- | -- | File uploads always went to local disk | **CLOSED for local (MinIO) and staging (Supabase Storage)** — both live-tested for real; `local` disk backend kept as the zero-config default for any deployment that doesn't opt in |
 | -- | P1, new (found this session) | Patching `email_service.httpx.AsyncClient` in test setup silently broke `httpx.AsyncClient` for the entire test process, failing 618 unrelated RBAC tests | **FIXED, CLOSED** — found by running the full suite, root-caused, fixed without ever touching the shared `httpx` module |
 | -- | P2, new (found this session) | A freshly auto-created MinIO bucket defaults to private, so uploaded "public" files 403'd on fetch | **FIXED, CLOSED** — found via live drill, fixed with a scoped public-read policy, re-verified live, regression test added |
-| -- | P2, open | Supabase Storage bucket `corefusion`'s public-object REST endpoint 404s despite the bucket and object both demonstrably existing | **OPEN — action needed on the Supabase dashboard side** (confirm "Public bucket" is actually saved as enabled), not a code defect: the S3-protocol layer this app uses works correctly against the same bucket |
+| -- | P2, open | Supabase Storage bucket `vpdtechnologies`'s public-object REST endpoint 404s despite the bucket and object both demonstrably existing | **OPEN — action needed on the Supabase dashboard side** (confirm "Public bucket" is actually saved as enabled), not a code defect: the S3-protocol layer this app uses works correctly against the same bucket |
 | -- | P2, open | Staging Redis (Upstash) not actually connected | **OPEN — blocked on a real credential**: only an Upstash REST API token was provided, not the TCP `rediss://` connection string `redis-py` needs; code (`REDIS_URL_OVERRIDE`/`REDIS_TLS`) is implemented and unit-tested but unverified against a real Upstash instance |
 
 ### Explicitly NOT claimed this session

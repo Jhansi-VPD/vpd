@@ -1,4 +1,4 @@
-"""Reproducible concurrent load-test harness for CoreFusion (§16-25 of the
+"""Reproducible concurrent load-test harness for VPD Technologies (§16-25 of the
 backend remediation directive).
 
 No k6/Locust in this environment and no permission to install arbitrary

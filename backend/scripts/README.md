@@ -96,7 +96,7 @@ Requires Docker running locally. Cleans up its own containers and dump file on e
 ## `repro_login.py`
 
 Legacy diagnostic script from the pre-migration Supabase Auth era (imports
-`app.services.supabase_client`). Authentication is now fully CoreFusion-owned
+`app.services.supabase_client`). Authentication is now fully VPD Technologies-owned
 (`app/services/auth_service.py`) — this script does not exercise the current auth path and
 is kept only as a historical reference. Prefer testing login against `POST /api/v1/auth/login`
 directly (or the E2E suite in `frontend/e2e/`) for anything current.

@@ -61,10 +61,14 @@ async def run_migrations_online() -> None:
     configuration = config.get_section(config.config_ini_section, {})
     configuration["sqlalchemy.url"] = settings.async_database_url
     
+    _is_supabase = "supabase" in (settings.db_host or "").lower() or "supabase" in (settings.async_database_url or "").lower()
+    _connect_args = {"ssl": "require"} if (_is_supabase or settings.env.lower() not in {"development", "test", "local"}) else {}
+
     connectable = async_engine_from_config(
         configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        connect_args=_connect_args,
     )
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

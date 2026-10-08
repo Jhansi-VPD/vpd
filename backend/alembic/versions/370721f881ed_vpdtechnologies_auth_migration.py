@@ -1,4 +1,4 @@
-"""CoreFusion-owned auth: password_hash + lockout fields on users, user_sessions,
+"""VPD Technologies-owned auth: password_hash + lockout fields on users, user_sessions,
 password_reset_tokens, email_verification_tokens (replaces Supabase Auth as
 the identity/session/credential source of truth)
 

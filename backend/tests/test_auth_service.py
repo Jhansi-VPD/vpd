@@ -1,5 +1,5 @@
 """Unit tests for app/services/auth_service.py — session issuance, rotation,
-reuse detection, and account lockout. This is the core of the CoreFusion-
+reuse detection, and account lockout. This is the core of the VPD Technologies-
 owned auth migration, so it gets the deepest test coverage in this pass."""
 import uuid
 from datetime import UTC, datetime, timedelta

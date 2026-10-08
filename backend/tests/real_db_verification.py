@@ -10,7 +10,7 @@ imports tests/conftest.py) so it genuinely hits Postgres, mirroring the
 pattern already used by tests/test_workflows.py.
 
 Usage:
-    ENV=test DB_HOST=localhost DB_PORT=55432 DB_NAME=corefusion_test \
+    ENV=test DB_HOST=localhost DB_PORT=55432 DB_NAME=vpdtechnologies_test \
     DB_USER=test_user DB_PASS=test_pass python tests/real_db_verification.py
 
 Verifies, against real data and real SQL:

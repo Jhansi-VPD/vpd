@@ -1,6 +1,6 @@
 """Unit tests for auth business logic (not covered by API endpoint tests).
 
-Registration is fully local now (CoreFusion-owned auth — see
+Registration is fully local now (VPD Technologies-owned auth — see
 app/services/auth_service.py) — there is no external identity provider
 dependency left to test failure modes for; these tests target the actual
 remaining logic: duplicate-email rejection and successful account creation.

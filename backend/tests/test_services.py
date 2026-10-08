@@ -2,7 +2,7 @@
 
 (Supabase-client tests — TestGetAnonClient/TestGetAdminClient/
 TestCreateOrFindSupabaseUser — were removed along with
-app/services/supabase_client.py in the Supabase Auth -> CoreFusion Auth
+app/services/supabase_client.py in the Supabase Auth -> VPD Technologies Auth
 migration; equivalent coverage for the new auth mechanism lives in
 tests/test_auth_service.py, tests/test_password.py, and tests/test_tokens.py.)
 """

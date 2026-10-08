@@ -8,7 +8,7 @@ from app.core.database import AsyncSessionLocal
 async def q():
     async with AsyncSessionLocal() as db:
         r = await db.execute(text(
-            "SELECT id, email, name, role FROM users WHERE email ILIKE '%vpd%' OR email ILIKE '%corefusion%' OR email ILIKE '%employee%' OR email ILIKE '%hr%' OR email ILIKE '%developer%' ORDER BY created_at DESC"
+            "SELECT id, email, name, role FROM users WHERE email ILIKE '%vpd%' OR email ILIKE '%vpdtechnologies%' OR email ILIKE '%employee%' OR email ILIKE '%hr%' OR email ILIKE '%developer%' ORDER BY created_at DESC"
         ))
         rows = r.fetchall()
         if not rows:

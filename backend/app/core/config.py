@@ -171,21 +171,37 @@ class Settings(BaseSettings):
     oauth_github_client_secret: str = ""
     oauth_github_redirect_uri: str = ""
 
+    def _effective_db_host_user_port(self) -> tuple[str, str, int]:
+        host = self.db_host
+        user = self.db_user
+        port = self.db_port
+        # Direct Supabase endpoints (db.<ref>.supabase.co) only expose IPv6 (AAAA) DNS records.
+        # Platforms like Render do not support outbound IPv6, failing with [Errno 101] Network is unreachable.
+        # Transparently route through Supabase's IPv4 connection pooler in ap-southeast-1.
+        if host.startswith("db.") and host.endswith(".supabase.co") and ("." not in user):
+            project_ref = host[len("db."):-len(".supabase.co")]
+            host = "aws-0-ap-southeast-1.pooler.supabase.com"
+            user = f"postgres.{project_ref}"
+            port = 5432
+        return host, user, port
+
     def _get_async_database_url(self) -> str:
         """Get the async PostgreSQL URL."""
         if self.database_url:
             return _as_scheme(self.database_url, "postgresql+asyncpg://")
+        host, user, port = self._effective_db_host_user_port()
         pass_quoted = urllib.parse.quote_plus(self.db_pass) if self.db_pass else ""
-        user_quoted = urllib.parse.quote_plus(self.db_user) if self.db_user else ""
-        return f"postgresql+asyncpg://{user_quoted}:{pass_quoted}@{self.db_host}:{self.db_port}/{self.db_name}"
+        user_quoted = urllib.parse.quote_plus(user) if user else ""
+        return f"postgresql+asyncpg://{user_quoted}:{pass_quoted}@{host}:{port}/{self.db_name}"
 
     def _get_sync_database_url(self) -> str:
         """Get the sync PostgreSQL URL (for Alembic migrations)."""
         if self.database_url:
             return _as_scheme(self.database_url, "postgresql+psycopg2://")
+        host, user, port = self._effective_db_host_user_port()
         pass_quoted = urllib.parse.quote_plus(self.db_pass) if self.db_pass else ""
-        user_quoted = urllib.parse.quote_plus(self.db_user) if self.db_user else ""
-        return f"postgresql+psycopg2://{user_quoted}:{pass_quoted}@{self.db_host}:{self.db_port}/{self.db_name}"
+        user_quoted = urllib.parse.quote_plus(user) if user else ""
+        return f"postgresql+psycopg2://{user_quoted}:{pass_quoted}@{host}:{port}/{self.db_name}"
 
     @property
     def async_database_url(self) -> str:

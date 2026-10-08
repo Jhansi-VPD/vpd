@@ -6,7 +6,7 @@ bookkeeping, not inference from application-side latency alone.
 
 Usage:
     python performance/pool_diagnostics.py --host localhost --port 55450 \
-        --db corefusion_test --user test_user --password test_pass \
+        --db vpdtechnologies_test --user test_user --password test_pass \
         --duration 20 --interval 0.5
 """
 import argparse
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="localhost")
     parser.add_argument("--port", type=int, default=5432)
-    parser.add_argument("--db", default="corefusion_test")
+    parser.add_argument("--db", default="vpdtechnologies_test")
     parser.add_argument("--user", default="test_user")
     parser.add_argument("--password", default="test_pass")
     parser.add_argument("--duration", type=float, default=20)
