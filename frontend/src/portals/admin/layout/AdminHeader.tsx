@@ -65,7 +65,9 @@ export const AdminHeader: React.FC = () => {
         </button>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-white truncate">{pageTitleFor(pathname)}</p>
-          <p className="text-[10px] text-[#71717A] truncate hidden sm:block">Super Admin Console · VPD Technologies</p>
+          <p className="text-xs text-[#D4AF37] font-medium tracking-wide truncate">
+            Super Admin Console · VPD Technologies
+          </p>
         </div>
       </div>
 

@@ -34,6 +34,7 @@ def _require_privileged_or_assignee(current_user: User, task: Task) -> None:
 
 
 @router.get("", response_model=dict)
+@router.get("/", response_model=dict, include_in_schema=False)
 async def list_tasks(request: Request, db: AsyncSession = Depends(get_db), page: PageParams = Depends(page_params)):
     filters = {k: request.query_params.get(k) for k in ("project_id", "assigned_to", "status", "priority") if request.query_params.get(k)}
     items, total = await crud.list(db, page, filters)

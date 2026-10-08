@@ -51,19 +51,19 @@ export const API_ENDPOINTS = {
     BY_ID: (id: string) => `/timesheets/${id}`,
   },
   SALES: {
-    PIPELINE: '/sales/pipeline',
+    PIPELINE: '/leads',
     LEADS: '/leads',
     PROPOSALS: '/proposals',
     CONTRACTS: '/contracts',
   },
   FINANCE: {
-    INVOICES: '/invoices',
-    PAYMENTS: '/payments',
-    REPORTS: '/finance/reports',
+    INVOICES: '/finance/invoices',
+    PAYMENTS: '/finance/invoices',
+    REPORTS: '/reports',
   },
   DOCUMENTS: {
-    BASE: '/documents',
-    UPLOAD: '/uploads',
+    BASE: '/media',
+    UPLOAD: '/media',
   },
   NOTIFICATIONS: {
     BASE: '/notifications',

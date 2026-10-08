@@ -30,6 +30,7 @@ const ICON_PATHS: Record<string, string> = {
   menu: 'M4 6h16M4 12h16M4 18h16',
   close: 'M18 6 6 18M6 6l12 12',
   logout: 'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9',
+  briefcase: 'M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2ZM9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2',
   dot: 'M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0',
 };
 

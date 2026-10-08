@@ -4,7 +4,7 @@ import { RoleRoute } from "../../auth/role-route";
 
 export default function SalesLayoutWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <RoleRoute allowedRoles={["sales", "marketing"]}>
+    <RoleRoute allowedRoles={["sales", "marketing", "admin", "super_admin"]}>
       <SalesLayout>{children}</SalesLayout>
     </RoleRoute>
   );

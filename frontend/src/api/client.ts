@@ -65,8 +65,20 @@ class ApiClient {
     }
   }
 
-  async request<T = any>(endpoint: string, options: any = {}): Promise<T> {
-    const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  async request<T = any>(endpoint: string, options: RequestInit & { params?: any; token?: string; headers?: any } = {}): Promise<T> {
+    let url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    if (options.params && typeof options.params === 'object') {
+      const searchParams = new URLSearchParams();
+      for (const [k, v] of Object.entries(options.params)) {
+        if (v !== undefined && v !== null && v !== '') {
+          searchParams.append(k, String(v));
+        }
+      }
+      const qs = searchParams.toString();
+      if (qs) {
+        url += (url.includes('?') ? '&' : '?') + qs;
+      }
+    }
     const token = options.token || this.getAuthToken();
     const csrfToken = getCsrfTokenFromCookie();
 

@@ -1,6 +1,7 @@
+"use client";
+import React, { useEffect, useState } from 'react';
 import PageContainer from '../../../../shared/components/PageContainer';
 import PageHeader from '../../../../shared/components/PageHeader';
-import React, { useEffect, useState } from 'react';
 import { attendanceApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
 import StatusBadge from '../../../../shared/components/StatusBadge';
@@ -81,64 +82,50 @@ export const Attendance: React.FC = () => {
         title="Workforce Attendance Registry"
         description="Employee clock-in timestamps, status, and duration records"
         breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Attendance Registry' }]}
-        
+        actions={
+          <div className="flex items-center gap-2">
+            {!tappedIn ? (
+              <Button variant="primary" size="sm" loading={tapLoading} onClick={handleTapIn}>
+                👉 Tap In (Check In)
+              </Button>
+            ) : (
+              <Button variant="danger" size="sm" loading={tapLoading} onClick={handleTapOut}>
+                👈 Tap Out (Check Out)
+              </Button>
+            )}
+          </div>
+        }
       />
 
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-white">Workforce Attendance Registry</h2>
-          <p className="text-xs text-zinc-400">Employee clock-in timestamps, status, and duration records</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {!tappedIn ? (
-            <Button variant="primary" size="sm" loading={tapLoading} onClick={handleTapIn}>
-              👉 Tap In (Check In)
-            </Button>
-          ) : (
-            <Button variant="danger" size="sm" loading={tapLoading} onClick={handleTapOut}>
-              👈 Tap Out (Check Out)
-            </Button>
-          )}
-        </div>
-      </div>
-
-      <div className="p-4 rounded-xl bg-[#121214] border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className={`w-3.5 h-3.5 rounded-full ${tappedIn ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-600'}`} />
-          <div>
-            <span className="text-xs font-semibold text-white">
-              {tappedIn ? 'Currently Tapped In (Working)' : 'Not Tapped In Today'}
-            </span>
-            <p className="text-[11px] text-zinc-400 mt-0.5">
-              {checkInTime ? `Checked in at ${checkInTime}` : 'Tap in to record your presence for today.'}
-              {checkOutTime ? ` • Checked out at ${checkOutTime}` : ''}
-            </p>
+      <div className="space-y-6 mt-6">
+        <div className="p-4 rounded-xl bg-[#121214] border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className={`w-3.5 h-3.5 rounded-full ${tappedIn ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-600'}`} />
+            <div>
+              <span className="text-xs font-semibold text-white">
+                {tappedIn ? 'Currently Tapped In (Working)' : 'Not Tapped In Today'}
+              </span>
+              <p className="text-[11px] text-zinc-400 mt-0.5">
+                {checkInTime ? `Checked in at ${checkInTime}` : 'Tap in to record your presence for today.'}
+                {checkOutTime ? ` • Checked out at ${checkOutTime}` : ''}
+              </p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant={tappedIn ? 'secondary' : 'primary'} onClick={handleTapIn} disabled={tappedIn || tapLoading}>
-            Tap In
-          </Button>
-          <Button size="sm" variant={!tappedIn ? 'secondary' : 'danger'} onClick={handleTapOut} disabled={!tappedIn || tapLoading}>
-            Tap Out
-          </Button>
-        </div>
-      </div>
-      <DataTable
-        loading={loading}
-        data={records}
-        columns={[
-          { header: 'Employee', accessor: (row) => row.employee_name || row.user_id || 'Current User' },
-          { header: 'Date', accessor: 'date' },
-          { header: 'Check In', accessor: (row) => row.check_in || '—' },
-          { header: 'Check Out', accessor: (row) => row.check_out || '—' },
-          { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'present'} /> },
-        ]}
-      />
-    </div>
-  </PageContainer>
-);
-}
-export default Attendance;
 
+        <DataTable
+          loading={loading}
+          data={records}
+          columns={[
+            { header: 'Employee', accessor: (row) => row.employee_name || row.user_id || 'Current User' },
+            { header: 'Date', accessor: 'date' },
+            { header: 'Check In', accessor: (row) => row.check_in || '—' },
+            { header: 'Check Out', accessor: (row) => row.check_out || '—' },
+            { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'present'} /> },
+          ]}
+        />
+    </PageContainer>
+  );
+};
+
+export default Attendance;

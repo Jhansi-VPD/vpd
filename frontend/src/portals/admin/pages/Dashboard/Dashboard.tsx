@@ -21,11 +21,11 @@ export const Dashboard: React.FC = () => {
           usersApi.getAll({ limit: 5 }),
         ]);
         
-        if (dashRes.status === 'fulfilled') {
+        if (dashRes.status === 'fulfilled' && dashRes.value?.data) {
           setStats(dashRes.value.data);
         }
         
-        if (uRes.status === 'fulfilled') {
+        if (uRes.status === 'fulfilled' && uRes.value?.data) {
           setRecentUsers(uRes.value.data || []);
         }
       } finally {
