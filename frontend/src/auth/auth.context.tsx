@@ -32,8 +32,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(res.data.user);
           localStorage.setItem('user', JSON.stringify(res.data.user));
         }
-      } catch {
-        // Fall back to stored session or reset
+      } catch (err: any) {
+        // 401 = no valid session cookie; drop any stale cached user so protected
+        // portals stay locked. Other errors (offline) keep the cached session.
+        if (err?.status === 401) {
+          setUser(null);
+          localStorage.removeItem('user');
+        }
       } finally {
         setIsLoading(false);
       }

@@ -75,7 +75,7 @@ _ALLOWED_ORIGINS = normalize_allowed_origins([
     *[o.strip() for o in settings.extra_cors_origins.split(",") if o.strip()],
 ])
 if settings.env.lower() in {"development", "test", "local"}:
-    _ALLOWED_ORIGINS.extend(normalize_allowed_origins(["http://localhost:5173", "http://localhost:4173"]))
+    _ALLOWED_ORIGINS.extend(normalize_allowed_origins(["http://localhost:3000", "http://127.0.0.1:3000"]))
 _ALLOWED_ORIGINS = normalize_allowed_origins(_ALLOWED_ORIGINS)
 
 

@@ -3,6 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from 'react';
 
 import { useAuth } from '../../auth.context';
+import { roleHome } from '../../role-route';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -23,13 +24,7 @@ export const Login: React.FC = () => {
     setError(null);
     try {
       const user = await login(email.trim(), password);
-      const role = String(user.role || '').toLowerCase();
-      if (['super_admin', 'admin', 'finance'].includes(role)) navigate.push('/admin');
-      else if (['sales', 'marketing'].includes(role)) navigate.push('/sales');
-      else if (role === 'hr') navigate.push('/hr');
-      else if (role === 'project_manager') navigate.push('/delivery');
-      else if (role === 'client') navigate.push('/client');
-      else navigate.push('/employee');
+      navigate.push(roleHome(user.role));
     } catch (err: any) {
       setError(err.message || 'Invalid email or password. Please verify your credentials.');
     } finally {

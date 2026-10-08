@@ -1,0 +1,2012 @@
+[
+  {
+    "path": "/login",
+    "method": "GET",
+    "module": "Default",
+    "summary": "Login Page"
+  },
+  {
+    "path": "/health",
+    "method": "GET",
+    "module": "Health",
+    "summary": "Health Check"
+  },
+  {
+    "path": "/",
+    "method": "GET",
+    "module": "Health",
+    "summary": "Health Check"
+  },
+  {
+    "path": "/",
+    "method": "GET",
+    "module": "Root",
+    "summary": "Root"
+  },
+  {
+    "path": "/ready",
+    "method": "GET",
+    "module": "Health",
+    "summary": "Readiness Check"
+  },
+  {
+    "path": "/sitemap.xml",
+    "method": "GET",
+    "module": "SEO",
+    "summary": "Sitemap"
+  },
+  {
+    "path": "/api/v1/auth/register",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Register"
+  },
+  {
+    "path": "/api/v1/auth/login",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Login"
+  },
+  {
+    "path": "/api/v1/auth/mfa/verify-login",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Mfa Verify Login"
+  },
+  {
+    "path": "/api/v1/auth/refresh",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Refresh"
+  },
+  {
+    "path": "/api/v1/auth/logout",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Logout"
+  },
+  {
+    "path": "/api/v1/auth/logout-all",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Logout All"
+  },
+  {
+    "path": "/api/v1/auth/me",
+    "method": "GET",
+    "module": "Auth",
+    "summary": "Me"
+  },
+  {
+    "path": "/api/v1/auth/forgot-password",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Forgot Password"
+  },
+  {
+    "path": "/api/v1/auth/reset-password",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Reset Password"
+  },
+  {
+    "path": "/api/v1/auth/verify-email",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Verify Email"
+  },
+  {
+    "path": "/api/v1/auth/resend-verification",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Resend Verification"
+  },
+  {
+    "path": "/api/v1/auth/change-password",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Change Password"
+  },
+  {
+    "path": "/api/v1/auth/sessions",
+    "method": "GET",
+    "module": "Auth",
+    "summary": "List Sessions"
+  },
+  {
+    "path": "/api/v1/auth/sessions/{session_id}",
+    "method": "DELETE",
+    "module": "Auth",
+    "summary": "Revoke One Session"
+  },
+  {
+    "path": "/api/v1/auth/mfa/status",
+    "method": "GET",
+    "module": "Auth",
+    "summary": "Mfa Status"
+  },
+  {
+    "path": "/api/v1/auth/mfa/setup",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Mfa Setup"
+  },
+  {
+    "path": "/api/v1/auth/mfa/enable",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Mfa Enable"
+  },
+  {
+    "path": "/api/v1/auth/mfa/disable",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Mfa Disable"
+  },
+  {
+    "path": "/api/v1/auth/mfa/backup-codes/regenerate",
+    "method": "POST",
+    "module": "Auth",
+    "summary": "Mfa Regenerate Backup Codes"
+  },
+  {
+    "path": "/api/v1/auth/oauth/{provider}/login",
+    "method": "GET",
+    "module": "OAuth",
+    "summary": "Oauth Login"
+  },
+  {
+    "path": "/api/v1/auth/oauth/{provider}/callback",
+    "method": "GET",
+    "module": "OAuth",
+    "summary": "Oauth Callback"
+  },
+  {
+    "path": "/api/v1/users",
+    "method": "GET",
+    "module": "Users",
+    "summary": "List Users"
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "method": "GET",
+    "module": "Users",
+    "summary": "Get User"
+  },
+  {
+    "path": "/api/v1/users",
+    "method": "POST",
+    "module": "Users",
+    "summary": "Create User"
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "method": "PUT",
+    "module": "Users",
+    "summary": "Update User"
+  },
+  {
+    "path": "/api/v1/users/{user_id}/deactivate",
+    "method": "PATCH",
+    "module": "Users",
+    "summary": "Deactivate User"
+  },
+  {
+    "path": "/api/v1/users/{user_id}",
+    "method": "DELETE",
+    "module": "Users",
+    "summary": "Delete User"
+  },
+  {
+    "path": "/api/v1/users/{user_id}/lock",
+    "method": "POST",
+    "module": "Users",
+    "summary": "Lock User"
+  },
+  {
+    "path": "/api/v1/users/{user_id}/unlock",
+    "method": "POST",
+    "module": "Users",
+    "summary": "Unlock User"
+  },
+  {
+    "path": "/api/v1/users/{user_id}/revoke-sessions",
+    "method": "POST",
+    "module": "Users",
+    "summary": "Revoke User Sessions"
+  },
+  {
+    "path": "/api/v1/users/{user_id}/force-password-reset",
+    "method": "POST",
+    "module": "Users",
+    "summary": "Force Password Reset"
+  },
+  {
+    "path": "/api/v1/users/{user_id}/export",
+    "method": "GET",
+    "module": "GDPR",
+    "summary": "Export User Data"
+  },
+  {
+    "path": "/api/v1/users/{user_id}/anonymize",
+    "method": "POST",
+    "module": "GDPR",
+    "summary": "Anonymize User"
+  },
+  {
+    "path": "/api/v1/stats",
+    "method": "GET",
+    "module": "Stats",
+    "summary": "Get Stats"
+  },
+  {
+    "path": "/api/v1/employees/me/profile",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Profile"
+  },
+  {
+    "path": "/api/v1/employees/me/attendance",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Attendance"
+  },
+  {
+    "path": "/api/v1/employees/me/attendance/today",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "Today Attendance"
+  },
+  {
+    "path": "/api/v1/employees/me/attendance/check-in",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Check In"
+  },
+  {
+    "path": "/api/v1/employees/me/attendance/check-out",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Check Out"
+  },
+  {
+    "path": "/api/v1/employees/me/leaves",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Leaves"
+  },
+  {
+    "path": "/api/v1/employees/me/leaves",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Apply Leave"
+  },
+  {
+    "path": "/api/v1/employees/me/timesheets",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Timesheets"
+  },
+  {
+    "path": "/api/v1/employees/me/payslips",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Payslips"
+  },
+  {
+    "path": "/api/v1/employees/me/timesheets",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Submit Timesheet"
+  },
+  {
+    "path": "/api/v1/employees/me/payslips",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Payslips"
+  },
+  {
+    "path": "/api/v1/employees/me/payslips/{payslip_id}/download",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "Download My Payslip"
+  },
+  {
+    "path": "/api/v1/employees/{employee_id}/payslips",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Create Payslip"
+  },
+  {
+    "path": "/api/v1/employees/me/documents",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Documents"
+  },
+  {
+    "path": "/api/v1/employees/me/documents",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Upload My Document"
+  },
+  {
+    "path": "/api/v1/employees/{employee_id}/documents",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Assign Employee Document"
+  },
+  {
+    "path": "/api/v1/employees/documents/{document_id}/download",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "Download Employee Document"
+  },
+  {
+    "path": "/api/v1/employees/me/performance-reviews",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Performance Reviews"
+  },
+  {
+    "path": "/api/v1/employees/me/performance-reviews/{review_id}/acknowledge",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Acknowledge Performance Review"
+  },
+  {
+    "path": "/api/v1/employees/performance-reviews",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Create Performance Review"
+  },
+  {
+    "path": "/api/v1/employees/performance-reviews",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "List Performance Reviews"
+  },
+  {
+    "path": "/api/v1/employees/performance-reviews/{review_id}",
+    "method": "PATCH",
+    "module": "Employees",
+    "summary": "Update Performance Review"
+  },
+  {
+    "path": "/api/v1/employees/performance-goals",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Create Performance Goal"
+  },
+  {
+    "path": "/api/v1/employees/me/performance-goals",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Performance Goals"
+  },
+  {
+    "path": "/api/v1/employees/performance-goals",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "List Performance Goals"
+  },
+  {
+    "path": "/api/v1/employees/performance-goals/{goal_id}",
+    "method": "PATCH",
+    "module": "Employees",
+    "summary": "Update Performance Goal"
+  },
+  {
+    "path": "/api/v1/employees/{employee_id}/feedback",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Give Performance Feedback"
+  },
+  {
+    "path": "/api/v1/employees/me/feedback",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "My Performance Feedback"
+  },
+  {
+    "path": "/api/v1/employees/attendance",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "List Attendance"
+  },
+  {
+    "path": "/api/v1/employees/leaves",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "List Leaves"
+  },
+  {
+    "path": "/api/v1/employees/leaves/{leave_id}/approve",
+    "method": "PATCH",
+    "module": "Employees",
+    "summary": "Review Leave"
+  },
+  {
+    "path": "/api/v1/employees/timesheets",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "List All Timesheets"
+  },
+  {
+    "path": "/api/v1/employees/timesheets/{timesheet_id}/approve",
+    "method": "PATCH",
+    "module": "Employees",
+    "summary": "Review Timesheet"
+  },
+  {
+    "path": "/api/v1/employees",
+    "method": "GET",
+    "module": "Employees",
+    "summary": "List Employees"
+  },
+  {
+    "path": "/api/v1/employees",
+    "method": "POST",
+    "module": "Employees",
+    "summary": "Create Employee"
+  },
+  {
+    "path": "/api/v1/clients/me/profile",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Get My Profile"
+  },
+  {
+    "path": "/api/v1/clients/me/profile",
+    "method": "PUT",
+    "module": "Client Dashboard",
+    "summary": "Update My Profile"
+  },
+  {
+    "path": "/api/v1/clients/me/projects",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Get My Projects"
+  },
+  {
+    "path": "/api/v1/clients/me/invoices",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Get My Invoices"
+  },
+  {
+    "path": "/api/v1/clients/me/tickets",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Get My Tickets"
+  },
+  {
+    "path": "/api/v1/clients/me/tickets",
+    "method": "POST",
+    "module": "Client Dashboard",
+    "summary": "Create My Ticket"
+  },
+  {
+    "path": "/api/v1/clients/me/meetings",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Get My Meetings"
+  },
+  {
+    "path": "/api/v1/clients/me/files",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Get My Files"
+  },
+  {
+    "path": "/api/v1/clients/me/reports",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Get My Reports"
+  },
+  {
+    "path": "/api/v1/clients/me/{client_id}/files",
+    "method": "POST",
+    "module": "Client Dashboard",
+    "summary": "Staff Upload Client File"
+  },
+  {
+    "path": "/api/v1/clients/me/{client_id}/reports",
+    "method": "POST",
+    "module": "Client Dashboard",
+    "summary": "Create Client Report"
+  },
+  {
+    "path": "/api/v1/clients/me/me/proposals/{proposal_id}/accept",
+    "method": "POST",
+    "module": "Client Dashboard",
+    "summary": "Accept My Proposal"
+  },
+  {
+    "path": "/api/v1/clients/me/me/projects/{project_id}/approve",
+    "method": "POST",
+    "module": "Client Dashboard",
+    "summary": "Approve Project Manager"
+  },
+  {
+    "path": "/api/v1/clients/me/me/projects/{project_id}/deliverables",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "My Project Deliverables"
+  },
+  {
+    "path": "/api/v1/clients/me/me/payments",
+    "method": "GET",
+    "module": "Client Dashboard",
+    "summary": "Client Me Payments"
+  },
+  {
+    "path": "/api/v1/projects",
+    "method": "GET",
+    "module": "Projects",
+    "summary": "List Projects"
+  },
+  {
+    "path": "/api/v1/projects/{identifier}",
+    "method": "GET",
+    "module": "Projects",
+    "summary": "Get Project"
+  },
+  {
+    "path": "/api/v1/projects",
+    "method": "POST",
+    "module": "Projects",
+    "summary": "Create Project"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}",
+    "method": "PUT",
+    "module": "Projects",
+    "summary": "Update Project"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/team",
+    "method": "PATCH",
+    "module": "Projects",
+    "summary": "Assign Team"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}",
+    "method": "DELETE",
+    "module": "Projects",
+    "summary": "Delete Project"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/updates",
+    "method": "POST",
+    "module": "Projects",
+    "summary": "Post Project Update"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/updates",
+    "method": "GET",
+    "module": "Projects",
+    "summary": "List Project Updates"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/updates/{update_id}/visibility",
+    "method": "PATCH",
+    "module": "Projects",
+    "summary": "Set Update Visibility"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones",
+    "method": "POST",
+    "module": "Projects",
+    "summary": "Create Milestone"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones",
+    "method": "GET",
+    "module": "Projects",
+    "summary": "List Milestones"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones/{milestone_id}",
+    "method": "PATCH",
+    "module": "Projects",
+    "summary": "Update Milestone"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/milestones/{milestone_id}",
+    "method": "DELETE",
+    "module": "Projects",
+    "summary": "Delete Milestone"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables",
+    "method": "POST",
+    "module": "Projects",
+    "summary": "Create Deliverable"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables",
+    "method": "GET",
+    "module": "Projects",
+    "summary": "List Deliverables"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables/{deliverable_id}",
+    "method": "PATCH",
+    "module": "Projects",
+    "summary": "Update Deliverable"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/deliverables/{deliverable_id}/submit",
+    "method": "POST",
+    "module": "Projects",
+    "summary": "Submit Deliverable"
+  },
+  {
+    "path": "/api/v1/projects/{project_id}/submit-for-client-review",
+    "method": "POST",
+    "module": "Projects",
+    "summary": "Submit Project For Client Review"
+  },
+  {
+    "path": "/api/v1/tasks",
+    "method": "GET",
+    "module": "Tasks",
+    "summary": "List Tasks"
+  },
+  {
+    "path": "/api/v1/tasks",
+    "method": "POST",
+    "module": "Tasks",
+    "summary": "Create Task"
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}",
+    "method": "PATCH",
+    "module": "Tasks",
+    "summary": "Update Task"
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}",
+    "method": "DELETE",
+    "module": "Tasks",
+    "summary": "Delete Task"
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}/status",
+    "method": "PATCH",
+    "module": "Tasks",
+    "summary": "Update Task Status"
+  },
+  {
+    "path": "/api/v1/tasks/{task_id}/activities",
+    "method": "GET",
+    "module": "Tasks",
+    "summary": "List Task Activities"
+  },
+  {
+    "path": "/api/v1/finance/invoices",
+    "method": "GET",
+    "module": "Finance",
+    "summary": "List Invoices"
+  },
+  {
+    "path": "/api/v1/finance/invoices/{invoice_id}",
+    "method": "GET",
+    "module": "Finance",
+    "summary": "Get Invoice"
+  },
+  {
+    "path": "/api/v1/finance/invoices",
+    "method": "POST",
+    "module": "Finance",
+    "summary": "Create Invoice"
+  },
+  {
+    "path": "/api/v1/finance/invoices/{invoice_id}",
+    "method": "PUT",
+    "module": "Finance",
+    "summary": "Update Invoice"
+  },
+  {
+    "path": "/api/v1/finance/invoices/sweep-overdue",
+    "method": "POST",
+    "module": "Finance",
+    "summary": "Sweep Overdue Invoices"
+  },
+  {
+    "path": "/api/v1/finance/invoices/{invoice_id}/payments",
+    "method": "POST",
+    "module": "Finance",
+    "summary": "Record Payment"
+  },
+  {
+    "path": "/api/v1/careers",
+    "method": "GET",
+    "module": "Careers",
+    "summary": "List Open Positions"
+  },
+  {
+    "path": "/api/v1/careers/{career_id}/apply",
+    "method": "POST",
+    "module": "Careers",
+    "summary": "Apply"
+  },
+  {
+    "path": "/api/v1/careers",
+    "method": "POST",
+    "module": "Careers",
+    "summary": "Create Position"
+  },
+  {
+    "path": "/api/v1/careers/admin/applications",
+    "method": "GET",
+    "module": "Careers",
+    "summary": "List Applications"
+  },
+  {
+    "path": "/api/v1/careers/admin/applications/{application_id}/status",
+    "method": "PATCH",
+    "module": "Careers",
+    "summary": "Update Application Status"
+  },
+  {
+    "path": "/api/v1/careers/admin/applications/{application_id}/resume",
+    "method": "GET",
+    "module": "Careers",
+    "summary": "Download Resume"
+  },
+  {
+    "path": "/api/v1/contact",
+    "method": "POST",
+    "module": "Contact",
+    "summary": "Submit"
+  },
+  {
+    "path": "/api/v1/contact",
+    "method": "GET",
+    "module": "Contact",
+    "summary": "List Submissions"
+  },
+  {
+    "path": "/api/v1/contact/{submission_id}",
+    "method": "PATCH",
+    "module": "Contact",
+    "summary": "Update Status"
+  },
+  {
+    "path": "/api/v1/blogs",
+    "method": "GET",
+    "module": "Blog",
+    "summary": "List Blogs"
+  },
+  {
+    "path": "/api/v1/blogs",
+    "method": "POST",
+    "module": "Blog",
+    "summary": "Create Blog"
+  },
+  {
+    "path": "/api/v1/blogs/{blog_id}",
+    "method": "PUT",
+    "module": "Blog",
+    "summary": "Update Blog"
+  },
+  {
+    "path": "/api/v1/blogs/{blog_id}",
+    "method": "DELETE",
+    "module": "Blog",
+    "summary": "Delete Blog"
+  },
+  {
+    "path": "/api/v1/services",
+    "method": "GET",
+    "module": "Services",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/services/{item_id}",
+    "method": "GET",
+    "module": "Services",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/services",
+    "method": "POST",
+    "module": "Services",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/services/{item_id}",
+    "method": "PUT",
+    "module": "Services",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/services/{item_id}",
+    "method": "DELETE",
+    "module": "Services",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/case-studies",
+    "method": "GET",
+    "module": "Case Studies",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/case-studies/{item_id}",
+    "method": "GET",
+    "module": "Case Studies",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/case-studies",
+    "method": "POST",
+    "module": "Case Studies",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/case-studies/{item_id}",
+    "method": "PUT",
+    "module": "Case Studies",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/case-studies/{item_id}",
+    "method": "DELETE",
+    "module": "Case Studies",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/testimonials",
+    "method": "GET",
+    "module": "Testimonials",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/testimonials/{item_id}",
+    "method": "GET",
+    "module": "Testimonials",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/testimonials",
+    "method": "POST",
+    "module": "Testimonials",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/testimonials/{item_id}",
+    "method": "PUT",
+    "module": "Testimonials",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/testimonials/{item_id}",
+    "method": "DELETE",
+    "module": "Testimonials",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/downloads",
+    "method": "GET",
+    "module": "Downloads",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/downloads/{item_id}",
+    "method": "GET",
+    "module": "Downloads",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/downloads",
+    "method": "POST",
+    "module": "Downloads",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/downloads/{item_id}",
+    "method": "PUT",
+    "module": "Downloads",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/downloads/{item_id}",
+    "method": "DELETE",
+    "module": "Downloads",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/events",
+    "method": "GET",
+    "module": "Events",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/events/{item_id}",
+    "method": "GET",
+    "module": "Events",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/events",
+    "method": "POST",
+    "module": "Events",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/events/{item_id}",
+    "method": "PUT",
+    "module": "Events",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/events/{item_id}",
+    "method": "DELETE",
+    "module": "Events",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/tickets",
+    "method": "GET",
+    "module": "Tickets",
+    "summary": "List Tickets"
+  },
+  {
+    "path": "/api/v1/tickets/{ticket_id}",
+    "method": "GET",
+    "module": "Tickets",
+    "summary": "Get Ticket"
+  },
+  {
+    "path": "/api/v1/tickets/{ticket_id}",
+    "method": "PATCH",
+    "module": "Tickets",
+    "summary": "Update Ticket"
+  },
+  {
+    "path": "/api/v1/tickets/{ticket_id}/replies",
+    "method": "POST",
+    "module": "Tickets",
+    "summary": "Add Reply"
+  },
+  {
+    "path": "/api/v1/awards",
+    "method": "GET",
+    "module": "Awards",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/awards/{item_id}",
+    "method": "GET",
+    "module": "Awards",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/awards",
+    "method": "POST",
+    "module": "Awards",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/awards/{item_id}",
+    "method": "PUT",
+    "module": "Awards",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/awards/{item_id}",
+    "method": "DELETE",
+    "module": "Awards",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/announcements",
+    "method": "GET",
+    "module": "Announcements",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/announcements/{item_id}",
+    "method": "GET",
+    "module": "Announcements",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/announcements",
+    "method": "POST",
+    "module": "Announcements",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/announcements/{item_id}",
+    "method": "PUT",
+    "module": "Announcements",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/announcements/{item_id}",
+    "method": "DELETE",
+    "module": "Announcements",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/categories",
+    "method": "GET",
+    "module": "Categories",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/categories/{item_id}",
+    "method": "GET",
+    "module": "Categories",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/categories",
+    "method": "POST",
+    "module": "Categories",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/categories/{item_id}",
+    "method": "PUT",
+    "module": "Categories",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/categories/{item_id}",
+    "method": "DELETE",
+    "module": "Categories",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/faqs",
+    "method": "GET",
+    "module": "FAQs",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/faqs/{item_id}",
+    "method": "GET",
+    "module": "FAQs",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/faqs",
+    "method": "POST",
+    "module": "FAQs",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/faqs/{item_id}",
+    "method": "PUT",
+    "module": "FAQs",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/faqs/{item_id}",
+    "method": "DELETE",
+    "module": "FAQs",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/gallery",
+    "method": "GET",
+    "module": "Gallery",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/gallery/{item_id}",
+    "method": "GET",
+    "module": "Gallery",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/gallery",
+    "method": "POST",
+    "module": "Gallery",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/gallery/{item_id}",
+    "method": "PUT",
+    "module": "Gallery",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/gallery/{item_id}",
+    "method": "DELETE",
+    "module": "Gallery",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/industries",
+    "method": "GET",
+    "module": "Industries",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/industries/{item_id}",
+    "method": "GET",
+    "module": "Industries",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/industries",
+    "method": "POST",
+    "module": "Industries",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/industries/{item_id}",
+    "method": "PUT",
+    "module": "Industries",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/industries/{item_id}",
+    "method": "DELETE",
+    "module": "Industries",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/portfolio",
+    "method": "GET",
+    "module": "Portfolio",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/portfolio/{item_id}",
+    "method": "GET",
+    "module": "Portfolio",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/portfolio",
+    "method": "POST",
+    "module": "Portfolio",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/portfolio/{item_id}",
+    "method": "PUT",
+    "module": "Portfolio",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/portfolio/{item_id}",
+    "method": "DELETE",
+    "module": "Portfolio",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/products",
+    "method": "GET",
+    "module": "Products",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/products/{item_id}",
+    "method": "GET",
+    "module": "Products",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/products",
+    "method": "POST",
+    "module": "Products",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/products/{item_id}",
+    "method": "PUT",
+    "module": "Products",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/products/{item_id}",
+    "method": "DELETE",
+    "module": "Products",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/resources",
+    "method": "GET",
+    "module": "Resources",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/resources/{item_id}",
+    "method": "GET",
+    "module": "Resources",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/resources",
+    "method": "POST",
+    "module": "Resources",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/resources/{item_id}",
+    "method": "PUT",
+    "module": "Resources",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/resources/{item_id}",
+    "method": "DELETE",
+    "module": "Resources",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/technologies",
+    "method": "GET",
+    "module": "Technologies",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/technologies/{item_id}",
+    "method": "GET",
+    "module": "Technologies",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/technologies",
+    "method": "POST",
+    "module": "Technologies",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/technologies/{item_id}",
+    "method": "PUT",
+    "module": "Technologies",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/technologies/{item_id}",
+    "method": "DELETE",
+    "module": "Technologies",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/notifications",
+    "method": "GET",
+    "module": "Notifications",
+    "summary": "List Notifications"
+  },
+  {
+    "path": "/api/v1/notifications/read-all",
+    "method": "PATCH",
+    "module": "Notifications",
+    "summary": "Mark All Read"
+  },
+  {
+    "path": "/api/v1/notifications/{notification_id}/read",
+    "method": "PATCH",
+    "module": "Notifications",
+    "summary": "Mark Read"
+  },
+  {
+    "path": "/api/v1/notifications",
+    "method": "POST",
+    "module": "Notifications",
+    "summary": "Create Notification"
+  },
+  {
+    "path": "/api/v1/media",
+    "method": "GET",
+    "module": "Media",
+    "summary": "List Media"
+  },
+  {
+    "path": "/api/v1/media/upload",
+    "method": "POST",
+    "module": "Media",
+    "summary": "Upload Files"
+  },
+  {
+    "path": "/api/v1/media/{media_id}",
+    "method": "DELETE",
+    "module": "Media",
+    "summary": "Delete Media"
+  },
+  {
+    "path": "/api/v1/audit-logs",
+    "method": "GET",
+    "module": "Audit Logs",
+    "summary": "List Audit Logs"
+  },
+  {
+    "path": "/api/v1/dashboard/overview",
+    "method": "GET",
+    "module": "Dashboard",
+    "summary": "Overview"
+  },
+  {
+    "path": "/api/v1/dashboard/projects/status-breakdown",
+    "method": "GET",
+    "module": "Dashboard",
+    "summary": "Project Status Breakdown"
+  },
+  {
+    "path": "/api/v1/access-control/roles",
+    "method": "GET",
+    "module": "Roles",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/access-control/roles/{item_id}",
+    "method": "GET",
+    "module": "Roles",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/access-control/roles",
+    "method": "POST",
+    "module": "Roles",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/access-control/roles/{item_id}",
+    "method": "PUT",
+    "module": "Roles",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/access-control/roles/{item_id}",
+    "method": "DELETE",
+    "module": "Roles",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/access-control/permissions",
+    "method": "GET",
+    "module": "Permissions",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/access-control/permissions/{item_id}",
+    "method": "GET",
+    "module": "Permissions",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/access-control/permissions",
+    "method": "POST",
+    "module": "Permissions",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/access-control/permissions/{item_id}",
+    "method": "PUT",
+    "module": "Permissions",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/access-control/permissions/{item_id}",
+    "method": "DELETE",
+    "module": "Permissions",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/solutions",
+    "method": "GET",
+    "module": "Solutions",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/solutions/{item_id}",
+    "method": "GET",
+    "module": "Solutions",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/solutions",
+    "method": "POST",
+    "module": "Solutions",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/solutions/{item_id}",
+    "method": "PUT",
+    "module": "Solutions",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/solutions/{item_id}",
+    "method": "DELETE",
+    "module": "Solutions",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/trainings/courses",
+    "method": "GET",
+    "module": "Training",
+    "summary": "List Courses"
+  },
+  {
+    "path": "/api/v1/trainings/courses/{course_id}",
+    "method": "GET",
+    "module": "Training",
+    "summary": "Get Course"
+  },
+  {
+    "path": "/api/v1/trainings/enroll",
+    "method": "POST",
+    "module": "Training",
+    "summary": "Enroll"
+  },
+  {
+    "path": "/api/v1/trainings/my-enrollments",
+    "method": "GET",
+    "module": "Training",
+    "summary": "My Enrollments"
+  },
+  {
+    "path": "/api/v1/trainings/courses",
+    "method": "POST",
+    "module": "Training",
+    "summary": "Create Course"
+  },
+  {
+    "path": "/api/v1/trainings",
+    "method": "POST",
+    "module": "Training",
+    "summary": "Create Course"
+  },
+  {
+    "path": "/api/v1/trainings/enrollments",
+    "method": "GET",
+    "module": "Training",
+    "summary": "List Enrollments"
+  },
+  {
+    "path": "/api/v1/analytics/track",
+    "method": "POST",
+    "module": "Analytics",
+    "summary": "Track Page View"
+  },
+  {
+    "path": "/api/v1/analytics/summary",
+    "method": "GET",
+    "module": "Analytics",
+    "summary": "Analytics Summary"
+  },
+  {
+    "path": "/api/v1/reports",
+    "method": "GET",
+    "module": "Reports",
+    "summary": "List Reports"
+  },
+  {
+    "path": "/api/v1/reports/generate",
+    "method": "POST",
+    "module": "Reports",
+    "summary": "Generate Report"
+  },
+  {
+    "path": "/api/v1/reports/{report_id}",
+    "method": "DELETE",
+    "module": "Reports",
+    "summary": "Delete Report"
+  },
+  {
+    "path": "/api/v1/leads",
+    "method": "GET",
+    "module": "CRM \u2014 Leads",
+    "summary": "List Leads"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}",
+    "method": "GET",
+    "module": "CRM \u2014 Leads",
+    "summary": "Get Lead"
+  },
+  {
+    "path": "/api/v1/leads",
+    "method": "POST",
+    "module": "CRM \u2014 Leads",
+    "summary": "Create Lead"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}",
+    "method": "PATCH",
+    "module": "CRM \u2014 Leads",
+    "summary": "Update Lead"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}",
+    "method": "DELETE",
+    "module": "CRM \u2014 Leads",
+    "summary": "Delete Lead"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/activities",
+    "method": "GET",
+    "module": "CRM \u2014 Leads",
+    "summary": "List Lead Activities"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/log-call",
+    "method": "POST",
+    "module": "CRM \u2014 Leads",
+    "summary": "Log Call"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/requirement-gathering",
+    "method": "POST",
+    "module": "CRM \u2014 Leads",
+    "summary": "Mark Requirement Gathering"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/disqualify",
+    "method": "POST",
+    "module": "CRM \u2014 Leads",
+    "summary": "Disqualify Lead"
+  },
+  {
+    "path": "/api/v1/leads/{lead_id}/convert",
+    "method": "POST",
+    "module": "CRM \u2014 Leads",
+    "summary": "Convert Lead"
+  },
+  {
+    "path": "/api/v1/proposals",
+    "method": "GET",
+    "module": "CRM \u2014 Proposals",
+    "summary": "List Proposals"
+  },
+  {
+    "path": "/api/v1/proposals",
+    "method": "POST",
+    "module": "CRM \u2014 Proposals",
+    "summary": "Create Proposal"
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/submit-for-review",
+    "method": "POST",
+    "module": "CRM \u2014 Proposals",
+    "summary": "Submit Proposal For Review"
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/review",
+    "method": "POST",
+    "module": "CRM \u2014 Proposals",
+    "summary": "Review Proposal"
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/send",
+    "method": "POST",
+    "module": "CRM \u2014 Proposals",
+    "summary": "Send Proposal"
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/accept",
+    "method": "POST",
+    "module": "CRM \u2014 Proposals",
+    "summary": "Accept Proposal"
+  },
+  {
+    "path": "/api/v1/proposals/{proposal_id}/reject",
+    "method": "POST",
+    "module": "CRM \u2014 Proposals",
+    "summary": "Reject Proposal"
+  },
+  {
+    "path": "/api/v1/contracts",
+    "method": "GET",
+    "module": "CRM \u2014 Contracts",
+    "summary": "List Contracts"
+  },
+  {
+    "path": "/api/v1/contracts",
+    "method": "POST",
+    "module": "CRM \u2014 Contracts",
+    "summary": "Create Contract"
+  },
+  {
+    "path": "/api/v1/contracts/{contract_id}/sign",
+    "method": "POST",
+    "module": "CRM \u2014 Contracts",
+    "summary": "Sign Contract"
+  },
+  {
+    "path": "/api/v1/meetings",
+    "method": "GET",
+    "module": "Sales CRM \u2014 Meetings",
+    "summary": "List Meetings"
+  },
+  {
+    "path": "/api/v1/meetings/{meeting_id}",
+    "method": "GET",
+    "module": "Sales CRM \u2014 Meetings",
+    "summary": "Get Meeting"
+  },
+  {
+    "path": "/api/v1/meetings",
+    "method": "POST",
+    "module": "Sales CRM \u2014 Meetings",
+    "summary": "Create Meeting"
+  },
+  {
+    "path": "/api/v1/meetings/{meeting_id}",
+    "method": "PATCH",
+    "module": "Sales CRM \u2014 Meetings",
+    "summary": "Update Meeting"
+  },
+  {
+    "path": "/api/v1/meetings/{meeting_id}",
+    "method": "DELETE",
+    "module": "Sales CRM \u2014 Meetings",
+    "summary": "Cancel Meeting"
+  },
+  {
+    "path": "/api/v1/departments",
+    "method": "GET",
+    "module": "Departments",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/departments/{item_id}",
+    "method": "GET",
+    "module": "Departments",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/departments",
+    "method": "POST",
+    "module": "Departments",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/departments/{item_id}",
+    "method": "PUT",
+    "module": "Departments",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/departments/{item_id}",
+    "method": "DELETE",
+    "module": "Departments",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/seo",
+    "method": "GET",
+    "module": "SEO",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/seo/{item_id}",
+    "method": "GET",
+    "module": "SEO",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/seo",
+    "method": "POST",
+    "module": "SEO",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/seo/{item_id}",
+    "method": "PUT",
+    "module": "SEO",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/seo/{item_id}",
+    "method": "DELETE",
+    "module": "SEO",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/settings",
+    "method": "GET",
+    "module": "Settings",
+    "summary": "List Settings"
+  },
+  {
+    "path": "/api/v1/settings/{key}",
+    "method": "GET",
+    "module": "Settings",
+    "summary": "Get Setting"
+  },
+  {
+    "path": "/api/v1/settings/{key}",
+    "method": "PUT",
+    "module": "Settings",
+    "summary": "Upsert Setting"
+  },
+  {
+    "path": "/api/v1/settings/{key}",
+    "method": "DELETE",
+    "module": "Settings",
+    "summary": "Delete Setting"
+  },
+  {
+    "path": "/api/v1/newsletter/subscribe",
+    "method": "POST",
+    "module": "Newsletter",
+    "summary": "Subscribe"
+  },
+  {
+    "path": "/api/v1/newsletter/unsubscribe",
+    "method": "POST",
+    "module": "Newsletter",
+    "summary": "Unsubscribe"
+  },
+  {
+    "path": "/api/v1/newsletter",
+    "method": "GET",
+    "module": "Newsletter",
+    "summary": "List Subscribers"
+  },
+  {
+    "path": "/api/v1/comments",
+    "method": "GET",
+    "module": "Blog Comments",
+    "summary": "List Comments"
+  },
+  {
+    "path": "/api/v1/comments",
+    "method": "POST",
+    "module": "Blog Comments",
+    "summary": "Create Comment"
+  },
+  {
+    "path": "/api/v1/comments/{comment_id}",
+    "method": "PATCH",
+    "module": "Blog Comments",
+    "summary": "Moderate Comment"
+  },
+  {
+    "path": "/api/v1/comments/{comment_id}",
+    "method": "DELETE",
+    "module": "Blog Comments",
+    "summary": "Delete Comment"
+  },
+  {
+    "path": "/api/v1/page-content",
+    "method": "GET",
+    "module": "CMS",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/page-content/{item_id}",
+    "method": "GET",
+    "module": "CMS",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/page-content",
+    "method": "POST",
+    "module": "CMS",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/page-content/{item_id}",
+    "method": "PUT",
+    "module": "CMS",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/page-content/{item_id}",
+    "method": "DELETE",
+    "module": "CMS",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/backups",
+    "method": "GET",
+    "module": "Backups",
+    "summary": "List Backups"
+  },
+  {
+    "path": "/api/v1/backups/trigger",
+    "method": "POST",
+    "module": "Backups",
+    "summary": "Trigger Backup"
+  },
+  {
+    "path": "/api/v1/backups/{filename}/download",
+    "method": "GET",
+    "module": "Backups",
+    "summary": "Download Backup"
+  },
+  {
+    "path": "/api/v1/backups/{filename}",
+    "method": "DELETE",
+    "module": "Backups",
+    "summary": "Delete Backup"
+  },
+  {
+    "path": "/api/v1/leadership",
+    "method": "GET",
+    "module": "Leadership",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/leadership/{item_id}",
+    "method": "GET",
+    "module": "Leadership",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/leadership",
+    "method": "POST",
+    "module": "Leadership",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/leadership/{item_id}",
+    "method": "PUT",
+    "module": "Leadership",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/leadership/{item_id}",
+    "method": "DELETE",
+    "module": "Leadership",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/offices",
+    "method": "GET",
+    "module": "Offices",
+    "summary": "List Items"
+  },
+  {
+    "path": "/api/v1/offices/{item_id}",
+    "method": "GET",
+    "module": "Offices",
+    "summary": "Get Item"
+  },
+  {
+    "path": "/api/v1/offices",
+    "method": "POST",
+    "module": "Offices",
+    "summary": "Create Item"
+  },
+  {
+    "path": "/api/v1/offices/{item_id}",
+    "method": "PUT",
+    "module": "Offices",
+    "summary": "Update Item"
+  },
+  {
+    "path": "/api/v1/offices/{item_id}",
+    "method": "DELETE",
+    "module": "Offices",
+    "summary": "Delete Item"
+  },
+  {
+    "path": "/api/v1/site-content/company-info",
+    "method": "GET",
+    "module": "Site Content",
+    "summary": "Get Company Info"
+  },
+  {
+    "path": "/api/v1/site-content/company-info",
+    "method": "PUT",
+    "module": "Site Content",
+    "summary": "Update Company Info"
+  },
+  {
+    "path": "/api/v1/site-content/about-content",
+    "method": "GET",
+    "module": "Site Content",
+    "summary": "Get About Content"
+  },
+  {
+    "path": "/api/v1/site-content/about-content",
+    "method": "PUT",
+    "module": "Site Content",
+    "summary": "Update About Content"
+  },
+  {
+    "path": "/api/v1/attendance",
+    "method": "GET",
+    "module": "Attendance",
+    "summary": "List Attendance"
+  },
+  {
+    "path": "/api/v1/attendance",
+    "method": "POST",
+    "module": "Attendance",
+    "summary": "Create Attendance"
+  },
+  {
+    "path": "/api/v1/attendance/{id}",
+    "method": "PUT",
+    "module": "Attendance",
+    "summary": "Update Attendance"
+  },
+  {
+    "path": "/api/v1/leave-requests",
+    "method": "GET",
+    "module": "Leaves",
+    "summary": "List Leaves"
+  },
+  {
+    "path": "/api/v1/leave-requests",
+    "method": "POST",
+    "module": "Leaves",
+    "summary": "Apply Leave"
+  },
+  {
+    "path": "/api/v1/leave-requests/{id}/status",
+    "method": "PATCH",
+    "module": "Leaves",
+    "summary": "Update Leave Status"
+  },
+  {
+    "path": "/api/v1/timesheets",
+    "method": "GET",
+    "module": "Timesheets",
+    "summary": "List Timesheets"
+  },
+  {
+    "path": "/api/v1/timesheets",
+    "method": "POST",
+    "module": "Timesheets",
+    "summary": "Create Timesheet"
+  },
+  {
+    "path": "/api/v1/timesheets/{id}",
+    "method": "PUT",
+    "module": "Timesheets",
+    "summary": "Update Timesheet"
+  },
+  {
+    "path": "/api/v1/timesheets/{id}/status",
+    "method": "PATCH",
+    "module": "Timesheets",
+    "summary": "Update Timesheet Status"
+  },
+  {
+    "path": "/api/v1/partners",
+    "method": "GET",
+    "module": "Partners",
+    "summary": "List Partners"
+  },
+  {
+    "path": "/api/v1/partners/{id}",
+    "method": "GET",
+    "module": "Partners",
+    "summary": "Get Partner"
+  },
+  {
+    "path": "/api/v1/partners",
+    "method": "POST",
+    "module": "Partners",
+    "summary": "Create Partner"
+  },
+  {
+    "path": "/api/v1/partners/{id}",
+    "method": "PUT",
+    "module": "Partners",
+    "summary": "Update Partner"
+  },
+  {
+    "path": "/api/v1/partners/{id}",
+    "method": "DELETE",
+    "module": "Partners",
+    "summary": "Delete Partner"
+  },
+  {
+    "path": "/api/v1/clients",
+    "method": "GET",
+    "module": "Admin Clients",
+    "summary": "List Clients"
+  },
+  {
+    "path": "/api/v1/clients",
+    "method": "POST",
+    "module": "Admin Clients",
+    "summary": "Create Client"
+  }
+]
