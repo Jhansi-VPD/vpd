@@ -5,12 +5,33 @@ import Button from '../../../../shared/components/Button';
 import Input from '../../../../shared/components/Input';
 import Select from '../../../../shared/components/Select';
 
+const getTodayDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const Leave: React.FC = () => {
+  const todayStr = getTodayDateString();
   const [form, setForm] = useState({ leave_type: 'annual', start_date: '', end_date: '', reason: '' });
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.start_date || !form.end_date) {
+      alert('Please select both Start Date and End Date.');
+      return;
+    }
+    if (form.start_date < todayStr) {
+      alert('Start date cannot be in the past.');
+      return;
+    }
+    if (form.end_date < form.start_date) {
+      alert('End date cannot be earlier than start date.');
+      return;
+    }
     try {
       await leaveApi.apply(form);
       setStatusMsg('Leave request submitted successfully for manager approval.');
@@ -45,8 +66,29 @@ export const Leave: React.FC = () => {
           ]}
         />
         <div className="grid grid-cols-2 gap-4">
-          <Input label="Start Date" type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} required />
-          <Input label="End Date" type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} required />
+          <Input
+            label="Start Date"
+            type="date"
+            min={todayStr}
+            value={form.start_date}
+            onChange={(e) => {
+              const newStart = e.target.value;
+              setForm((prev) => ({
+                ...prev,
+                start_date: newStart,
+                end_date: prev.end_date && prev.end_date < newStart ? newStart : prev.end_date,
+              }));
+            }}
+            required
+          />
+          <Input
+            label="End Date"
+            type="date"
+            min={form.start_date || todayStr}
+            value={form.end_date}
+            onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+            required
+          />
         </div>
         <Input label="Reason / Notes" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} placeholder="Reason for time off" required />
         <Button variant="primary" type="submit" className="w-full">Submit Application</Button>

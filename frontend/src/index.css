@@ -17,6 +17,7 @@ body {
 }
 
 :root {
+  color-scheme: dark;
   --font-size: 16px;
   --background: #0a0a0a;
   --foreground: #ffffff;
@@ -99,4 +100,24 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
+}
+
+/* Date input calendar picker indicator styling */
+input[type="date"] {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.9;
+  filter: brightness(0) invert(1);
+  padding: 2px;
+  border-radius: 4px;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(201, 168, 76, 0.8));
+  transform: scale(1.15);
 }

@@ -92,10 +92,16 @@ export async function uploadMedia(token, files, folder = 'misc') {
 
   let response;
   try {
+    const csrfMatch = typeof document !== 'undefined' ? document.cookie.match(/(?:^|;\s*)cf_csrf_token=([^;]+)/) : null;
+    const csrfToken = csrfMatch ? decodeURIComponent(csrfMatch[1]) : null;
     response = await fetch(`${API_URL}/media/upload`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+      },
       body: formData,
+      credentials: 'include',
     });
   } catch (networkError) {
     throw new ApiRequestError('Could not reach the VPD API. Is the backend running?', 0, [{ field: null, message: networkError.message }]);

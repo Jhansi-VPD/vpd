@@ -9,7 +9,12 @@ export const Employees: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [userMode, setUserMode] = useState<'existing' | 'new'>('existing');
   const [formData, setFormData] = useState({
+    user_id: '',
+    name: '',
+    email: '',
     employee_code: '',
     designation: '',
     department_id: '',
@@ -21,14 +26,16 @@ export const Employees: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [empRes, profRes, deptRes] = await Promise.all([
+      const [empRes, profRes, deptRes, userRes] = await Promise.all([
         hrApi.getEmployees({ limit: 100 }).catch(() => ({ data: [] })),
         hrApi.getMyProfile().catch(() => ({ data: null })),
         hrApi.getDepartments().catch(() => ({ data: [] })),
+        hrApi.getUsers({ limit: 100 }).catch(() => ({ data: [] })),
       ]);
       setEmployees(Array.isArray(empRes?.data) ? empRes.data : []);
       setMyProfile(profRes?.data || null);
       setDepartments(Array.isArray(deptRes?.data) ? deptRes.data : []);
+      setUsers(Array.isArray(userRes?.data) ? userRes.data : []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -44,16 +51,49 @@ export const Employees: React.FC = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      // Create user + employee profile
+      let targetUserId = formData.user_id;
+
+      if (userMode === 'new') {
+        if (!formData.name || !formData.email) {
+          alert('Full Name and Corporate Email are required to provision a user account.');
+          setSubmitting(false);
+          return;
+        }
+        const userRes = await hrApi.createUser({
+          name: formData.name,
+          email: formData.email,
+          password: 'Password123!',
+          role: 'employee',
+        });
+        targetUserId = userRes?.data?.id;
+      }
+
+      if (!targetUserId) {
+        alert('Please select a user account or provision a new user.');
+        setSubmitting(false);
+        return;
+      }
+
       await hrApi.createEmployee({
+        user_id: targetUserId,
         employee_code: formData.employee_code,
         designation: formData.designation,
         department_id: formData.department_id || null,
         salary: formData.salary ? parseFloat(formData.salary) : null,
         office_location: formData.office_location,
       });
+
       setShowAddModal(false);
-      setFormData({ employee_code: '', designation: '', department_id: '', salary: '', office_location: '' });
+      setFormData({
+        user_id: '',
+        name: '',
+        email: '',
+        employee_code: '',
+        designation: '',
+        department_id: '',
+        salary: '',
+        office_location: '',
+      });
       await loadData();
     } catch (err: any) {
       alert(err.message || 'Failed to create employee record');
@@ -246,6 +286,76 @@ export const Employees: React.FC = () => {
             </h3>
 
             <form onSubmit={handleCreateEmployee} className="space-y-3 text-xs">
+              {/* User Account Selection or Provisioning */}
+              <div>
+                <label className="block text-[#9B9DA3] mb-1">User Account *</label>
+                <div className="flex gap-2 mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setUserMode('existing')}
+                    className={`flex-1 py-1 px-2 rounded text-[11px] font-semibold border transition-all ${
+                      userMode === 'existing'
+                        ? 'bg-[#C9A84C]/20 text-[#EDB940] border-[#C9A84C]'
+                        : 'bg-[#0E1013] text-[#7A7D84] border-[#272B35]'
+                    }`}
+                  >
+                    Select Existing User
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUserMode('new')}
+                    className={`flex-1 py-1 px-2 rounded text-[11px] font-semibold border transition-all ${
+                      userMode === 'new'
+                        ? 'bg-[#C9A84C]/20 text-[#EDB940] border-[#C9A84C]'
+                        : 'bg-[#0E1013] text-[#7A7D84] border-[#272B35]'
+                    }`}
+                  >
+                    + Provision New User
+                  </button>
+                </div>
+
+                {userMode === 'existing' ? (
+                  <select
+                    required={userMode === 'existing'}
+                    value={formData.user_id}
+                    onChange={(e) => setFormData({ ...formData, user_id: e.target.value })}
+                    className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C]"
+                  >
+                    <option value="">Select User Account ({users.length} available)</option>
+                    {users.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.name} ({u.email}) — {u.role || 'employee'}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="space-y-2 p-2.5 rounded-lg bg-[#0E1013] border border-[#272B35]">
+                    <div>
+                      <label className="block text-[11px] text-[#7A7D84] mb-0.5">Full Name *</label>
+                      <input
+                        required={userMode === 'new'}
+                        type="text"
+                        placeholder="e.g. John Doe"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full bg-[#15181D] border border-[#272B35] rounded px-2.5 py-1.5 text-white focus:outline-none focus:border-[#C9A84C]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#7A7D84] mb-0.5">Corporate Email *</label>
+                      <input
+                        required={userMode === 'new'}
+                        type="email"
+                        placeholder="e.g. john@vpdtechnologies.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full bg-[#15181D] border border-[#272B35] rounded px-2.5 py-1.5 text-white focus:outline-none focus:border-[#C9A84C]"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div>
                 <label className="block text-[#9B9DA3] mb-1">Employee Code *</label>
                 <input
@@ -290,6 +400,17 @@ export const Employees: React.FC = () => {
                   placeholder="e.g. Headquarters / Remote"
                   value={formData.office_location}
                   onChange={(e) => setFormData({ ...formData, office_location: e.target.value })}
+                  className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#9B9DA3] mb-1">Annual Salary ($)</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 75000"
+                  value={formData.salary}
+                  onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
                   className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C]"
                 />
               </div>

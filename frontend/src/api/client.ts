@@ -1,4 +1,46 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+declare const process: any;
+
+export const API_BASE_URL =
+  (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) ||
+  (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL) ||
+  '/api/v1';
+export const API_URL = API_BASE_URL;
+
+export class ApiRequestError extends Error {
+  status: number;
+  errors: any[];
+  data: any;
+
+  constructor(message: string, status: number = 0, errors: any[] = [], data: any = null) {
+    super(message);
+    this.name = 'ApiRequestError';
+    this.status = status;
+    this.errors = errors;
+    this.data = data;
+  }
+}
+
+export function toQueryString(params: Record<string, any> = {}): string {
+  if (!params || typeof params !== 'object') return '';
+  const searchParams = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== '') {
+      searchParams.append(key, String(value));
+    }
+  }
+  const qs = searchParams.toString();
+  return qs ? `?${qs}` : '';
+}
+
+function getCsrfTokenFromCookie(): string | null {
+  try {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/(?:^|;\s*)cf_csrf_token=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : null;
+  } catch {
+    return null;
+  }
+}
 
 class ApiClient {
   private baseUrl: string;
@@ -9,20 +51,30 @@ class ApiClient {
 
   private getAuthToken(): string | null {
     try {
-      return localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (typeof window === 'undefined') return null;
+      const token =
+        localStorage.getItem('token') ||
+        sessionStorage.getItem('token') ||
+        localStorage.getItem('vpd_access_token') ||
+        sessionStorage.getItem('vpd_access_token');
+      // 'vpd_session_token' is a local placeholder; actual auth uses httpOnly cookies
+      if (token === 'vpd_session_token') return null;
+      return token;
     } catch {
       return null;
     }
   }
 
-  async request<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  async request<T = any>(endpoint: string, options: any = {}): Promise<T> {
     const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
-    const token = this.getAuthToken();
+    const token = options.token || this.getAuthToken();
+    const csrfToken = getCsrfTokenFromCookie();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
       ...((options.headers as Record<string, string>) || {}),
     };
 
@@ -31,11 +83,42 @@ class ApiClient {
       delete headers['Content-Type'];
     }
 
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       ...options,
       headers,
       credentials: 'include',
     });
+
+    // Auto-refresh token on 401 if not already an auth endpoint
+    if (response.status === 401 && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/refresh')) {
+      try {
+        const refreshCsrf = getCsrfTokenFromCookie();
+        const refreshRes = await fetch(`${this.baseUrl}/auth/refresh`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(refreshCsrf ? { 'X-CSRF-Token': refreshCsrf } : {}),
+          },
+          credentials: 'include',
+        });
+
+        if (refreshRes.ok) {
+          // Retry original request with newly issued cookie/csrf token
+          const retryCsrf = getCsrfTokenFromCookie();
+          const retryHeaders = {
+            ...headers,
+            ...(retryCsrf ? { 'X-CSRF-Token': retryCsrf } : {}),
+          };
+          response = await fetch(url, {
+            ...options,
+            headers: retryHeaders,
+            credentials: 'include',
+          });
+        }
+      } catch {
+        // Refresh failed, continue with original 401 response
+      }
+    }
 
     let data: any = null;
     const contentType = response.headers.get('content-type') || '';
@@ -46,10 +129,17 @@ class ApiClient {
     }
 
     if (!response.ok) {
-      const errorMessage = data?.message || data?.errors?.[0]?.message || `Request failed with status ${response.status}`;
-      const error: any = new Error(errorMessage);
-      error.status = response.status;
-      error.data = data;
+      let errorMessage = data?.message;
+      if (Array.isArray(data?.errors) && data.errors.length > 0) {
+        const errorDetails = data.errors
+          .map((e: any) => `${e.field ? `${e.field.replace(/^body\./, '')}: ` : ''}${e.message}`)
+          .join(', ');
+        errorMessage = errorMessage ? `${errorMessage}: ${errorDetails}` : errorDetails;
+      }
+      errorMessage =
+        errorMessage ||
+        (typeof data === 'string' && data.length < 200 ? data : `Request failed with status ${response.status}`);
+      const error: any = new ApiRequestError(errorMessage, response.status, data?.errors || [], data);
       throw error;
     }
 

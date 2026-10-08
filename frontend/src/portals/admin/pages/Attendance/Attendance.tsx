@@ -137,8 +137,8 @@ export const Attendance: React.FC = () => {
         ]}
       />
     </div>
-    </PageContainer>
-  );
+  </PageContainer>
+);
 }
 export default Attendance;
 

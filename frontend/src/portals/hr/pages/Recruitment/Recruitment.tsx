@@ -11,7 +11,7 @@ export const Recruitment: React.FC = () => {
     title: '',
     department: 'Engineering',
     location: 'Remote / Hybrid',
-    employment_type: 'Full-time',
+    employment_type: 'full_time',
     description: '',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -40,9 +40,13 @@ export const Recruitment: React.FC = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await hrApi.createCareer(jobForm);
+      const normalizedType = (jobForm.employment_type || 'full_time').toLowerCase().replace(/[\s-]+/g, '_');
+      await hrApi.createCareer({
+        ...jobForm,
+        employment_type: normalizedType,
+      });
       setShowJobModal(false);
-      setJobForm({ title: '', department: 'Engineering', location: 'Remote / Hybrid', employment_type: 'Full-time', description: '' });
+      setJobForm({ title: '', department: 'Engineering', location: 'Remote / Hybrid', employment_type: 'full_time', description: '' });
       await fetchRecruitment();
     } catch (err: any) {
       alert(err.message || 'Failed to post opening');
@@ -132,7 +136,7 @@ export const Recruitment: React.FC = () => {
 
                 <div className="pt-3 border-t border-[#272B35] flex items-center justify-between text-xs text-[#7A7D84]">
                   <span>{j.location || 'Remote'}</span>
-                  <span className="text-[#EDB940] font-semibold">{j.employment_type || 'Full-time'}</span>
+                  <span className="text-[#EDB940] font-semibold capitalize">{j.employment_type ? j.employment_type.replace('_', '-') : 'Full-time'}</span>
                 </div>
               </div>
             ))
@@ -234,12 +238,16 @@ export const Recruitment: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-[#9B9DA3] mb-1">Employment Type</label>
-                  <input
-                    type="text"
+                  <select
                     value={jobForm.employment_type}
                     onChange={(e) => setJobForm({ ...jobForm, employment_type: e.target.value })}
                     className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
+                  >
+                    <option value="full_time">Full-time</option>
+                    <option value="part_time">Part-time</option>
+                    <option value="contract">Contract</option>
+                    <option value="internship">Internship</option>
+                  </select>
                 </div>
               </div>
 
