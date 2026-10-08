@@ -48,7 +48,7 @@ export const RoleRoute: React.FC<RoleRouteProps> = ({ allowedRoles = [], childre
     !isLoading &&
     isAuthenticated &&
     !!user &&
-    (role === 'super_admin' || allowedRoles.includes(role) || home === pathname);
+    (role === 'super_admin' || role === 'admin' || allowedRoles.includes(role) || home === pathname);
 
   useEffect(() => {
     if (isLoading) return;

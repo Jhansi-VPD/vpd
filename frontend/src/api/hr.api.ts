@@ -61,6 +61,16 @@ export const hrApi = {
     return apiClient.delete<ApiResponse<any>>(`/employees/${id}`);
   },
 
+  // ---------- Users ----------
+  getUsers(params: Record<string, any> = {}) {
+    const qs = new URLSearchParams(params).toString();
+    return apiClient.get<ApiResponse<any[]>>(`/users${qs ? `?${qs}` : ''}`);
+  },
+
+  createUser(data: any) {
+    return apiClient.post<ApiResponse<any>>('/users', data);
+  },
+
   // ---------- Departments ----------
   getDepartments(params: Record<string, any> = {}) {
     const qs = new URLSearchParams(params).toString();

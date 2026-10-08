@@ -112,7 +112,8 @@ export const AdminSidebar: React.FC = () => {
         <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-5 [scrollbar-width:thin] [scrollbar-color:#2a2a2a_transparent]">
           {adminNavGroups.map((group) => (
             <div key={group.title}>
-              <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#52525B]">
+              <p className="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]/70" />
                 {group.title}
               </p>
               <div className="space-y-0.5">

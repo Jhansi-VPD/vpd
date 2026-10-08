@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { hrApi } from '../../../../api/hr.api';
 
+const getTodayDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const Leave: React.FC = () => {
+  const todayStr = getTodayDateString();
   const [activeTab, setActiveTab] = useState<'my' | 'queue'>('my');
   const [myLeaves, setMyLeaves] = useState<any[]>([]);
   const [allLeaves, setAllLeaves] = useState<any[]>([]);
@@ -37,6 +46,18 @@ export const Leave: React.FC = () => {
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.start_date || !formData.end_date) {
+      alert('Please select both Start Date and End Date.');
+      return;
+    }
+    if (formData.start_date < todayStr) {
+      alert('Start date cannot be in the past.');
+      return;
+    }
+    if (formData.end_date < formData.start_date) {
+      alert('End date cannot be earlier than start date.');
+      return;
+    }
     setSubmitting(true);
     try {
       await hrApi.applyLeave(formData);
@@ -242,20 +263,37 @@ export const Leave: React.FC = () => {
                   <input
                     required
                     type="date"
+                    min={todayStr}
                     value={formData.start_date}
-                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C]"
+                    onClick={(e) => (e.target as any).showPicker?.()}
+                    onChange={(e) => {
+                      const newStart = e.target.value;
+                      setFormData((prev) => ({
+                        ...prev,
+                        start_date: newStart,
+                        end_date: prev.end_date && prev.end_date < newStart ? newStart : prev.end_date,
+                      }));
+                    }}
+                    className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C] [color-scheme:dark] cursor-pointer"
                   />
+                  {formData.start_date && formData.start_date < todayStr && (
+                    <p className="text-[10px] text-red-400 mt-1">Cannot select past dates</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-[#9B9DA3] mb-1">End Date *</label>
                   <input
                     required
                     type="date"
+                    min={formData.start_date || todayStr}
                     value={formData.end_date}
-                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C]"
+                    onClick={(e) => (e.target as any).showPicker?.()}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, end_date: e.target.value }))}
+                    className="w-full bg-[#0E1013] border border-[#272B35] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#C9A84C] [color-scheme:dark] cursor-pointer"
                   />
+                  {formData.end_date && formData.start_date && formData.end_date < formData.start_date && (
+                    <p className="text-[10px] text-red-400 mt-1">Must be on or after start date</p>
+                  )}
                 </div>
               </div>
 
