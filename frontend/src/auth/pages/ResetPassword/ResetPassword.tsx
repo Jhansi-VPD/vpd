@@ -1,5 +1,7 @@
+"use client";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import Input from '../../../shared/components/Input';
 import Button from '../../../shared/components/Button';
 import { authService } from '../../auth.service';
@@ -9,7 +11,7 @@ export const ResetPassword: React.FC = () => {
   const [token, setToken] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ export const ResetPassword: React.FC = () => {
             <div className="p-4 bg-emerald-950/40 border border-emerald-800/60 rounded-xl text-emerald-300 text-xs text-center">
               Your password has been reset successfully.
             </div>
-            <Button variant="primary" className="w-full" onClick={() => navigate('/auth/login')}>
+            <Button variant="primary" className="w-full" onClick={() => navigate.push('/auth/login')}>
               Proceed to Login
             </Button>
           </div>

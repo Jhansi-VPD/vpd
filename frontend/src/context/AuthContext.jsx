@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase.js';
 import { login as loginApi, register as registerApi, logout as logoutApi, fetchCurrentUser } from '../api/auth.js';

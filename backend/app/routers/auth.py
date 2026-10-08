@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.audit import log_audit
 from app.core.config import settings
 from app.core.cookies import (
     ACCESS_TOKEN_COOKIE,
@@ -75,12 +76,14 @@ from app.utils.responses import success_response
 # the timing-equalization it exists for.
 _DUMMY_PASSWORD_HASH = hash_password("dummy")
 
-# Hard allowlist: the ONLY accounts permitted to establish a session — exactly
-# the six listed in vpd/docs/credentials.md. Compared case-insensitively after
-# the password check (so timing/behaviour for wrong passwords is unchanged).
-# Every other account — seeded, self-registered, or reactivated by an admin —
-# is rejected at login even with a valid password.
-LOGIN_ALLOWLIST = frozenset({
+# Built-in staging-era allowlist (vpd/docs/credentials.md). Still the DEFAULT
+# (settings.login_allowlist == ""), so existing deployments keep the exact
+# same security posture. Override via the LOGIN_ALLOWLIST env var:
+#   "*"               -> any existing active account may log in (production)
+#   "a@x.com,b@y.com" -> explicit comma-separated list
+# Note: admin-created users cannot log in until the deployment widens this —
+# tracked as a known operational limitation.
+_BUILTIN_LOGIN_ALLOWLIST = frozenset({
     "superadmin@vpdtechnologies.com",
     "admin@vpdtechnologies.com",
     "pm@vpdtechnologies.com",
@@ -89,13 +92,23 @@ LOGIN_ALLOWLIST = frozenset({
     "client@vpdtechnologies.com",
     "employee@vpdtechnologies.com",
 })
+LOGIN_ALLOWLIST = _BUILTIN_LOGIN_ALLOWLIST  # kept for import compatibility
 
 
 def _login_allowed(email: str | None) -> bool:
     import os
     if os.getenv("PYTEST_CURRENT_TEST"):
         return True
-    return bool(email) and email.strip().lower() in LOGIN_ALLOWLIST
+    if not email:
+        return False
+    configured = (settings.login_allowlist or "").strip()
+    if configured == "*":
+        return True
+    if configured:
+        return email.strip().lower() in {
+            entry.strip().lower() for entry in configured.split(",") if entry.strip()
+        }
+    return email.strip().lower() in _BUILTIN_LOGIN_ALLOWLIST
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -104,6 +117,25 @@ PASSWORD_RESET_TOKEN_TTL = timedelta(hours=1)
 MFA_CHALLENGE_TTL = timedelta(minutes=5)
 MFA_PENDING_COOKIE = "cf_mfa_pending_token"
 MFA_BACKUP_CODE_COUNT = 10
+
+
+async def _log_login_failure(request: Request, user: User | None, email: str | None, reason: str) -> None:
+    """Writes a LOGIN_FAILED audit row (backs the admin "Login history" view
+    on the user detail page). Best-effort — same try/except pattern as
+    AuditMiddleware: an audit-write failure must never change the login
+    response a client sees."""
+    try:
+        await log_audit(
+            user_id=user.id if user else None,
+            action="LOGIN_FAILED",
+            entity_type="user",
+            entity_id=user.id if user else None,
+            ip_address=get_client_ip(request),
+            user_agent=request.headers.get("user-agent"),
+            log_metadata={"email": email, "reason": reason},
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Audit log failed: %s", exc)
 
 
 def _require_mfa_enabled() -> None:
@@ -240,6 +272,7 @@ async def login(request: Request, response: Response, payload: LoginRequest, db:
     password_ok = verify_password(payload.password, user.password_hash if user else _DUMMY_PASSWORD_HASH)
 
     if user is None or not password_ok:
+        await _log_login_failure(request, user, payload.email, "invalid_password")
         if user is not None:
             await record_failed_login(db, user)
         raise ApiError.unauthorized("Invalid email or password")
@@ -250,9 +283,14 @@ async def login(request: Request, response: Response, payload: LoginRequest, db:
         raise ApiError.unauthorized("Invalid email or password")
 
     if not user.is_active:
+        if user.suspended_at is not None:
+            await _log_login_failure(request, user, payload.email, "account_suspended")
+            raise ApiError.forbidden("Your account has been suspended. Contact your administrator.")
+        await _log_login_failure(request, user, payload.email, "account_inactive")
         raise ApiError.forbidden("Your account has been deactivated")
 
     if is_account_locked(user):
+        await _log_login_failure(request, user, payload.email, "account_locked")
         raise ApiError.forbidden("Account temporarily locked due to repeated failed login attempts. Try again later.")
 
     if needs_rehash(user.password_hash):
@@ -301,12 +339,14 @@ async def mfa_verify_login(request: Request, response: Response, payload: MfaVer
     challenge, user = resolved
 
     if is_account_locked(user):
+        await _log_login_failure(request, user, user.email, "account_locked")
         raise ApiError.forbidden("Account temporarily locked due to repeated failed login attempts. Try again later.")
 
     if not _login_allowed(user.email):
         raise ApiError.unauthorized("Invalid email or password")
 
     if not await _verify_mfa_code(db, user, payload.code):
+        await _log_login_failure(request, user, user.email, "invalid_mfa_code")
         await record_failed_login(db, user)
         raise ApiError.unauthorized("Invalid authentication code")
 

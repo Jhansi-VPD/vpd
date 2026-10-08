@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { hrApi } from '../../../../api/hr.api';
 import { useAuth } from '../../../../auth/auth.context';
 
@@ -161,7 +161,7 @@ export const Dashboard: React.FC = () => {
           <div className="text-2xl font-bold text-white">
             {loading ? '...' : stats.pendingLeavesCount}
           </div>
-          <Link to="/hr/leave" className="text-[11px] text-[#C9A84C] hover:underline flex items-center gap-1">
+          <Link href="/hr/leave" className="text-[11px] text-[#C9A84C] hover:underline flex items-center gap-1">
             Review approval queue →
           </Link>
         </div>
@@ -174,7 +174,7 @@ export const Dashboard: React.FC = () => {
           <div className="text-2xl font-bold text-white">
             {loading ? '...' : stats.openPositions}
           </div>
-          <Link to="/hr/recruitment" className="text-[11px] text-[#C9A84C] hover:underline flex items-center gap-1">
+          <Link href="/hr/recruitment" className="text-[11px] text-[#C9A84C] hover:underline flex items-center gap-1">
             View ATS requisitions →
           </Link>
         </div>
@@ -187,7 +187,7 @@ export const Dashboard: React.FC = () => {
           <div className="text-2xl font-bold text-white">
             {isCheckedIn ? 'Present' : 'Awaiting Check-in'}
           </div>
-          <Link to="/hr/attendance" className="text-[11px] text-[#C9A84C] hover:underline flex items-center gap-1">
+          <Link href="/hr/attendance" className="text-[11px] text-[#C9A84C] hover:underline flex items-center gap-1">
             View attendance logs →
           </Link>
         </div>
@@ -198,7 +198,7 @@ export const Dashboard: React.FC = () => {
         <h3 className="text-sm font-bold text-white uppercase tracking-wider text-[#C9A84C]">HR Quick Actions</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <Link
-            to="/hr/employees"
+            href="/hr/employees"
             className="p-3 bg-[#0E1013] hover:bg-[#1A1E24] border border-[#272B35] rounded-lg text-center space-y-2 group transition-all"
           >
             <div className="text-xl group-hover:scale-110 transition-transform">👥</div>
@@ -206,7 +206,7 @@ export const Dashboard: React.FC = () => {
           </Link>
 
           <Link
-            to="/hr/leave"
+            href="/hr/leave"
             className="p-3 bg-[#0E1013] hover:bg-[#1A1E24] border border-[#272B35] rounded-lg text-center space-y-2 group transition-all"
           >
             <div className="text-xl group-hover:scale-110 transition-transform">📅</div>
@@ -214,7 +214,7 @@ export const Dashboard: React.FC = () => {
           </Link>
 
           <Link
-            to="/hr/timesheets"
+            href="/hr/timesheets"
             className="p-3 bg-[#0E1013] hover:bg-[#1A1E24] border border-[#272B35] rounded-lg text-center space-y-2 group transition-all"
           >
             <div className="text-xl group-hover:scale-110 transition-transform">⏱️</div>
@@ -222,7 +222,7 @@ export const Dashboard: React.FC = () => {
           </Link>
 
           <Link
-            to="/hr/payroll"
+            href="/hr/payroll"
             className="p-3 bg-[#0E1013] hover:bg-[#1A1E24] border border-[#272B35] rounded-lg text-center space-y-2 group transition-all"
           >
             <div className="text-xl group-hover:scale-110 transition-transform">💵</div>
@@ -230,7 +230,7 @@ export const Dashboard: React.FC = () => {
           </Link>
 
           <Link
-            to="/hr/performance"
+            href="/hr/performance"
             className="p-3 bg-[#0E1013] hover:bg-[#1A1E24] border border-[#272B35] rounded-lg text-center space-y-2 group transition-all"
           >
             <div className="text-xl group-hover:scale-110 transition-transform">🎯</div>
@@ -238,7 +238,7 @@ export const Dashboard: React.FC = () => {
           </Link>
 
           <Link
-            to="/hr/recruitment"
+            href="/hr/recruitment"
             className="p-3 bg-[#0E1013] hover:bg-[#1A1E24] border border-[#272B35] rounded-lg text-center space-y-2 group transition-all"
           >
             <div className="text-xl group-hover:scale-110 transition-transform">💼</div>

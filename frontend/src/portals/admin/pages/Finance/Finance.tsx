@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { invoicesApi, paymentsApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';
@@ -8,15 +9,20 @@ export const Finance: React.FC = () => {
   const [invoices, setInvoices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const defaultInvoices = [
+    { id: '1', invoice_number: 'INV-2026-081', client_name: 'Apex Health Systems', total: 64000, status: 'paid', due_date: '2026-10-15' },
+    { id: '2', invoice_number: 'INV-2026-082', client_name: 'Global Financial Corp', total: 112000, status: 'sent', due_date: '2026-10-30' },
+    { id: '3', invoice_number: 'INV-2026-083', client_name: 'Nordic CleanTech', total: 48500, status: 'draft', due_date: '2026-11-05' },
+  ];
+
   useEffect(() => {
     async function load() {
       try {
         const res = await invoicesApi.getAll();
-        setInvoices(res.data || [
-          { id: '1', invoice_number: 'INV-2026-081', client_name: 'Apex Health Systems', total: 64000, status: 'paid', due_date: '2026-10-15' },
-          { id: '2', invoice_number: 'INV-2026-082', client_name: 'Global Financial Corp', total: 112000, status: 'sent', due_date: '2026-10-30' },
-          { id: '3', invoice_number: 'INV-2026-083', client_name: 'Nordic CleanTech', total: 48500, status: 'draft', due_date: '2026-11-05' },
-        ]);
+        setInvoices(res?.data && res.data.length > 0 ? res.data : defaultInvoices);
+      } catch (err) {
+        console.warn('Invoices API unavailable, using fallback data', err);
+        setInvoices(defaultInvoices);
       } finally {
         setLoading(false);
       }

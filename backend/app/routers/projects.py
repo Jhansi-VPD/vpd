@@ -41,6 +41,7 @@ crud = CRUDBase(Project, searchable_fields=["title", "industry"], relationships=
 
 
 @router.get("", response_model=dict)
+@router.get("/", response_model=dict, include_in_schema=False)
 async def list_projects(
     request: Request,
     db: AsyncSession = Depends(get_db),

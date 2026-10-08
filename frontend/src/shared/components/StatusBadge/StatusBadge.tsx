@@ -11,8 +11,11 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, variant }) => 
   const getAutoVariant = (st: string): BadgeVariant => {
     const s = st.toLowerCase();
     if (['active', 'approved', 'completed', 'paid', 'present', 'on_track'].includes(s)) return 'success';
-    if (['pending', 'in_progress', 'review', 'half_day', 'at_risk'].includes(s)) return 'warning';
-    if (['rejected', 'cancelled', 'overdue', 'absent', 'terminated', 'delayed', 'critical'].includes(s)) return 'danger';
+    if (['pending', 'in_progress', 'review', 'half_day', 'at_risk', 'locked'].includes(s)) return 'warning';
+    if (
+      ['rejected', 'cancelled', 'overdue', 'absent', 'terminated', 'delayed', 'critical', 'suspended', 'revoked', 'failed'].includes(s)
+    )
+      return 'danger';
     if (['draft', 'planning', 'lead'].includes(s)) return 'info';
     return 'neutral';
   };
@@ -36,4 +39,3 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, variant }) => 
 };
 
 export default StatusBadge;
-

@@ -1,9 +1,11 @@
+"use client";
+import { useRouter, usePathname } from "next/navigation";
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import Button from '../../../shared/components/Button';
 
 export const SessionExpired: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useRouter();
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4 text-center">
       <div className="w-full max-w-md bg-[#121214] border border-zinc-800 rounded-2xl p-8 shadow-2xl">
@@ -14,7 +16,7 @@ export const SessionExpired: React.FC = () => {
         <p className="text-xs text-zinc-400 mb-6">
           Your authentication token has timed out for security compliance. Please log in again.
         </p>
-        <Button variant="primary" className="w-full" onClick={() => navigate('/auth/login')}>
+        <Button variant="primary" className="w-full" onClick={() => navigate.push('/auth/login')}>
           Re-authenticate
         </Button>
       </div>

@@ -127,6 +127,15 @@ class Settings(BaseSettings):
     # Site
     site_url: str = "https://www.vpdtechnologies.com"
 
+    # Login allowlist (see routers/auth.py `_login_allowed`). Historically a
+    # hardcoded frozenset of 7 emails — a deliberate staging-era restriction
+    # that also meant admin-created users could never actually log in.
+    #   "" (default) -> keep the built-in 7-email allowlist (safe default,
+    #                   unchanged behavior for existing deployments)
+    #   "*"          -> any existing active account may log in (production)
+    #   "a@x.com,b@y.com" -> explicit comma-separated allowlist
+    login_allowlist: str = ""
+
     # Rate limiting
     rate_limit: str = "300/15minute"
 

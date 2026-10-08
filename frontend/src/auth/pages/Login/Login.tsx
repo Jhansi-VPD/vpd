@@ -1,6 +1,9 @@
+"use client";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../../auth.context';
+import { roleHome } from '../../role-route';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +12,7 @@ export const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +24,7 @@ export const Login: React.FC = () => {
     setError(null);
     try {
       const user = await login(email.trim(), password);
-      const role = String(user.role || '').toLowerCase();
-      if (['super_admin', 'admin', 'finance'].includes(role)) navigate('/admin');
-      else if (['sales', 'marketing'].includes(role)) navigate('/sales');
-      else if (role === 'hr') navigate('/hr');
-      else if (role === 'project_manager') navigate('/delivery');
-      else if (role === 'client') navigate('/client');
-      else navigate('/employee');
+      navigate.push(roleHome(user.role));
     } catch (err: any) {
       setError(err.message || 'Invalid email or password. Please verify your credentials.');
     } finally {

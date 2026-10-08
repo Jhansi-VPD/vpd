@@ -99,7 +99,7 @@ class TestUserEscalationBoundary:
 
         with patch("app.routers.users.crud.get", new_callable=AsyncMock, return_value=target_admin):
             with pytest.raises(ApiError) as exc_info:
-                await deactivate_user(target_admin.id, mock_db, hr)
+                await deactivate_user(target_admin.id, _mock_request(), mock_db, hr)
         assert exc_info.value.status_code == 403
 
     @pytest.mark.asyncio
@@ -112,7 +112,7 @@ class TestUserEscalationBoundary:
         with patch("app.routers.users.crud.get", new_callable=AsyncMock, return_value=target_admin):
             with patch("app.routers.users.crud.update", new_callable=AsyncMock, return_value=target_admin):
                 with patch("app.routers.users.revoke_all_sessions", new_callable=AsyncMock):
-                    result = await deactivate_user(target_admin.id, mock_db, super_admin)
+                    result = await deactivate_user(target_admin.id, _mock_request(), mock_db, super_admin)
         assert result["message"] == "User deactivated"
 
     @pytest.mark.asyncio
@@ -127,7 +127,7 @@ class TestUserEscalationBoundary:
 
         with patch("app.routers.users.crud.get", new_callable=AsyncMock, return_value=target_admin):
             with pytest.raises(ApiError) as exc_info:
-                await update_user(target_admin.id, UserUpdate(is_active=False), mock_db, hr)
+                await update_user(target_admin.id, UserUpdate(is_active=False), _mock_request(), mock_db, hr)
         assert exc_info.value.status_code == 403
 
     @pytest.mark.asyncio
@@ -139,7 +139,7 @@ class TestUserEscalationBoundary:
 
         with patch("app.routers.users.crud.get", new_callable=AsyncMock, return_value=target):
             with patch("app.routers.users.crud.update", new_callable=AsyncMock, return_value=target):
-                result = await update_user(target.id, UserUpdate(phone="123"), mock_db, hr)
+                result = await update_user(target.id, UserUpdate(phone="123"), _mock_request(), mock_db, hr)
         assert result["message"] == "User updated successfully"
 
 

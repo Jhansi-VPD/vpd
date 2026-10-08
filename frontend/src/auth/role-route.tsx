@@ -1,36 +1,68 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+"use client";
+import React, { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './auth.context';
 
+const ROLE_HOME: Record<string, string> = {
+  super_admin: '/admin',
+  admin: '/admin',
+  finance: '/admin',
+  sales: '/sales',
+  marketing: '/sales',
+  hr: '/hr',
+  project_manager: '/delivery',
+  client: '/client',
+  employee: '/employee',
+};
+
+export function roleHome(role: string | null | undefined): string {
+  return ROLE_HOME[String(role || '').toLowerCase()] || '/employee';
+}
+
+function GuardScreen() {
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-10 h-10 border-2 border-[#d4af37] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs text-zinc-400 font-medium">Verifying VPD security permissions...</p>
+      </div>
+    </div>
+  );
+}
+
 interface RoleRouteProps {
-  allowedRoles: string[];
+  allowedRoles?: string[];
   children: React.ReactNode;
 }
 
-export const RoleRoute: React.FC<RoleRouteProps> = ({ allowedRoles, children }) => {
+export const RoleRoute: React.FC<RoleRouteProps> = ({ allowedRoles = [], children }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#d4af37] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  const role = String(user?.role || '').toLowerCase();
+  const home = roleHome(role);
+  // home === pathname keeps unknown roles usable inside their fallback portal
+  // instead of looping replace() back to the same URL.
+  const authorized =
+    !isLoading &&
+    isAuthenticated &&
+    !!user &&
+    (role === 'super_admin' || role === 'admin' || allowedRoles.includes(role) || home === pathname);
 
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
-  }
+  useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated || !user) {
+      router.replace('/auth/login');
+      return;
+    }
+    if (!authorized && pathname !== home) {
+      router.replace(home);
+    }
+  }, [isLoading, isAuthenticated, user, authorized, pathname, home, router]);
 
-  const role = String(user.role || '').toLowerCase();
-  const isAllowed = allowedRoles.includes(role) || role === 'super_admin';
-
-  if (!isAllowed) {
-    return <Navigate to="/auth/unauthorized" replace />;
-  }
-
+  if (!authorized) return <GuardScreen />;
   return <>{children}</>;
 };
 
 export default RoleRoute;
-

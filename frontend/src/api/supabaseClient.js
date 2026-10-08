@@ -1,13 +1,13 @@
 /**
  * Supabase PostgREST client used by the frontend.
- * Purely imports connection details from environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY).
+ * Purely imports connection details from environment variables (NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY).
  * No hardcoded database credentials or keys exist here.
  */
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || '').replace(/\/$/, '');
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.warn('VPD Notice: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is not defined in the .env configuration.');
+  console.warn('VPD Notice: NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY is not defined in the .env configuration.');
 }
 
 export async function supabaseRest(table, { method = 'GET', query = '', body, headers = {} } = {}) {

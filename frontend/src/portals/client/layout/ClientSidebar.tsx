@@ -1,24 +1,68 @@
+"use client";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { useLayout } from '../../../app/providers/LayoutProvider';
+import { useAuth } from '../../../auth/auth.context';
+import { Icon } from '../../../shared/components';
 
-const clientNav = [
-  { label: 'Client Overview', path: '/client' },
-  { label: 'Active Projects', path: '/client/projects' },
-  { label: 'Project Milestones', path: '/client/milestones' },
-  { label: 'SOW Deliverables', path: '/client/deliverables' },
-  { label: 'Contracts & MSAs', path: '/client/contracts' },
-  { label: 'Billing & Invoices', path: '/client/invoices' },
-  { label: 'Payment Receipts', path: '/client/payments' },
-  { label: 'Deliverable Files', path: '/client/files' },
-  { label: 'Scheduled Meetings', path: '/client/meetings' },
-  { label: 'Support & SLA Tickets', path: '/client/support' },
-  { label: 'Executive Reports', path: '/client/reports' },
-  { label: 'Notifications', path: '/client/notifications' },
+export interface ClientNavItem {
+  label: string;
+  path: string;
+  icon: string;
+  badge?: string;
+}
+
+export interface ClientNavGroup {
+  title: string;
+  items: ClientNavItem[];
+}
+
+export const clientNavGroups: ClientNavGroup[] = [
+  {
+    title: 'Overview',
+    items: [
+      { label: 'Client Overview', path: '/client', icon: 'home' },
+    ],
+  },
+  {
+    title: 'Project & SOW',
+    items: [
+      { label: 'Active Projects', path: '/client/projects', icon: 'folder' },
+      { label: 'Project Milestones', path: '/client/milestones', icon: 'calendar' },
+      { label: 'SOW Deliverables', path: '/client/deliverables', icon: 'check' },
+      { label: 'Deliverable Files', path: '/client/files', icon: 'database' },
+    ],
+  },
+  {
+    title: 'Commercial & Financials',
+    items: [
+      { label: 'Contracts & MSAs', path: '/client/contracts', icon: 'clipboard' },
+      { label: 'Billing & Invoices', path: '/client/invoices', icon: 'file' },
+      { label: 'Payment Receipts', path: '/client/payments', icon: 'wallet' },
+    ],
+  },
+  {
+    title: 'Communication & Reports',
+    items: [
+      { label: 'Scheduled Meetings', path: '/client/meetings', icon: 'users' },
+      { label: 'Support & SLA Tickets', path: '/client/support', icon: 'shield' },
+      { label: 'Executive Reports', path: '/client/reports', icon: 'chart' },
+      { label: 'Notifications', path: '/client/notifications', icon: 'bell' },
+    ],
+  },
 ];
 
 export const ClientSidebar: React.FC = () => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useAuth();
   const { sidebarOpen, setSidebarOpen } = useLayout();
+
+  const isActive = (path: string) =>
+    path === '/client'
+      ? pathname === '/client'
+      : pathname === path || pathname?.startsWith(`${path}/`);
 
   return (
     <>
@@ -30,47 +74,111 @@ export const ClientSidebar: React.FC = () => {
       )}
 
       <aside
-        className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-64 bg-[#141414] border-r border-[#2A2A2A] flex flex-col flex-shrink-0 h-full overflow-y-auto transform transition-transform duration-200 ease-in-out ${
+        className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-64 bg-[#141414] border-r border-[#2A2A2A] flex flex-col flex-shrink-0 h-full transform transition-transform duration-200 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        <div className="p-5 border-b border-[#2A2A2A] flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <img src="/logo/logo-icon.svg" alt="VPD" className="h-7 w-7" />
-            <div>
-              <h1 className="text-sm font-bold text-white tracking-wide">CLIENT PORTAL</h1>
-              <p className="text-[10px] text-[#D4AF37] uppercase font-mono">Executive Workspace</p>
+        {/* Brand Header */}
+        <div className="h-16 px-4 border-b border-[#2A2A2A] flex items-center justify-between flex-shrink-0">
+          <Link href="/client" className="flex items-center space-x-2.5 min-w-0">
+            <img src="/logo/logo-icon.svg" alt="VPD" className="h-8 w-8" />
+            <div className="min-w-0">
+              <h1 className="text-[13px] font-bold text-white tracking-wide leading-none truncate">
+                CLIENT PORTAL
+              </h1>
+              <p className="mt-1 text-[9px] text-[#D4AF37] uppercase font-semibold tracking-[0.18em]">
+                Executive Workspace
+              </p>
             </div>
-          </div>
+          </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-[#A1A1AA] hover:text-white p-1"
+            aria-label="Close navigation menu"
+            className="lg:hidden text-[#A1A1AA] hover:text-white p-1.5 rounded-lg hover:bg-[#262626] transition-colors"
           >
-            ✕
+            <Icon name="close" className="h-4 w-4" />
           </button>
         </div>
-        <nav className="p-3 space-y-1 flex-1">
-          {clientNav.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/client'}
-              className={({ isActive }) =>
-                `flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors ${
-                  isActive
-                    ? 'bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30'
-                    : 'text-[#A1A1AA] hover:text-white hover:bg-[#262626]'
-                }`
-              }
+
+        {/* Executive Portal Switcher for Admin & Super Admin */}
+        {['admin', 'super_admin'].includes(String(user?.role || '').toLowerCase()) && (
+          <div className="px-3 pt-3 pb-2 border-b border-[#2A2A2A] bg-[#101010]">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[#d4af37] flex items-center gap-1.5 mb-1.5">
+              <span>⚡</span> Switch Portal
+            </label>
+            <select
+              aria-label="Switch Portal"
+              value="/client"
+              onChange={(e) => router.push(e.target.value)}
+              className="w-full bg-[#181818] border border-[#d4af37]/40 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#d4af37] font-medium cursor-pointer"
             >
-              {item.label}
-            </NavLink>
+              <option value="/admin">👑 Admin & Executive</option>
+              <option value="/hr">👥 HR & Workforce</option>
+              <option value="/delivery">📁 Delivery & Projects</option>
+              <option value="/sales">💼 Sales & CRM</option>
+              <option value="/employee">👤 Employee Portal</option>
+              <option value="/client">🏢 Client Portal</option>
+            </select>
+          </div>
+        )}
+
+        {/* Nav Items */}
+        <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-4 space-y-5 [scrollbar-width:thin] [scrollbar-color:#2a2a2a_transparent]">
+          {clientNavGroups.map((group) => (
+            <div key={group.title}>
+              <p className="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]/70" />
+                {group.title}
+              </p>
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const active = isActive(item.path);
+                  return (
+                    <Link
+                      key={item.path}
+                      href={item.path}
+                      onClick={() => setSidebarOpen(false)}
+                      aria-current={active ? 'page' : undefined}
+                      className={`group relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all duration-150 ${
+                        active
+                          ? 'bg-[#D4AF37]/10 text-[#F0D67C]'
+                          : 'text-[#A1A1AA] hover:text-white hover:bg-[#1E1E1E]'
+                      }`}
+                    >
+                      {active && (
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-[#D4AF37]" />
+                      )}
+                      <Icon
+                        name={item.icon}
+                        className={`h-[18px] w-[18px] flex-shrink-0 ${
+                          active ? 'text-[#D4AF37]' : 'text-[#71717A] group-hover:text-[#A1A1AA]'
+                        }`}
+                      />
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </nav>
+
+        {/* Bottom Status Card */}
+        <div className="p-3 border-t border-[#2A2A2A] flex-shrink-0">
+          <div className="rounded-xl border border-[#2A2A2A] bg-[#181818] px-3 py-2.5">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+                <span className="relative flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <p className="text-[10px] font-semibold text-white">Encrypted Workspace</p>
+            </div>
+            <p className="mt-1 text-[10px] text-[#71717A] font-mono">SLA Tier 1 · Active</p>
+          </div>
+        </div>
       </aside>
     </>
   );
 };
 
 export default ClientSidebar;
-

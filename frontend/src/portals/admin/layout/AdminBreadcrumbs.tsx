@@ -1,13 +1,16 @@
+"use client";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+
 
 export const AdminBreadcrumbs: React.FC = () => {
-  const location = useLocation();
-  const segments = location.pathname.split('/').filter(Boolean);
+  const pathname = usePathname();
+  const segments = pathname.split('/').filter(Boolean);
 
   return (
-    <nav className="flex items-center space-x-2 text-xs text-zinc-400 mb-6">
-      <Link to="/admin" className="hover:text-zinc-200">Admin</Link>
+    <nav className="flex items-center space-x-2 text-xs text-zinc-400">
+      <Link href="/admin" className="hover:text-zinc-200">Admin</Link>
       {segments.slice(1).map((seg, idx) => (
         <React.Fragment key={idx}>
           <span>/</span>

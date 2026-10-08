@@ -39,6 +39,7 @@ crud = CRUDBase(Lead, searchable_fields=["company", "contact_name", "email"])
 
 
 @router.get("", response_model=dict)
+@router.get("/", response_model=dict, include_in_schema=False)
 async def list_leads(request: Request, db: AsyncSession = Depends(get_db), page: PageParams = Depends(page_params), current_user: User = Depends(get_current_user)):
     filters = {k: request.query_params.get(k) for k in ("status", "source") if request.query_params.get(k)}
     if current_user.role == "sales":

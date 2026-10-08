@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { redirect } from 'next/navigation';
 import { useAuth } from './auth.context';
 import { hasPermission } from '../shared/hooks/usePermissions';
 
@@ -20,16 +20,18 @@ export const PermissionRoute: React.FC<PermissionRouteProps> = ({ permission, ch
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
+    redirect('/auth/login'); return null;
   }
 
   const allowed = hasPermission(user.role, permission);
   if (!allowed) {
-    return <Navigate to="/auth/unauthorized" replace />;
+    redirect('/auth/unauthorized'); return null;
   }
 
   return <>{children}</>;
 };
 
 export default PermissionRoute;
+
+
 

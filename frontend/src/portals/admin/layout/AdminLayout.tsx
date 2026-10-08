@@ -1,10 +1,10 @@
+"use client";
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
-import AdminBreadcrumbs from './AdminBreadcrumbs';
 
-export const AdminLayout: React.FC = () => {
+export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex h-screen bg-[#111111] text-white overflow-hidden">
       <AdminSidebar />
@@ -12,8 +12,7 @@ export const AdminLayout: React.FC = () => {
         <AdminHeader />
         <main className="flex-1 overflow-y-auto bg-[#111111]">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-            <AdminBreadcrumbs />
-            <Outlet />
+            {children}
           </div>
         </main>
       </div>

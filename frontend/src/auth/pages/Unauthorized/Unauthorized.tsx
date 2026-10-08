@@ -1,9 +1,11 @@
+"use client";
+import { useRouter, usePathname } from "next/navigation";
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import Button from '../../../shared/components/Button';
 
 export const Unauthorized: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useRouter();
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4 text-center">
       <div className="w-full max-w-md bg-[#121214] border border-zinc-800 rounded-2xl p-8 shadow-2xl">
@@ -15,8 +17,8 @@ export const Unauthorized: React.FC = () => {
           Your current enterprise role does not possess the required permissions to view this portal.
         </p>
         <div className="flex space-x-3 justify-center">
-          <Button variant="secondary" onClick={() => navigate(-1)}>Go Back</Button>
-          <Button variant="primary" onClick={() => navigate('/auth/login')}>Switch Account</Button>
+          <Button variant="secondary" onClick={() => navigate.back()}>Go Back</Button>
+          <Button variant="primary" onClick={() => navigate.push('/auth/login')}>Switch Account</Button>
         </div>
       </div>
     </div>

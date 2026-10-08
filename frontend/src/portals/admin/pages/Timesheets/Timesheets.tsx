@@ -92,7 +92,7 @@ export const Timesheets: React.FC = () => {
           { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'submitted'} /> },
         ]}
       />
-    </PageContainer>
+    </div>
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           <div className="bg-[#121214] border border-zinc-800 rounded-xl p-6 w-full max-w-md space-y-4">
@@ -153,7 +153,7 @@ export const Timesheets: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 export default Timesheets;

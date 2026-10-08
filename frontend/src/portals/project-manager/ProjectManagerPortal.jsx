@@ -1,14 +1,16 @@
+"use client";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import PortalLayout from '../../components/portal-shared/PortalLayout.jsx';
-import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents.jsx';
+
+import PortalLayout from '../../components/portal-shared/PortalLayout';
+import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents';
 import { supabaseRest } from '../../api/supabaseClient.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function ProjectManagerPortal() {
   const { user } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const navigate = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
 
@@ -94,8 +96,8 @@ export default function ProjectManagerPortal() {
 
   // Sync activeTab with URL path or hash
   useEffect(() => {
-    const pathSeg = location.pathname.split('/').filter(Boolean)[1];
-    const hash = location.hash.replace('#', '');
+    const pathSeg = pathname.split('/').filter(Boolean)[1];
+    const hash = window.location.hash.replace('#', '');
     const rawTab = pathSeg || hash || 'overview';
     const targetTab = rawTab === 'kanban' ? 'overview' : rawTab;
     const validTabs = [
@@ -111,7 +113,7 @@ export default function ProjectManagerPortal() {
     if (validTabs.includes(targetTab)) {
       setActiveTab(targetTab);
     }
-  }, [location.pathname, location.hash]);
+  }, [pathname]);
 
   const loadData = async () => {
     setLoading(true);
@@ -129,7 +131,7 @@ export default function ProjectManagerPortal() {
         payRes,
       ] = await Promise.all([
         supabaseRest('projects', { query: '?select=*&limit=50' }).catch(() => []),
-        supabaseRest('tasks', { query: '?select=*,project:projects(title,name)&order=created_at.desc&limit=50' }).catch(() => []),
+        supabaseRest('tasks', { query: '?select=*&limit=50' }).catch(() => []),
         supabaseRest('project_milestones', { query: '?select=*&limit=50' }).catch(() => []),
         supabaseRest('timesheets', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
         supabaseRest('reports', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
@@ -433,7 +435,7 @@ export default function ProjectManagerPortal() {
 
   const handleTabSelect = (tab) => {
     setActiveTab(tab);
-    navigate(`/delivery/${tab}`);
+    navigate.push(`/delivery/${tab}`);
   };
 
   const navSections = [
@@ -575,7 +577,9 @@ export default function ProjectManagerPortal() {
                               <p className="text-[11px] text-zinc-400 mt-1 line-clamp-2">{task.description || 'Sprint deliverable item.'}</p>
                               <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-[#2a2a2a]/60">
                                 <div className="flex items-center gap-1.5 overflow-hidden">
-                                  <span className="text-[10px] font-semibold text-[#d4af37] truncate">{task.project?.title || task.project?.name || 'Project'}</span>
+                                  <span className="text-[10px] font-semibold text-[#d4af37] truncate">
+                                    {task.project?.title || task.project?.name || projects.find((p) => String(p.id) === String(task.project_id))?.title || projects.find((p) => String(p.id) === String(task.project_id))?.name || 'Project'}
+                                  </span>
                                   {(task.assignee || task.assigned_to) && (
                                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#222] text-zinc-300 border border-[#333] font-medium truncate">
                                       👤 {task.assignee || task.assigned_to}
@@ -735,7 +739,9 @@ export default function ProjectManagerPortal() {
                           {t.title}
                           {t.description && <p className="text-[11px] text-zinc-400 font-normal mt-0.5">{t.description}</p>}
                         </td>
-                        <td className="py-3 px-4 text-zinc-300">{t.project?.title || t.project?.name || 'General Project'}</td>
+                        <td className="py-3 px-4 text-zinc-300">
+                          {t.project?.title || t.project?.name || projects.find((p) => String(p.id) === String(t.project_id))?.title || projects.find((p) => String(p.id) === String(t.project_id))?.name || 'General Project'}
+                        </td>
                         <td className="py-3 px-4">
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#1e1e1e] border border-[#333] text-xs text-zinc-200 font-medium">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]"></span>

@@ -1,17 +1,88 @@
-import apiClient from './client';
+import apiClient, { RequestOptions } from './client';
 import { API_ENDPOINTS } from './endpoints';
-import { ApiResponse, User } from '../types/common.types';
+import { ApiResponse } from '../types/common.types';
+import {
+  BulkActionResult,
+  BulkUserAction,
+  LoginHistoryEntry,
+  UserActivityEntry,
+  UserDetail,
+  UserListItem,
+  UserListParams,
+  UserPermissionsInfo,
+  UserRolesInfo,
+  UserSessionInfo,
+} from '../types/user.types';
+
+export interface CreateUserPayload {
+  name: string;
+  email: string;
+  password?: string;
+  role?: string;
+  phone?: string;
+  designation?: string;
+  department_id?: string;
+}
+
+export interface UpdateUserPayload {
+  name?: string;
+  email?: string;
+  /** Explicit null clears the column to NULL (empty string would store ''). */
+  phone?: string | null;
+  avatar?: string;
+  role?: string;
+  is_active?: boolean;
+}
 
 export const usersApi = {
-  getAll: (params?: any) => apiClient.get<ApiResponse<User[]>>(API_ENDPOINTS.USERS.BASE, { params } as any),
-  getById: (id: string) => apiClient.get<ApiResponse<User>>(API_ENDPOINTS.USERS.BY_ID(id)),
-  create: (data: Partial<User>) => apiClient.post<ApiResponse<User>>(API_ENDPOINTS.USERS.BASE, data),
-  update: (id: string, data: Partial<User>) => apiClient.put<ApiResponse<User>>(API_ENDPOINTS.USERS.BY_ID(id), data),
-  delete: (id: string) => apiClient.delete<ApiResponse<void>>(API_ENDPOINTS.USERS.BY_ID(id)),
-  lock: (id: string) => apiClient.post<ApiResponse<void>>(API_ENDPOINTS.USERS.LOCK(id)),
-  unlock: (id: string) => apiClient.post<ApiResponse<void>>(API_ENDPOINTS.USERS.UNLOCK(id)),
-  forcePasswordReset: (id: string) => apiClient.post<ApiResponse<void>>(API_ENDPOINTS.USERS.FORCE_PASSWORD_RESET(id)),
-  revokeSessions: (id: string) => apiClient.post<ApiResponse<void>>(API_ENDPOINTS.USERS.REVOKE_SESSIONS(id)),
+  getAll: (params?: UserListParams) =>
+    apiClient.get<ApiResponse<UserListItem[]>>(API_ENDPOINTS.USERS.BASE, { params } as RequestOptions),
+  getById: (id: string) => apiClient.get<ApiResponse<UserDetail>>(API_ENDPOINTS.USERS.BY_ID(id)),
+  create: (data: CreateUserPayload) =>
+    apiClient.post<ApiResponse<UserDetail & { invite_sent: boolean }>>(API_ENDPOINTS.USERS.BASE, data),
+  update: (id: string, data: UpdateUserPayload) =>
+    apiClient.put<ApiResponse<UserDetail>>(API_ENDPOINTS.USERS.BY_ID(id), data),
+  delete: (id: string) =>
+    apiClient.delete<ApiResponse<null>>(API_ENDPOINTS.USERS.BY_ID(id)),
+
+  activate: (id: string) => apiClient.patch<ApiResponse<UserListItem>>(API_ENDPOINTS.USERS.ACTIVATE(id)),
+  deactivate: (id: string) => apiClient.patch<ApiResponse<UserListItem>>(API_ENDPOINTS.USERS.DEACTIVATE(id)),
+  suspend: (id: string) => apiClient.patch<ApiResponse<UserListItem>>(API_ENDPOINTS.USERS.SUSPEND(id)),
+  restore: (id: string) => apiClient.patch<ApiResponse<UserListItem>>(API_ENDPOINTS.USERS.RESTORE(id)),
+
+  lock: (id: string) => apiClient.post<ApiResponse<UserListItem>>(API_ENDPOINTS.USERS.LOCK(id)),
+  unlock: (id: string) => apiClient.post<ApiResponse<UserListItem>>(API_ENDPOINTS.USERS.UNLOCK(id)),
+  forcePasswordReset: (id: string) =>
+    apiClient.post<ApiResponse<{ email_sent: boolean }>>(API_ENDPOINTS.USERS.FORCE_PASSWORD_RESET(id)),
+  revokeSessions: (id: string) => apiClient.post<ApiResponse<null>>(API_ENDPOINTS.USERS.REVOKE_SESSIONS(id)),
+
+  bulkAction: (action: BulkUserAction, userIds: string[]) =>
+    apiClient.post<ApiResponse<BulkActionResult>>(API_ENDPOINTS.USERS.BULK, { action, user_ids: userIds }),
+
+  getRoles: (id: string) => apiClient.get<ApiResponse<UserRolesInfo>>(API_ENDPOINTS.USERS.ROLES(id)),
+  updateRoles: (id: string, role: string) =>
+    apiClient.put<ApiResponse<{ role: string }>>(API_ENDPOINTS.USERS.ROLES(id), { roles: [role] }),
+
+  getPermissions: (id: string) =>
+    apiClient.get<ApiResponse<UserPermissionsInfo>>(API_ENDPOINTS.USERS.PERMISSIONS(id)),
+
+  getSessions: (id: string) => apiClient.get<ApiResponse<UserSessionInfo[]>>(API_ENDPOINTS.USERS.SESSIONS(id)),
+  revokeSession: (id: string, sessionId: string) =>
+    apiClient.delete<ApiResponse<null>>(API_ENDPOINTS.USERS.SESSION(id, sessionId)),
+
+  getLoginHistory: (id: string, limit?: number) =>
+    apiClient.get<ApiResponse<LoginHistoryEntry[]>>(API_ENDPOINTS.USERS.LOGIN_HISTORY(id), {
+      params: limit ? { limit } : undefined,
+    } as RequestOptions),
+
+  getActivity: (id: string, params?: { page?: number; limit?: number }) =>
+    apiClient.get<ApiResponse<UserActivityEntry[]>>(API_ENDPOINTS.USERS.ACTIVITY(id), {
+      params,
+    } as RequestOptions),
+
+  /** Raw CSV response — the caller extracts the blob + Content-Disposition filename. */
+  exportCsv: (params?: UserListParams) =>
+    apiClient.getResponse(API_ENDPOINTS.USERS.EXPORT, { params } as RequestOptions),
 };
 
 export const employeesApi = {

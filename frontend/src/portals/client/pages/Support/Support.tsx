@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import DataTable from '../../../../shared/components/DataTable';
 import StatusBadge from '../../../../shared/components/StatusBadge';
