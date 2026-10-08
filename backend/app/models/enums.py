@@ -2,10 +2,15 @@ import enum
 
 
 class UserRole(str, enum.Enum):
+    # Must stay value-compatible with the DB `user_role` enum type, which
+    # already contains all 14 values (migrations 4fd2db9b42b4 + 7130a92059c9).
+    # Python previously lagged behind with 11, which crashed UserOut
+    # serialization for rows holding marketing/guest/partner.
     super_admin = "super_admin"
     admin = "admin"
     hr = "hr"
     sales = "sales"
+    marketing = "marketing"
     project_manager = "project_manager"
     developer = "developer"
     qa = "qa"
@@ -13,7 +18,8 @@ class UserRole(str, enum.Enum):
     finance = "finance"
     client = "client"
     employee = "employee"
-  
+    guest = "guest"
+    partner = "partner"
 
 
 class EmploymentType(str, enum.Enum):

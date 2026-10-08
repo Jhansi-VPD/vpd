@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import Boolean, DateTime, Enum, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
@@ -41,6 +41,12 @@ class User(Base):
     is_locked: Mapped[bool] = mapped_column(Boolean, default=False)
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
+    # Administrative suspension (distinct from deactivation and from
+    # brute-force lockout): set by an admin via PATCH /users/{id}/suspend,
+    # cleared by /restore or /activate. Kept separate from is_active so
+    # suspension reason/policy can evolve independently.
+    suspended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
     # MFA/2FA (TOTP) — per-account opt-in, only usable at all when
     # settings.mfa_enabled is True (core/config.py). OFF by default for every
     # account; enabling this is entirely a user action via
@@ -56,3 +62,22 @@ class User(Base):
     audit_logs = relationship("AuditLog", back_populates="user")
     sessions = relationship("UserSession", back_populates="user")
     oauth_accounts = relationship("OAuthAccount", back_populates="user")
+
+    @property
+    def status(self) -> str:
+        """Derived display status. Precedence mirrors the SQL filter logic in
+        routers/users.py `_status_condition` — keep both in sync.
+
+        Values are restricted to what the existing schema can actually
+        represent (no invented statuses): suspended > inactive > locked >
+        pending > active. "pending" = never verified their email.
+        """
+        if self.suspended_at is not None:
+            return "suspended"
+        if not self.is_active:
+            return "inactive"
+        if self.is_locked and (self.locked_until is None or self.locked_until > datetime.now(UTC)):
+            return "locked"
+        if not self.is_email_verified:
+            return "pending"
+        return "active"

@@ -1,5 +1,25 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
+export interface RequestOptions extends RequestInit {
+  params?: Record<string, unknown>;
+}
+
+function buildQueryString(params?: Record<string, unknown>): string {
+  if (!params) return '';
+  const qs = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') return;
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        if (item !== undefined && item !== null && item !== '') qs.append(key, String(item));
+      });
+    } else {
+      qs.append(key, String(value));
+    }
+  });
+  return qs.toString();
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -15,27 +35,50 @@ class ApiClient {
     }
   }
 
-  async request<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  /** Double-submit CSRF: backend sets the non-httpOnly cf_csrf_token cookie at
+   * login and rejects state-changing cookie-auth requests without a matching
+   * X-CSRF-Token header (backend/app/core/csrf.py). */
+  private getCsrfToken(): string | null {
+    try {
+      const match = document.cookie.match(/(?:^|;\s*)cf_csrf_token=([^;]+)/);
+      return match ? decodeURIComponent(match[1]) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private buildRequest(endpoint: string, options: RequestOptions = {}) {
+    const { params, ...fetchOptions } = options;
+    let url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    const query = buildQueryString(params);
+    if (query) {
+      url += (url.includes('?') ? '&' : '?') + query;
+    }
     const token = this.getAuthToken();
+    const csrfToken = this.getCsrfToken();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...((options.headers as Record<string, string>) || {}),
+      ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+      ...((fetchOptions.headers as Record<string, string>) || {}),
     };
 
     // If uploading FormData, delete Content-Type to allow boundary header
-    if (options.body instanceof FormData) {
+    if (fetchOptions.body instanceof FormData) {
       delete headers['Content-Type'];
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-      credentials: 'include',
-    });
+    return {
+      url,
+      fetchOptions: { ...fetchOptions, headers, credentials: 'include' as RequestCredentials },
+    };
+  }
+
+  async request<T = any>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { url, fetchOptions } = this.buildRequest(endpoint, options);
+    const response = await fetch(url, fetchOptions);
 
     let data: any = null;
     const contentType = response.headers.get('content-type') || '';
@@ -56,11 +99,18 @@ class ApiClient {
     return data;
   }
 
-  get<T = any>(endpoint: string, options?: RequestInit) {
+  /** Raw Response — used for file downloads where headers (Content-Disposition)
+   * and the body stream matter and must not be pre-parsed. */
+  async getResponse(endpoint: string, options: RequestOptions = {}): Promise<Response> {
+    const { url, fetchOptions } = this.buildRequest(endpoint, { ...options, method: 'GET' });
+    return fetch(url, fetchOptions);
+  }
+
+  get<T = any>(endpoint: string, options?: RequestOptions) {
     return this.request<T>(endpoint, { ...options, method: 'GET' });
   }
 
-  post<T = any>(endpoint: string, body?: any, options?: RequestInit) {
+  post<T = any>(endpoint: string, body?: any, options?: RequestOptions) {
     return this.request<T>(endpoint, {
       ...options,
       method: 'POST',
@@ -68,7 +118,7 @@ class ApiClient {
     });
   }
 
-  put<T = any>(endpoint: string, body?: any, options?: RequestInit) {
+  put<T = any>(endpoint: string, body?: any, options?: RequestOptions) {
     return this.request<T>(endpoint, {
       ...options,
       method: 'PUT',
@@ -76,7 +126,7 @@ class ApiClient {
     });
   }
 
-  patch<T = any>(endpoint: string, body?: any, options?: RequestInit) {
+  patch<T = any>(endpoint: string, body?: any, options?: RequestOptions) {
     return this.request<T>(endpoint, {
       ...options,
       method: 'PATCH',
@@ -84,7 +134,7 @@ class ApiClient {
     });
   }
 
-  delete<T = any>(endpoint: string, options?: RequestInit) {
+  delete<T = any>(endpoint: string, options?: RequestOptions) {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
 }
