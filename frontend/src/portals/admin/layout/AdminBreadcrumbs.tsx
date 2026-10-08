@@ -5,8 +5,8 @@ import React from 'react';
 
 
 export const AdminBreadcrumbs: React.FC = () => {
-  const location = { pathname: usePathname() };
-  const segments = location.pathname.split('/').filter(Boolean);
+  const pathname = usePathname();
+  const segments = pathname.split('/').filter(Boolean);
 
   return (
     <nav className="flex items-center space-x-2 text-xs text-zinc-400 mb-6">

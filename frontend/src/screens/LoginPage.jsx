@@ -17,7 +17,7 @@ export default function LoginPage() {
 
   const demoAccounts = [
     { role: 'Admin', email: 'admin@vpdtechnologies.com', path: '/admin' },
-    { role: 'Manager', email: 'pm@vpdtechnologies.com', path: '/project-manager' },
+    { role: 'Manager', email: 'pm@vpdtechnologies.com', path: '/delivery' },
     { role: 'HR', email: 'hr@vpdtechnologies.com', path: '/hr' },
     { role: 'Sales', email: 'sales@vpdtechnologies.com', path: '/sales' },
     { role: 'Client', email: 'client@vpdtechnologies.com', path: '/client' },
@@ -48,7 +48,7 @@ export default function LoginPage() {
           navigate.push('/hr');
           break;
         case 'project_manager':
-          navigate.push('/project-manager');
+          navigate.push('/delivery');
           break;
         case 'client':
           navigate.push('/client');

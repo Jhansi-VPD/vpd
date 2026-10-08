@@ -17,7 +17,7 @@ export default function ProtectedRoute({ allowedRoles = [], children }) {
     if (initializing) return;
 
     if (!isAuthenticated || !user) {
-      navigate.replace('/login');
+      navigate.replace('/auth/login');
       return;
     }
 

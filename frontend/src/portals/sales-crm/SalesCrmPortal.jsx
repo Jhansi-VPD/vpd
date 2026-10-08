@@ -9,7 +9,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function SalesCrmPortal() {
   const { user } = useAuth();
-  const location = { pathname: usePathname() };
+  const pathname = usePathname();
   const navigate = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
@@ -83,8 +83,8 @@ export default function SalesCrmPortal() {
 
   // Sync activeTab with URL path or hash
   useEffect(() => {
-    const pathSeg = location.pathname.split('/').filter(Boolean)[1];
-    const hash = location.hash.replace('#', '');
+    const pathSeg = pathname.split('/').filter(Boolean)[1];
+    const hash = window.location.hash.replace('#', '');
     const rawTab = pathSeg || hash || 'dashboard';
     const targetTab = rawTab === 'pipeline' ? 'dashboard' : rawTab;
     const validTabs = [
@@ -105,7 +105,7 @@ export default function SalesCrmPortal() {
     if (validTabs.includes(targetTab)) {
       setActiveTab(targetTab);
     }
-  }, [location.pathname, location.hash]);
+  }, [pathname]);
 
   const loadData = async () => {
     setLoading(true);

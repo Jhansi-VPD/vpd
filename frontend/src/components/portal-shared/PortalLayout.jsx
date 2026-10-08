@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from 'react';
-import { NavLink } from "react-router-dom";
 import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function PortalLayout({
@@ -19,9 +18,9 @@ export default function PortalLayout({
   const handleLogout = async () => {
     try {
       await logout();
-      navigate.push('/login');
+      navigate.push('/auth/login');
     } catch {
-      navigate.push('/login');
+      navigate.push('/auth/login');
     }
   };
 
@@ -83,9 +82,9 @@ export default function PortalLayout({
               {section.items.map((item) => {
                 const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path + '/'));
                 return (
-                  <NavLink
+                  <Link
                     key={item.path}
-                    to={item.path}
+                    href={item.path}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`
                       flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group
@@ -103,7 +102,7 @@ export default function PortalLayout({
                         {item.badge}
                       </span>
                     )}
-                  </NavLink>
+                  </Link>
                 );
               })}
             </div>
