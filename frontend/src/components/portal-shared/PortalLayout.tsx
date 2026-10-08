@@ -2,17 +2,36 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../context/AuthContext';
+
+export interface PortalNavItem {
+  path: string;
+  label: string;
+  icon?: React.ReactNode;
+  badge?: React.ReactNode;
+}
+
+export interface PortalNavSection {
+  title?: string;
+  items: PortalNavItem[];
+}
+
+interface PortalLayoutProps {
+  portalName: string;
+  portalBadge?: string;
+  navSections?: PortalNavSection[];
+  children?: React.ReactNode;
+}
 
 export default function PortalLayout({
   portalName,
   portalBadge,
   navSections = [],
   children,
-}) {
+}: PortalLayoutProps) {
   const { user, logout } = useAuth();
   const navigate = useRouter();
-  const location = { pathname: usePathname() };
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -80,7 +99,7 @@ export default function PortalLayout({
                 </p>
               )}
               {section.items.map((item) => {
-                const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path + '/'));
+                const isActive = pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path + '/'));
                 return (
                   <Link
                     key={item.path}
@@ -143,4 +162,3 @@ export default function PortalLayout({
     </div>
   );
 }
-

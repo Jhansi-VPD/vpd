@@ -1,5 +1,27 @@
 import React from 'react';
 
+const BUTTON_VARIANTS = {
+  primary: 'bg-[#d4af37] hover:bg-[#dfc067] text-[#0a0a0a] font-semibold shadow-sm focus:ring-[#d4af37]',
+  secondary: 'bg-[#1e1e1e] hover:bg-[#282828] text-white border border-[#2a2a2a] focus:ring-[#d4af37]',
+  outline: 'border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37]/10 focus:ring-[#d4af37]',
+  danger: 'bg-red-600/90 hover:bg-red-600 text-white focus:ring-red-500',
+  ghost: 'text-zinc-300 hover:text-white hover:bg-white/5 focus:ring-zinc-500',
+  gold: 'bg-gradient-to-r from-[#d4af37] to-[#dfc067] text-black font-semibold hover:brightness-105 shadow-md shadow-[#d4af37]/20',
+} as const;
+
+const BUTTON_SIZES = {
+  sm: 'text-xs px-2.5 py-1.5 gap-1.5',
+  md: 'text-sm px-3.5 py-2 gap-2',
+  lg: 'text-base px-5 py-2.5 gap-2.5',
+} as const;
+
+interface SharedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: keyof typeof BUTTON_VARIANTS;
+  size?: keyof typeof BUTTON_SIZES;
+  loading?: boolean;
+  icon?: React.ReactNode;
+}
+
 export function Button({
   children,
   variant = 'primary',
@@ -11,30 +33,15 @@ export function Button({
   className = '',
   icon,
   ...props
-}) {
+}: SharedButtonProps) {
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none';
-
-  const variants = {
-    primary: 'bg-[#d4af37] hover:bg-[#dfc067] text-[#0a0a0a] font-semibold shadow-sm focus:ring-[#d4af37]',
-    secondary: 'bg-[#1e1e1e] hover:bg-[#282828] text-white border border-[#2a2a2a] focus:ring-[#d4af37]',
-    outline: 'border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37]/10 focus:ring-[#d4af37]',
-    danger: 'bg-red-600/90 hover:bg-red-600 text-white focus:ring-red-500',
-    ghost: 'text-zinc-300 hover:text-white hover:bg-white/5 focus:ring-zinc-500',
-    gold: 'bg-gradient-to-r from-[#d4af37] to-[#dfc067] text-black font-semibold hover:brightness-105 shadow-md shadow-[#d4af37]/20',
-  };
-
-  const sizes = {
-    sm: 'text-xs px-2.5 py-1.5 gap-1.5',
-    md: 'text-sm px-3.5 py-2 gap-2',
-    lg: 'text-base px-5 py-2.5 gap-2.5',
-  };
 
   return (
     <button
       type={type}
       disabled={disabled || loading}
       onClick={onClick}
-      className={`${baseStyles} ${variants[variant] || variants.primary} ${sizes[size] || sizes.md} ${className}`}
+      className={`${baseStyles} ${BUTTON_VARIANTS[variant] || BUTTON_VARIANTS.primary} ${BUTTON_SIZES[size] || BUTTON_SIZES.md} ${className}`}
       {...props}
     >
       {loading && (
@@ -49,9 +56,13 @@ export function Button({
   );
 }
 
-export function StatusBadge({ status = 'active' }) {
+interface SharedStatusBadgeProps {
+  status?: string;
+}
+
+export function StatusBadge({ status = 'active' }: SharedStatusBadgeProps) {
   const norm = String(status || '').toLowerCase().replace(/_/g, ' ');
-  
+
   const getStyles = () => {
     switch (norm) {
       case 'active':
@@ -94,7 +105,16 @@ export function StatusBadge({ status = 'active' }) {
   );
 }
 
-export function Card({ children, className = '', title, subtitle, action, footer }) {
+interface CardProps {
+  children?: React.ReactNode;
+  className?: string;
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  action?: React.ReactNode;
+  footer?: React.ReactNode;
+}
+
+export function Card({ children, className = '', title, subtitle, action, footer }: CardProps) {
   return (
     <div className={`bg-[#171717] border border-[#2a2a2a] rounded-xl p-5 shadow-sm text-white ${className}`}>
       {(title || subtitle || action) && (
@@ -112,7 +132,17 @@ export function Card({ children, className = '', title, subtitle, action, footer
   );
 }
 
-export function MetricCard({ label, value, change, icon, trend = 'neutral', subtitle, onClick }) {
+interface MetricCardProps {
+  label: React.ReactNode;
+  value?: React.ReactNode;
+  change?: React.ReactNode;
+  icon?: React.ReactNode;
+  trend?: 'up' | 'down' | 'neutral';
+  subtitle?: React.ReactNode;
+  onClick?: () => void;
+}
+
+export function MetricCard({ label, value, change, icon, trend = 'neutral', subtitle, onClick }: MetricCardProps) {
   return (
     <div
       onClick={onClick}
@@ -139,7 +169,12 @@ export function MetricCard({ label, value, change, icon, trend = 'neutral', subt
   );
 }
 
-export function LoadingSkeleton({ count = 3, height = 'h-10' }) {
+interface LoadingSkeletonProps {
+  count?: number;
+  height?: string;
+}
+
+export function LoadingSkeleton({ count = 3, height = 'h-10' }: LoadingSkeletonProps) {
   return (
     <div className="space-y-3 animate-pulse">
       {Array.from({ length: count }).map((_, i) => (
@@ -149,7 +184,13 @@ export function LoadingSkeleton({ count = 3, height = 'h-10' }) {
   );
 }
 
-export function EmptyState({ title = 'No records found', message = 'No data available to display right now.', action }) {
+interface SharedEmptyStateProps {
+  title?: React.ReactNode;
+  message?: React.ReactNode;
+  action?: React.ReactNode;
+}
+
+export function EmptyState({ title = 'No records found', message = 'No data available to display right now.', action }: SharedEmptyStateProps) {
   return (
     <div className="text-center py-12 px-4 border border-dashed border-[#2a2a2a] rounded-xl bg-[#141414]">
       <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#1e1e1e] flex items-center justify-center text-zinc-400">
@@ -164,7 +205,15 @@ export function EmptyState({ title = 'No records found', message = 'No data avai
   );
 }
 
-export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }) {
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: React.ReactNode;
+  children?: React.ReactNode;
+  maxWidth?: string;
+}
+
+export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -182,4 +231,3 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' 
     </div>
   );
 }
-

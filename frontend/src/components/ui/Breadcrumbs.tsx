@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import React from 'react';
 
-
-function formatLabel(segment) {
+function formatLabel(segment: string) {
   return segment
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -11,7 +11,7 @@ function formatLabel(segment) {
 }
 
 export default function Breadcrumbs() {
-  const { pathname } = useLocation();
+  const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
 
   if (segments.length === 0) return null;

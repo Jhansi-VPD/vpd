@@ -1,7 +1,20 @@
-import Icon from '../ui/Icon.jsx';
-import Button from '../ui/Button.jsx';
+import React from 'react';
+import Icon from './Icon';
+import Button from './Button';
 
-export default function EmptyState({ icon, title, description, action }) {
+interface EmptyStateAction {
+  label: React.ReactNode;
+  onClick?: () => void;
+}
+
+interface EmptyStateProps {
+  icon?: string;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  action?: EmptyStateAction;
+}
+
+export default function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
       {icon && <Icon name={icon} className="text-5xl text-ink-muted mb-4" />}

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import Icon from './Icon.jsx';
+import Icon from './Icon';
 
 export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
