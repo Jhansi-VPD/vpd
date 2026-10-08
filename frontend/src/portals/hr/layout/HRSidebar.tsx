@@ -1,5 +1,6 @@
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { useLayout } from '../../../app/providers/LayoutProvider';
 
 interface NavItem {
@@ -111,6 +112,7 @@ const hrNav: NavItem[] = [
 ];
 
 export const HRSidebar: React.FC = () => {
+  const pathname = usePathname();
   const { sidebarOpen, setSidebarOpen } = useLayout();
 
   return (
@@ -151,21 +153,13 @@ export const HRSidebar: React.FC = () => {
 
         <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
           {hrNav.map((item) => (
-            <NavLink
+            <Link
               key={item.path}
-              to={item.path}
-              end={item.path === '/hr'}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 text-xs rounded-lg font-medium transition-all ${
-                  isActive
-                    ? 'bg-[#C9A84C]/15 text-[#EDB940] border border-[#C9A84C]/40 shadow-sm shadow-[#C9A84C]/10 font-semibold'
-                    : 'text-[#9B9DA3] hover:text-[#F5F5F2] hover:bg-[#15181D]'
-                }`
-              }
+              href={item.path}
+              className={`flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors  {(item.path === '/admin' || item.path === '/client' || item.path === '/employee' || item.path === '/hr' || item.path === '/manager' || item.path === '/sales' ? pathname === item.path : pathname.startsWith(item.path)) ? 'bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30' : 'text-[#A1A1AA] hover:text-white hover:bg-[#262626]'}`}
             >
-              <item.icon className="w-4 h-4 flex-shrink-0 opacity-90" />
-              <span className="truncate">{item.label}</span>
-            </NavLink>
+              {item.label}
+            </Link>
           ))}
         </nav>
 

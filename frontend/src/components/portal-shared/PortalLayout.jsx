@@ -1,5 +1,8 @@
+"use client";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function PortalLayout({
@@ -9,16 +12,16 @@ export default function PortalLayout({
   children,
 }) {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useRouter();
+  const location = { pathname: usePathname() };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/login');
+      navigate.push('/login');
     } catch {
-      navigate('/login');
+      navigate.push('/login');
     }
   };
 

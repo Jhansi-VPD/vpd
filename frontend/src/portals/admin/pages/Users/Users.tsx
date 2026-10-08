@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { usersApi } from '../../../../api';
 import DataTable from '../../../../shared/components/DataTable';

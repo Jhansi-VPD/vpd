@@ -1,5 +1,7 @@
+"use client";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+
 import PortalLayout from '../../components/portal-shared/PortalLayout.jsx';
 import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents.jsx';
 import { supabaseRest } from '../../api/supabaseClient.js';
@@ -7,8 +9,8 @@ import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function SalesCrmPortal() {
   const { user } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = { pathname: usePathname() };
+  const navigate = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
 
@@ -373,7 +375,7 @@ export default function SalesCrmPortal() {
 
   const handleTabSelect = (tab) => {
     setActiveTab(tab);
-    navigate(`/sales/${tab}`);
+    navigate.push(`/sales/${tab}`);
   };
 
   const navSections = [

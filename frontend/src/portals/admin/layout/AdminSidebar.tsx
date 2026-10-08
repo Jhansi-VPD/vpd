@@ -1,5 +1,6 @@
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { useLayout } from '../../../app/providers/LayoutProvider';
 
 const adminNav = [
@@ -27,6 +28,7 @@ const adminNav = [
 ];
 
 export const AdminSidebar: React.FC = () => {
+  const pathname = usePathname();
   const { sidebarOpen, setSidebarOpen } = useLayout();
 
   return (
@@ -61,20 +63,13 @@ export const AdminSidebar: React.FC = () => {
         </div>
         <nav className="p-3 space-y-1 flex-1">
           {adminNav.map((item) => (
-            <NavLink
+            <Link
               key={item.path}
-              to={item.path}
-              end={item.path === '/admin'}
-              className={({ isActive }) =>
-                `flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors ${
-                  isActive
-                    ? 'bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30'
-                    : 'text-[#A1A1AA] hover:text-white hover:bg-[#262626]'
-                }`
-              }
+              href={item.path}
+              className={`flex items-center px-3 py-2 text-xs rounded-lg font-medium transition-colors  {(item.path === '/admin' || item.path === '/client' || item.path === '/employee' || item.path === '/hr' || item.path === '/manager' || item.path === '/sales' ? pathname === item.path : pathname.startsWith(item.path)) ? 'bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30' : 'text-[#A1A1AA] hover:text-white hover:bg-[#262626]'}`}
             >
               {item.label}
-            </NavLink>
+            </Link>
           ))}
         </nav>
       </aside>

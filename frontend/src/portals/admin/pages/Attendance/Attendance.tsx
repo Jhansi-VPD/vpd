@@ -136,6 +136,7 @@ export const Attendance: React.FC = () => {
           { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'present'} /> },
         ]}
       />
+    </div>
     </PageContainer>
   );
 }

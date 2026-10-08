@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import { leaveApi } from '../../../../api';
 import Button from '../../../../shared/components/Button';

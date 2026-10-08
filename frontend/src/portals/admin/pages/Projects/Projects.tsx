@@ -1,3 +1,4 @@
+"use client";
 import PageContainer from '../../../../shared/components/PageContainer';
 import PageHeader from '../../../../shared/components/PageHeader';
 import React, { useEffect, useState } from 'react';

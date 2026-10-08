@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { redirect } from 'next/navigation';
 import { useAuth } from './auth.context';
 
 interface RoleRouteProps {
@@ -19,18 +19,20 @@ export const RoleRoute: React.FC<RoleRouteProps> = ({ allowedRoles, children }) 
   }
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
+    redirect('/auth/login'); return null;
   }
 
   const role = String(user.role || '').toLowerCase();
   const isAllowed = allowedRoles.includes(role) || role === 'super_admin';
 
   if (!isAllowed) {
-    return <Navigate to="/auth/unauthorized" replace />;
+    redirect('/auth/unauthorized'); return null;
   }
 
   return <>{children}</>;
 };
 
 export default RoleRoute;
+
+
 

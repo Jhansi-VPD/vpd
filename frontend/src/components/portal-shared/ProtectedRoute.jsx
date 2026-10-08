@@ -1,5 +1,7 @@
+"use client";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../../context/AuthContext.jsx';
 
 /**
@@ -8,14 +10,14 @@ import { useAuth } from '../../context/AuthContext.jsx';
  */
 export default function ProtectedRoute({ allowedRoles = [], children }) {
   const { user, isAuthenticated, initializing } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useRouter();
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     if (initializing) return;
 
     if (!isAuthenticated || !user) {
-      navigate('/login', { replace: true });
+      navigate.replace('/login');
       return;
     }
 
@@ -35,26 +37,26 @@ export default function ProtectedRoute({ allowedRoles = [], children }) {
       switch (userRole) {
         case 'admin':
         case 'finance':
-          navigate('/admin', { replace: true });
+          navigate.replace('/admin');
           break;
         case 'sales':
         case 'marketing':
-          navigate('/sales', { replace: true });
+          navigate.replace('/sales');
           break;
         case 'hr':
-          navigate('/hr', { replace: true });
+          navigate.replace('/hr');
           break;
         case 'project_manager':
-          navigate('/delivery', { replace: true });
+          navigate.replace('/delivery');
           break;
         case 'client':
-          navigate('/client', { replace: true });
+          navigate.replace('/client');
           break;
         case 'partner':
-          navigate('/partner', { replace: true });
+          navigate.replace('/partner');
           break;
         default:
-          navigate('/employee', { replace: true });
+          navigate.replace('/employee');
       }
     }
   }, [isAuthenticated, user, initializing, allowedRoles, navigate]);

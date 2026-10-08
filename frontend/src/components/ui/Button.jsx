@@ -1,3 +1,4 @@
+import Link from "next/link";
 const VARIANTS = {
   primary: 'bg-brand text-white hover:bg-brand-dark',
   inverse: 'bg-white text-brand hover:bg-accent-cyan-pale',

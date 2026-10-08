@@ -73,7 +73,8 @@ export const LeaveManagement: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <>
+      <PageContainer>
       <PageHeader
         title="Leave Approvals Management"
         description="Review pending paid time off, sick leave, and casual leave applications"
@@ -120,6 +121,7 @@ export const LeaveManagement: React.FC = () => {
         ]}
       />
 
+    </div>
     </PageContainer>
       {showApplyModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
@@ -182,7 +184,7 @@ export const LeaveManagement: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 export default LeaveManagement;

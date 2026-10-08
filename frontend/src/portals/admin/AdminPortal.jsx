@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import PortalLayout from '../../components/portal-shared/PortalLayout.jsx';
 import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents.jsx';

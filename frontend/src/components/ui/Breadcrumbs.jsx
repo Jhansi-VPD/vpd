@@ -1,4 +1,7 @@
-import { Link, useLocation } from 'react-router-dom';
+"use client";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+
 
 function formatLabel(segment) {
   return segment
@@ -17,7 +20,7 @@ export default function Breadcrumbs() {
     <nav aria-label="Breadcrumb" itemScope itemType="https://schema.org/BreadcrumbList">
       <ol className="flex items-center gap-2 text-body-sm text-white/70">
         <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-          <Link to="/" itemProp="item" className="hover:text-accent-cyan transition-colors">
+          <Link href="/" itemProp="item" className="hover:text-accent-cyan transition-colors">
             <span itemProp="name">Home</span>
           </Link>
           <meta itemProp="position" content="1" />
@@ -32,7 +35,7 @@ export default function Breadcrumbs() {
               {isLast ? (
                 <span itemProp="name" className="text-white font-semibold">{formatLabel(segment)}</span>
               ) : (
-                <Link to={href} itemProp="item" className="hover:text-accent-cyan transition-colors">
+                <Link href={href} itemProp="item" className="hover:text-accent-cyan transition-colors">
                   <span itemProp="name">{formatLabel(segment)}</span>
                 </Link>
               )}

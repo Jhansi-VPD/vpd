@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';

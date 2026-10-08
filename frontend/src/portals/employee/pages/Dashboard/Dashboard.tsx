@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { attendanceApi } from '../../../../api';
 import { MetricCard } from '../../../../shared/components/Charts';

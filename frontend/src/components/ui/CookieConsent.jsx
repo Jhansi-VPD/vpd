@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 const STORAGE_KEY = 'vpd.cookies';

@@ -62,7 +62,8 @@ export const Timesheets: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <>
+      <PageContainer>
       <PageHeader
         title="Workforce Timesheets"
         description="Billable hours logged against enterprise contracts"
@@ -92,6 +93,7 @@ export const Timesheets: React.FC = () => {
           { header: 'Status', accessor: (row) => <StatusBadge status={row.status || 'submitted'} /> },
         ]}
       />
+    </div>
     </PageContainer>
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
@@ -153,7 +155,7 @@ export const Timesheets: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 export default Timesheets;
