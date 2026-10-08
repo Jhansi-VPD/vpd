@@ -3,7 +3,6 @@ import React from 'react';
 
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
-import AdminBreadcrumbs from './AdminBreadcrumbs';
 
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -13,7 +12,6 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         <AdminHeader />
         <main className="flex-1 overflow-y-auto bg-[#111111]">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
-            <AdminBreadcrumbs />
             {children}
           </div>
         </main>

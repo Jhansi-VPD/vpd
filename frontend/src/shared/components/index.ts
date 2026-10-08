@@ -6,6 +6,7 @@ export * from './StatCard';
 export * from './Modal';
 export * from './Drawer';
 export * from './Form';
+export * from './Icon';
 export * from './Input';
 export * from './Select';
 export * from './DatePicker';
