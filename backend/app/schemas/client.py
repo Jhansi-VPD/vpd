@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime
+
 from pydantic import BaseModel, EmailStr
+
 from app.schemas.common import TimestampedRead
 
 
@@ -74,7 +76,7 @@ class ClientInvoiceOut(TimestampedRead):
 class ClientTicketOut(TimestampedRead):
     subject: str
     status: str
-    category: str
+    category: str = "general"
 
 
 class ClientTicketCreate(BaseModel):

@@ -92,12 +92,15 @@ async def update_task_status(
 ):
     existing = await crud.get(db, task_id)
     _require_privileged_or_assignee(current_user, existing)
-    previous_status = existing.status
+    previous_status = getattr(existing, "status", None)
 
     task = await crud.update(db, task_id, payload.model_dump())
-    await recompute_project_progress(db, task.project_id)
-    if task.status != previous_status:
-        await _log_task_activity(db, task.id, "status_changed", f"Status changed from {previous_status.value} to {task.status.value}", current_user.id)
+    if hasattr(task, "project_id") and task.project_id:
+        await recompute_project_progress(db, task.project_id)
+    if previous_status is not None and getattr(task, "status", None) != previous_status:
+        from_val = previous_status.value if hasattr(previous_status, "value") else str(previous_status)
+        to_val = task.status.value if hasattr(task.status, "value") else str(task.status)
+        await _log_task_activity(db, task.id, "status_changed", f"Status changed from {from_val} to {to_val}", current_user.id)
     return success_response(data=TaskOut.model_validate(task), message="Task status updated")
 
 

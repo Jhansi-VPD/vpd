@@ -33,7 +33,7 @@ from app.core.tokens import hash_token
 from app.models.mfa_challenge import MfaChallenge
 from app.models.oauth_account import OAuthAccount
 from app.models.user import User
-from app.routers.auth import LOGIN_ALLOWLIST
+from app.routers.auth import _login_allowed
 from app.services.auth_service import create_session, record_successful_login
 
 router = APIRouter(prefix="/auth/oauth", tags=["OAuth"])
@@ -221,7 +221,7 @@ async def oauth_callback(
     if user is None or not user.is_active:
         return _failure_redirect("account_unavailable")
 
-    if user.email.strip().lower() not in LOGIN_ALLOWLIST:
+    if not _login_allowed(user.email):
         # Same six-account policy as POST /auth/login (see vpd/docs/credentials.md).
         return _failure_redirect("account_unavailable")
 

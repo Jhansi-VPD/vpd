@@ -31,7 +31,7 @@ async def get_current_user(
     token = request.cookies.get(ACCESS_TOKEN_COOKIE)
     if not token:
         auth_header = request.headers.get("Authorization")
-        if auth_header and auth_header.startswith("Bearer "):
+        if isinstance(auth_header, str) and auth_header.startswith("Bearer "):
             token = auth_header[7:].strip()
     if not token:
         raise ApiError.unauthorized("Authentication token missing")
@@ -49,7 +49,7 @@ async def get_optional_user(
     token = request.cookies.get(ACCESS_TOKEN_COOKIE)
     if not token:
         auth_header = request.headers.get("Authorization")
-        if auth_header and auth_header.startswith("Bearer "):
+        if isinstance(auth_header, str) and auth_header.startswith("Bearer "):
             token = auth_header[7:].strip()
     if not token:
         return None
@@ -106,6 +106,7 @@ def require_permissions(*permissions: str):
     """
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
+
     from app.models.role import Role
 
     async def dependency(

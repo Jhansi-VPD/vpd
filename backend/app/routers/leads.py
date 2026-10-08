@@ -18,8 +18,13 @@ from app.models.proposal import Proposal
 from app.models.user import User
 from app.schemas.client import ClientOut
 from app.schemas.crm import (
-    LeadActivityOut, LeadCreate, LeadDisqualifyRequest, LeadLogCallRequest,
-    LeadOut, LeadRequirementGatheringRequest, LeadUpdate,
+    LeadActivityOut,
+    LeadCreate,
+    LeadDisqualifyRequest,
+    LeadLogCallRequest,
+    LeadOut,
+    LeadRequirementGatheringRequest,
+    LeadUpdate,
 )
 from app.services.client_provisioning import provision_client_account
 from app.services.lead_pipeline import advance_lead_status, log_lead_activity
@@ -28,7 +33,7 @@ from app.services.project_provisioning import provision_project_for_accepted_pro
 from app.utils.pagination import PageParams, page_params
 from app.utils.responses import build_pagination_meta, success_response
 
-router = APIRouter(prefix="/leads", tags=["CRM — Leads"], dependencies=[Depends(require_roles("sales", "admin", "project_manager"))])
+router = APIRouter(prefix="/leads", tags=["CRM — Leads"], dependencies=[Depends(require_roles("sales", "admin", "project_manager", "marketing"))])
 
 crud = CRUDBase(Lead, searchable_fields=["company", "contact_name", "email"])
 

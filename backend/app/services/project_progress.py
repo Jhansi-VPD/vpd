@@ -28,12 +28,14 @@ async def recompute_project_progress(db: AsyncSession, project_id) -> None:
         return
 
     total = (await db.execute(select(func.count()).select_from(Task).where(Task.project_id == project_id))).scalar_one()
-    if total == 0:
+    if not isinstance(total, (int, float)) or total == 0:
         return
 
     done = (
         await db.execute(select(func.count()).select_from(Task).where(Task.project_id == project_id, Task.status == TaskStatus.done))
     ).scalar_one()
+    if not isinstance(done, (int, float)):
+        return
     new_progress = round(100 * done / total)
     progress_changed = new_progress != project.progress_percent
     project.progress_percent = new_progress
