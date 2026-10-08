@@ -139,7 +139,7 @@ export const salesApi = {
 };
 
 export const leadsApi = {
-  getAll: () => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.SALES.LEADS),
+  getAll: (params?: any) => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.SALES.LEADS, { params } as any),
   create: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.SALES.LEADS, data),
 };
 

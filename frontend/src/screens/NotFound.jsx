@@ -20,7 +20,7 @@ export default function NotFound() {
         <p className="font-stat text-stat-lg text-brand mb-4">404</p>
         <h1 className="font-display text-display-md text-brand-dark mb-4">Page Not Found</h1>
         <p className="text-body-md text-ink-muted mb-8">
-          The page you're looking for doesn't exist or has been moved. Please check the URL or use
+          The page you&apos;re looking for doesn&apos;t exist or has been moved. Please check the URL or use
           the links below to find what you need.
         </p>
         <div className="flex flex-wrap justify-center gap-3 mb-10">

@@ -3,10 +3,8 @@ import React, { useState, useEffect } from 'react';
 import PortalLayout from '../../components/portal-shared/PortalLayout';
 import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents';
 import { supabaseRest } from '../../api/supabaseClient.js';
-import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function HrPortal() {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('employees');
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +17,6 @@ export default function HrPortal() {
 
   // Modals
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState('job');
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -132,7 +129,7 @@ export default function HrPortal() {
           <Button variant="outline" size="sm" onClick={loadData} icon={<span>🔄</span>}>
             Refresh
           </Button>
-          <Button variant="gold" size="sm" onClick={() => { setModalType('job'); setModalOpen(true); }} icon={<span>+</span>}>
+          <Button variant="gold" size="sm" onClick={() => setModalOpen(true)} icon={<span>+</span>}>
             Post Opening
           </Button>
         </div>
@@ -292,7 +289,7 @@ export default function HrPortal() {
               title="Talent Acquisition Openings"
               subtitle="Active careers listings"
               action={
-                <Button size="sm" variant="gold" onClick={() => { setModalType('job'); setModalOpen(true); }}>
+                <Button size="sm" variant="gold" onClick={() => setModalOpen(true)}>
                   + Post Job
                 </Button>
               }

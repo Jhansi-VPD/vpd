@@ -30,7 +30,6 @@ export default function useApiResource(fetchFn, adapt, fallbackData, deps = []) 
       })
       .catch((error) => {
         if (cancelled) return;
-        // eslint-disable-next-line no-console
         console.warn('[VPD] Falling back to demo data:', error.message);
         setState({ items: fallbackData, loading: false, error, isFallback: true });
       });

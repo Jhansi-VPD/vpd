@@ -106,22 +106,6 @@ class ApiClient {
     }
     const token = this.getAuthToken();
     const csrfToken = this.getCsrfToken();
-  async request<T = any>(endpoint: string, options: RequestInit & { params?: any; token?: string; headers?: any } = {}): Promise<T> {
-    let url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
-    if (options.params && typeof options.params === 'object') {
-      const searchParams = new URLSearchParams();
-      for (const [k, v] of Object.entries(options.params)) {
-        if (v !== undefined && v !== null && v !== '') {
-          searchParams.append(k, String(v));
-        }
-      }
-      const qs = searchParams.toString();
-      if (qs) {
-        url += (url.includes('?') ? '&' : '?') + qs;
-      }
-    }
-    const token = options.token || this.getAuthToken();
-    const csrfToken = getCsrfTokenFromCookie();
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -129,7 +113,6 @@ class ApiClient {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
       ...((fetchOptions.headers as Record<string, string>) || {}),
-      ...((options.headers as Record<string, string>) || {}),
     };
 
     // If uploading FormData, delete Content-Type to allow boundary header
@@ -144,12 +127,8 @@ class ApiClient {
 
   async request<T = any>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { url, fetchOptions } = this.buildRequest(endpoint, options);
-    const response = await fetch(url, fetchOptions);
-    let response = await fetch(url, {
-      ...options,
-      headers,
-      credentials: 'include',
-    });
+    let response = await fetch(url, fetchOptions);
+
     // Auto-refresh token on 401 if not already an auth endpoint
     if (response.status === 401 && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/refresh')) {
       try {
@@ -167,11 +146,11 @@ class ApiClient {
           // Retry original request with newly issued cookie/csrf token
           const retryCsrf = getCsrfTokenFromCookie();
           const retryHeaders = {
-            ...headers,
+            ...(fetchOptions.headers as Record<string, string>),
             ...(retryCsrf ? { 'X-CSRF-Token': retryCsrf } : {}),
           };
           response = await fetch(url, {
-            ...options,
+            ...fetchOptions,
             headers: retryHeaders,
             credentials: 'include',
           });

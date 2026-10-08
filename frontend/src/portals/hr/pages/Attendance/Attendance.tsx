@@ -120,7 +120,7 @@ export const Attendance: React.FC = () => {
       {/* Today summary card */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-[#15181D] border border-[#272B35] rounded-xl p-4 space-y-1">
-          <span className="text-[10px] uppercase font-mono text-[#7A7D84]">Today's Status</span>
+          <span className="text-[10px] uppercase font-mono text-[#7A7D84]">Today&apos;s Status</span>
           <p className="text-lg font-bold text-white">{isCheckedIn ? (isCheckedOut ? 'Completed' : 'Clocked In') : 'Not Started'}</p>
           <p className="text-xs text-[#16A34A]">{todayStatus?.check_in ? `In at ${todayStatus.check_in}` : '—'}</p>
         </div>

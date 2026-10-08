@@ -407,6 +407,32 @@ class TestCreateUser:
         assert emp.department_id == dept.id
         assert emp.employee_code.startswith("EMP-")
 
+    async def test_user_and_employee_share_one_transaction(self, monkeypatch):
+        """The employee profile must be staged on the session BEFORE crud.create
+        commits, and the router itself must not issue a second commit — a
+        failure during either insert has to roll back both rows."""
+        order: list[str] = []
+        inner = _fake_create([])
+
+        async def _ordered_create(db, data):
+            order.append("create")
+            return await inner(db, data)
+
+        monkeypatch.setattr(users_router.crud, "create", AsyncMock(side_effect=_ordered_create))
+        _capture_audit(monkeypatch)
+        db = _mock_db()
+        db.add = MagicMock(side_effect=lambda obj: order.append("employee" if isinstance(obj, Employee) else "add"))
+        db.execute = AsyncMock(return_value=_result_optional(None))
+
+        payload = UserCreate(
+            name="Atomic", email="atomic@vpdtechnologies.com", role="sales", password="Str0ng@Pass1"
+        )
+        result = await users_router.create_user(payload, _mock_request(), db, _make_user(role=UserRole.admin))
+
+        assert result["status_code"] == 201
+        assert "employee" in order and order.index("employee") < order.index("create")
+        db.commit.assert_not_awaited()
+
     async def test_duplicate_email_returns_409(self):
         db = _mock_db()
         db.execute = AsyncMock(return_value=_result_optional(_make_user()))

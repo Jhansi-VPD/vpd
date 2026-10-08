@@ -5,10 +5,8 @@ import React, { useState, useEffect } from 'react';
 import PortalLayout from '../../components/portal-shared/PortalLayout';
 import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents';
 import { supabaseRest } from '../../api/supabaseClient.js';
-import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function ProjectManagerPortal() {
-  const { user } = useAuth();
   const pathname = usePathname();
   const navigate = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
@@ -20,7 +18,6 @@ export default function ProjectManagerPortal() {
   const [milestones, setMilestones] = useState([]);
   const [timesheets, setTimesheets] = useState([]);
   const [reports, setReports] = useState([]);
-  const [meetings, setMeetings] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [leaves, setLeaves] = useState([]);
   const [payslips, setPayslips] = useState([]);
@@ -32,18 +29,6 @@ export default function ProjectManagerPortal() {
   const [tapLoading, setTapLoading] = useState(false);
   const [hasTappedInToday, setHasTappedInToday] = useState(false);
   const [hasTappedOutToday, setHasTappedOutToday] = useState(false);
-
-  // Payslip Generator Modal State
-  const [payslipModalOpen, setPayslipModalOpen] = useState(false);
-  const [payslipLoading, setPayslipLoading] = useState(false);
-  const [newPayslip, setNewPayslip] = useState({
-    employee_name: user?.name || 'Engineering Team Member',
-    pay_period: 'October 2026',
-    basic_salary: 6000,
-    allowances: 1200,
-    deductions: 600,
-    status: 'paid',
-  });
 
   // Assign Team Modal State & Project Members List
   const [projectMembers, setProjectMembers] = useState([
@@ -125,7 +110,6 @@ export default function ProjectManagerPortal() {
         mileRes,
         tsRes,
         repRes,
-        meetRes,
         attRes,
         leaveRes,
         payRes,
@@ -135,7 +119,6 @@ export default function ProjectManagerPortal() {
         supabaseRest('project_milestones', { query: '?select=*&limit=50' }).catch(() => []),
         supabaseRest('timesheets', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
         supabaseRest('reports', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
-        supabaseRest('meetings', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
         supabaseRest('attendance', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
         supabaseRest('leaves', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
         supabaseRest('payslips', { query: '?select=*&order=created_at.desc&limit=50' }).catch(() => []),
@@ -146,7 +129,6 @@ export default function ProjectManagerPortal() {
       setMilestones(mileRes || []);
       setTimesheets(tsRes || []);
       setReports(repRes || []);
-      setMeetings(meetRes || []);
       setAttendance(attRes || []);
       setLeaves(leaveRes || []);
       setPayslips(payRes || []);
@@ -294,39 +276,6 @@ export default function ProjectManagerPortal() {
     } finally {
       setLeaveLoading(false);
     }
-  };
-
-  // Generate Payslip Handler
-  const handleGeneratePayslip = async (e) => {
-    e.preventDefault();
-    setPayslipLoading(true);
-    const net_pay = Number(newPayslip.basic_salary) + Number(newPayslip.allowances) - Number(newPayslip.deductions);
-    try {
-      await supabaseRest('payslips', {
-        method: 'POST',
-        body: {
-          employee_name: newPayslip.employee_name,
-          pay_period: newPayslip.pay_period,
-          net_pay: net_pay,
-          amount: net_pay,
-          status: newPayslip.status,
-        },
-      });
-    } catch {
-      // local fallback
-    }
-    setPayslips((prev) => [
-      {
-        id: Date.now().toString(),
-        employee_name: newPayslip.employee_name,
-        pay_period: newPayslip.pay_period,
-        net_pay: net_pay,
-        status: newPayslip.status,
-      },
-      ...prev,
-    ]);
-    setPayslipModalOpen(false);
-    setPayslipLoading(false);
   };
 
   // Assign Team Handler (Assigns multiple team members to a single project)

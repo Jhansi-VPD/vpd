@@ -29,6 +29,7 @@ export const hrNavGroups: HRNavGroup[] = [
     title: 'Workforce & People',
     items: [
       { label: 'Employees', path: '/hr/employees', icon: 'users' },
+      { label: 'Workforce Users', path: '/hr/users', icon: 'user-check' },
       { label: 'Departments', path: '/hr/departments', icon: 'grid' },
       { label: 'Recruitment (ATS)', path: '/hr/recruitment', icon: 'briefcase' },
     ],

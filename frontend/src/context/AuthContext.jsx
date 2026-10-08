@@ -1,8 +1,34 @@
 "use client";
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase.js';
-import { login as loginApi, register as registerApi, logout as logoutApi, fetchCurrentUser } from '../api/auth.js';
+import { login as loginApi, register as registerApi, logout as logoutApi } from '../api/auth.js';
 
+/**
+ * @typedef {Object} AuthUser
+ * @property {string} [id]
+ * @property {string} [name]
+ * @property {string} [email]
+ * @property {string} [role]
+ */
+
+/**
+ * @typedef {Object} AuthContextValue
+ * @property {AuthUser | null} user
+ * @property {string | null} accessToken
+ * @property {boolean} isAuthenticated
+ * @property {boolean} initializing
+ * @property {(email: string, password: string) => Promise<AuthUser>} login
+ * @property {() => Promise<void>} logout
+ * @property {(name: string, email: string, password: string) => Promise<void>} register
+ */
+
+/**
+ * Explicit contract for legacy portal shells. The mounted provider for the
+ * App Router portals is `auth/auth.context.tsx`; this context is retained for
+ * the legacy .jsx portal components and is typed here so TypeScript consumers
+ * (PortalLayout, ProtectedRoute) get `AuthContextValue` instead of `never`.
+ * @type {import('react').Context<AuthContextValue | null>}
+ */
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -84,9 +110,15 @@ export function AuthProvider({ children }) {
     setSession(null);
     try {
       await supabase.auth.signOut();
-    } catch {}
+    } catch {
+      // Best-effort: the local session is already cleared above.
+    }
     if (token) {
-      try { await logoutApi(token); } catch {}
+      try {
+        await logoutApi(token);
+      } catch {
+        // Best-effort server-side revocation; never block logout on it.
+      }
     }
   };
 
@@ -106,6 +138,11 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+/**
+ * Safe outside a mounted provider: returns an anonymous, signed-out value so
+ * legacy shells degrade to guest rendering instead of throwing.
+ * @returns {AuthContextValue}
+ */
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) {

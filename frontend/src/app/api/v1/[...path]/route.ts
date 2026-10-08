@@ -1,9 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_PROXY_TARGET || 'http://127.0.0.1:8000';
+// Target is env-driven. The loopback default applies to local development only
+// so a missing env var can never silently point a production deploy at localhost.
+const BACKEND_URL = (
+  process.env.NEXT_PUBLIC_API_PROXY_TARGET ||
+  (process.env.NODE_ENV === 'production' ? '' : 'http://127.0.0.1:8000')
+).replace(/\/+$/, '');
 
-async function proxy(request: NextRequest, { params }: { params: { path: string[] } }) {
-  const path = (params?.path || []).join('/');
+async function proxy(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+  if (!BACKEND_URL) {
+    return NextResponse.json(
+      {
+        success: false,
+        status_code: 502,
+        message: 'API proxy target (NEXT_PUBLIC_API_PROXY_TARGET) is not configured.',
+        data: null,
+      },
+      { status: 502 }
+    );
+  }
+
+  const { path: pathSegments } = await params;
+  const path = (pathSegments || []).join('/');
   const search = request.nextUrl.search || '';
   const targetUrl = `${BACKEND_URL}/api/v1/${path}${search}`;
 

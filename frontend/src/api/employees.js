@@ -1,4 +1,4 @@
-import { apiRequest, toQueryString } from './client';
+import { apiRequest } from './client';
 
 export function fetchMyProfile(token) {
   return apiRequest('/employees/me/profile', { token });

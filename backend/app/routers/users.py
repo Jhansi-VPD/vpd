@@ -579,19 +579,22 @@ async def create_user(
     data["is_email_verified"] = not invite_mode
     if not invite_mode:
         data["email_verified_at"] = datetime.now(UTC)
-    user = await crud.create(db, data)
 
+    # Staged before crud.create so the employee row is flushed in the same
+    # commit as the user row — a failure in either insert must not leave a
+    # half-provisioned account behind.
     if role_value in EMPLOYEE_ROLES:
-        short_id = str(user.id).replace("-", "")[:8].upper()
-        employee = Employee(
-            user_id=user.id,
-            employee_code=f"EMP-{short_id}",
-            designation=payload.designation,
-            department_id=payload.department_id,
+        short_id = str(data["id"]).replace("-", "")[:8].upper()
+        db.add(
+            Employee(
+                user_id=data["id"],
+                employee_code=f"EMP-{short_id}",
+                designation=payload.designation,
+                department_id=payload.department_id,
+            )
         )
-        db.add(employee)
-        await db.commit()
-        await db.refresh(user)
+
+    user = await crud.create(db, data)
 
     invite_sent = await _issue_password_reset_link(db, user) if invite_mode else False
     await _write_audit(

@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { departmentsApi, usersApi } from '../../../../api';
 import { useAuth } from '../../../../auth/auth.context';
 import { useNotifications } from '../../../../app/providers/NotificationProvider';
@@ -41,6 +41,13 @@ const STATUS_FILTER_OPTIONS = [
   { value: 'suspended', label: 'Suspended' },
   { value: 'locked', label: 'Locked' },
   { value: 'pending', label: 'Pending' },
+];
+
+/** Raw is_active flag — distinct from the derived status filter. */
+const ACCOUNT_STATE_OPTIONS = [
+  { value: '', label: 'All Account States' },
+  { value: 'true', label: 'Enabled' },
+  { value: 'false', label: 'Disabled' },
 ];
 
 const PRIVILEGED_ROLES = ['admin', 'super_admin'];
@@ -150,8 +157,15 @@ function formatDateTime(iso: string | null): string {
 
 export const Users: React.FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user: me } = useAuth();
   const { showNotification } = useNotifications();
+
+  // Mounted at /admin/users and /hr/users — keep navigation inside the portal
+  // the user came from.
+  const isHrPortal = pathname?.startsWith('/hr') ?? false;
+  const detailBase = isHrPortal ? '/hr/users' : '/admin/users';
+  const portalLabel = isHrPortal ? 'HR' : 'Admin';
 
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -170,6 +184,12 @@ export const Users: React.FC = () => {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [accountStateFilter, setAccountStateFilter] = useState('');
+  const [departmentFilter, setDepartmentFilter] = useState('');
+  const [designationInput, setDesignationInput] = useState('');
+  const [designation, setDesignation] = useState('');
+  const [createdFrom, setCreatedFrom] = useState('');
+  const [createdTo, setCreatedTo] = useState('');
   const [sortState, setSortState] = useState<SortState | null>({ key: 'created_at', direction: 'desc' });
 
   // Selection & dialogs
@@ -194,11 +214,24 @@ export const Users: React.FC = () => {
       search: search || undefined,
       role: (roleFilter || undefined) as UserListItem['role'] | undefined,
       status: (statusFilter || undefined) as UserListItem['status'] | undefined,
+      is_active: accountStateFilter === '' ? undefined : accountStateFilter === 'true',
+      department_id: departmentFilter || undefined,
+      designation: designation || undefined,
+      created_from: createdFrom || undefined,
+      created_to: createdTo || undefined,
     }),
-    [search, roleFilter, statusFilter]
+    [search, roleFilter, statusFilter, accountStateFilter, departmentFilter, designation, createdFrom, createdTo]
   );
 
-  const filtersActive = !!search || !!roleFilter || !!statusFilter;
+  const filtersActive =
+    !!search ||
+    !!roleFilter ||
+    !!statusFilter ||
+    !!accountStateFilter ||
+    !!departmentFilter ||
+    !!designation ||
+    !!createdFrom ||
+    !!createdTo;
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -235,7 +268,19 @@ export const Users: React.FC = () => {
   // Selection is page/filter scoped — clearing avoids surprise cross-page bulk edits.
   useEffect(() => {
     setSelectedIds(new Set());
-  }, [page, pageSize, search, roleFilter, statusFilter, sortState]);
+  }, [
+    page,
+    pageSize,
+    search,
+    roleFilter,
+    statusFilter,
+    accountStateFilter,
+    departmentFilter,
+    designation,
+    createdFrom,
+    createdTo,
+    sortState,
+  ]);
 
   // Debounced search
   const firstSearchRun = useRef(true);
@@ -251,14 +296,28 @@ export const Users: React.FC = () => {
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  // Load departments lazily the first time the create modal opens.
+  // Debounced designation filter
+  const firstDesignationRun = useRef(true);
   useEffect(() => {
-    if (!createOpen) return;
+    if (firstDesignationRun.current) {
+      firstDesignationRun.current = false;
+      return;
+    }
+    const t = setTimeout(() => {
+      setDesignation(designationInput.trim());
+      setPage(1);
+    }, 350);
+    return () => clearTimeout(t);
+  }, [designationInput]);
+
+  // Departments power both the list filter and the create form — a single
+  // fetch on mount serves both.
+  useEffect(() => {
     departmentsApi
       .getAll()
       .then((res) => setDepartments(res.data || []))
       .catch(() => setDepartments([]));
-  }, [createOpen]);
+  }, []);
 
   const canManage = (row: UserListItem): boolean =>
     me?.role === 'super_admin' || !PRIVILEGED_ROLES.includes(row.role);
@@ -296,6 +355,12 @@ export const Users: React.FC = () => {
     setSearch('');
     setRoleFilter('');
     setStatusFilter('');
+    setAccountStateFilter('');
+    setDepartmentFilter('');
+    setDesignationInput('');
+    setDesignation('');
+    setCreatedFrom('');
+    setCreatedTo('');
     setPage(1);
   };
 
@@ -468,12 +533,7 @@ export const Users: React.FC = () => {
     {
       header: 'Name',
       sortKey: 'name',
-      accessor: (row) => (
-        <div>
-          <div className="font-medium text-white">{row.name}</div>
-          {row.employee_code && <div className="text-[11px] text-[#A1A1AA]">{row.employee_code}</div>}
-        </div>
-      ),
+      accessor: (row) => <span className="font-medium text-white">{row.name}</span>,
     },
     {
       header: 'Email',
@@ -481,11 +541,19 @@ export const Users: React.FC = () => {
       accessor: (row) => <span className="text-[#D4D4D8]">{row.email}</span>,
     },
     {
+      header: 'Employee ID',
+      accessor: (row) => <span className="font-mono text-xs text-[#A1A1AA]">{row.employee_code || '—'}</span>,
+    },
+    {
       header: 'Role',
       sortKey: 'role',
       accessor: (row) => (
         <StatusBadge status={row.role} variant={PRIVILEGED_ROLES.includes(row.role) ? 'gold' : 'neutral'} />
       ),
+    },
+    {
+      header: 'Department',
+      accessor: (row) => <span className="text-xs text-[#D4D4D8]">{row.department_name || '—'}</span>,
     },
     {
       header: 'Status',
@@ -514,7 +582,7 @@ export const Users: React.FC = () => {
           className="flex items-center justify-end gap-2 whitespace-nowrap"
           onClick={(e) => e.stopPropagation()}
         >
-          <Button variant="ghost" size="sm" onClick={() => router.push(`/admin/users/${row.id}`)}>
+          <Button variant="ghost" size="sm" onClick={() => router.push(`${detailBase}/${row.id}`)}>
             View
           </Button>
           {isSelf(row) ? (
@@ -543,7 +611,7 @@ export const Users: React.FC = () => {
         <PageHeader
           title="Workforce Users"
           description="Create, secure and manage every account across VPD portals"
-          breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Users' }]}
+          breadcrumbs={[{ label: portalLabel }, { label: 'Workforce Users' }]}
         />
         <ErrorState title={error.status === 403 ? 'Access Denied' : 'Something went wrong'} message={error.message} onRetry={loadUsers} />
       </PageContainer>
@@ -555,7 +623,7 @@ export const Users: React.FC = () => {
       <PageHeader
         title="Workforce Users"
         description="Create, secure and manage every account across VPD portals"
-        breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Users' }]}
+        breadcrumbs={[{ label: portalLabel }, { label: 'Workforce Users' }]}
         badge={<span className="text-xs text-[#A1A1AA]">{meta.total} account{meta.total === 1 ? '' : 's'}</span>}
         actions={
           <>
@@ -570,43 +638,110 @@ export const Users: React.FC = () => {
       />
 
       {/* Filters */}
-      <div className="flex flex-col gap-3 rounded-xl border border-[#2A2A2A] bg-[#171717] p-4 md:flex-row md:items-center">
-        <div className="flex-1 min-w-0">
-          <Input
-            type="search"
-            placeholder="Search name, email, phone, or employee code…"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            aria-label="Search users"
-          />
+      <div className="flex flex-col gap-3 rounded-xl border border-[#2A2A2A] bg-[#171717] p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="flex-1 min-w-0">
+            <Input
+              type="search"
+              placeholder="Search name, email, phone, or employee code…"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              aria-label="Search users"
+            />
+          </div>
+          <div className="w-full lg:w-48">
+            <Select
+              value={roleFilter}
+              onChange={(e) => {
+                setRoleFilter(e.target.value);
+                setPage(1);
+              }}
+              options={[{ value: '', label: 'All Roles' }, ...ROLE_OPTIONS]}
+              aria-label="Filter by role"
+            />
+          </div>
+          <div className="w-full lg:w-40">
+            <Select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setPage(1);
+              }}
+              options={STATUS_FILTER_OPTIONS}
+              aria-label="Filter by status"
+            />
+          </div>
+          <div className="w-full lg:w-44">
+            <Select
+              value={accountStateFilter}
+              onChange={(e) => {
+                setAccountStateFilter(e.target.value);
+                setPage(1);
+              }}
+              options={ACCOUNT_STATE_OPTIONS}
+              aria-label="Filter by account state"
+            />
+          </div>
         </div>
-        <div className="w-full md:w-52">
-          <Select
-            value={roleFilter}
-            onChange={(e) => {
-              setRoleFilter(e.target.value);
-              setPage(1);
-            }}
-            options={[{ value: '', label: 'All Roles' }, ...ROLE_OPTIONS]}
-            aria-label="Filter by role"
-          />
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
+          <div className="w-full lg:w-52">
+            <Select
+              value={departmentFilter}
+              onChange={(e) => {
+                setDepartmentFilter(e.target.value);
+                setPage(1);
+              }}
+              options={[
+                { value: '', label: 'All Departments' },
+                ...departments.map((d) => ({ value: d.id, label: d.name })),
+              ]}
+              aria-label="Filter by department"
+            />
+          </div>
+          <div className="w-full lg:w-52">
+            <Input
+              placeholder="Filter by designation…"
+              value={designationInput}
+              onChange={(e) => setDesignationInput(e.target.value)}
+              aria-label="Filter by designation"
+            />
+          </div>
+          <div className="w-full lg:w-44">
+            <Input
+              type="date"
+              label="Created from"
+              value={createdFrom}
+              max={createdTo || undefined}
+              onChange={(e) => {
+                setCreatedFrom(e.target.value);
+                setPage(1);
+              }}
+              className="[color-scheme:dark]"
+              aria-label="Created from date"
+            />
+          </div>
+          <div className="w-full lg:w-44">
+            <Input
+              type="date"
+              label="Created to"
+              value={createdTo}
+              min={createdFrom || undefined}
+              onChange={(e) => {
+                setCreatedTo(e.target.value);
+                setPage(1);
+              }}
+              className="[color-scheme:dark]"
+              aria-label="Created to date"
+            />
+          </div>
+          {filtersActive && (
+            <div className="flex justify-end lg:ml-auto">
+              <Button variant="ghost" size="sm" onClick={resetFilters}>
+                Reset filters
+              </Button>
+            </div>
+          )}
         </div>
-        <div className="w-full md:w-44">
-          <Select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setPage(1);
-            }}
-            options={STATUS_FILTER_OPTIONS}
-            aria-label="Filter by status"
-          />
-        </div>
-        {filtersActive && (
-          <Button variant="ghost" size="sm" onClick={resetFilters}>
-            Reset filters
-          </Button>
-        )}
       </div>
 
       {/* Bulk action toolbar */}
@@ -651,7 +786,7 @@ export const Users: React.FC = () => {
         selectable
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
-        onRowClick={(row) => router.push(`/admin/users/${row.id}`)}
+        onRowClick={(row) => router.push(`${detailBase}/${row.id}`)}
         emptyTitle={filtersActive ? 'No Matching Users' : 'No Users Yet'}
         emptyMessage={
           filtersActive

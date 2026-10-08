@@ -5,10 +5,8 @@ import React, { useState, useEffect } from 'react';
 import PortalLayout from '../../components/portal-shared/PortalLayout';
 import { Card, MetricCard, StatusBadge, Button, LoadingSkeleton, EmptyState, Modal } from '../../components/portal-shared/SharedComponents';
 import { supabaseRest } from '../../api/supabaseClient.js';
-import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function SalesCrmPortal() {
-  const { user } = useAuth();
   const pathname = usePathname();
   const navigate = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -35,18 +33,6 @@ export default function SalesCrmPortal() {
   const [tapLoading, setTapLoading] = useState(false);
   const [hasTappedInToday, setHasTappedInToday] = useState(false);
   const [hasTappedOutToday, setHasTappedOutToday] = useState(false);
-
-  // Payslip Generator Modal State
-  const [payslipModalOpen, setPayslipModalOpen] = useState(false);
-  const [payslipLoading, setPayslipLoading] = useState(false);
-  const [newPayslip, setNewPayslip] = useState({
-    employee_name: user?.name || 'Commercial Team Member',
-    pay_period: 'October 2026',
-    basic_salary: 5000,
-    allowances: 1000,
-    deductions: 500,
-    status: 'paid',
-  });
 
   // Lead Modal & Form
   const [modalOpen, setModalOpen] = useState(false);
@@ -295,39 +281,6 @@ export default function SalesCrmPortal() {
     } finally {
       setLeaveLoading(false);
     }
-  };
-
-  // Generate Payslip Handler
-  const handleGeneratePayslip = async (e) => {
-    e.preventDefault();
-    setPayslipLoading(true);
-    const net_pay = Number(newPayslip.basic_salary) + Number(newPayslip.allowances) - Number(newPayslip.deductions);
-    try {
-      await supabaseRest('payslips', {
-        method: 'POST',
-        body: {
-          employee_name: newPayslip.employee_name,
-          pay_period: newPayslip.pay_period,
-          net_pay: net_pay,
-          amount: net_pay,
-          status: newPayslip.status,
-        },
-      });
-    } catch {
-      // local fallback
-    }
-    setPayslips((prev) => [
-      {
-        id: Date.now().toString(),
-        employee_name: newPayslip.employee_name,
-        pay_period: newPayslip.pay_period,
-        net_pay: net_pay,
-        status: newPayslip.status,
-      },
-      ...prev,
-    ]);
-    setPayslipModalOpen(false);
-    setPayslipLoading(false);
   };
 
   const handleCreateLead = async (e) => {

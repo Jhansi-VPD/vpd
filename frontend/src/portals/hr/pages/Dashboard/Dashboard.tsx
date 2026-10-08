@@ -96,7 +96,7 @@ export const Dashboard: React.FC = () => {
         {/* Live Attendance Clock-In Widget */}
         <div className="flex flex-col sm:flex-row items-center gap-4 bg-[#0E1013] border border-[#272B35] p-3 sm:p-4 rounded-lg w-full md:w-auto">
           <div className="text-center sm:text-left">
-            <p className="text-[10px] uppercase font-mono text-[#7A7D84]">Today's Session</p>
+            <p className="text-[10px] uppercase font-mono text-[#7A7D84]">Today&apos;s Session</p>
             <p className="text-xl font-mono font-bold text-[#EDB940]">
               {isCheckedIn && !isCheckedOut ? formatTimer(elapsedSeconds) : isCheckedOut ? 'Shift Completed' : 'Not Clocked In'}
             </p>
@@ -181,7 +181,7 @@ export const Dashboard: React.FC = () => {
 
         <div className="bg-[#15181D] border border-[#272B35] rounded-xl p-4 space-y-2">
           <div className="flex items-center justify-between text-xs text-[#9B9DA3]">
-            <span>Today's Status</span>
+            <span>Today&apos;s Status</span>
             <span className="p-1.5 rounded-lg bg-[#16A34A]/10 text-[#16A34A]">⏰</span>
           </div>
           <div className="text-2xl font-bold text-white">

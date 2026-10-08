@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { UpdateUserPayload, usersApi } from '../../../../api';
 import { useAuth } from '../../../../auth/auth.context';
 import { useNotifications } from '../../../../app/providers/NotificationProvider';
@@ -178,8 +178,14 @@ interface UserDetailProps {
 
 export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user: me } = useAuth();
   const { showNotification } = useNotifications();
+
+  // Mounted at /admin/users/[id] and /hr/users/[id] — keep navigation in-portal.
+  const isHrPortal = pathname?.startsWith('/hr') ?? false;
+  const listPath = isHrPortal ? '/hr/users' : '/admin/users';
+  const portalLabel = isHrPortal ? 'HR' : 'Admin';
 
   const [user, setUser] = useState<UserDetailData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -428,7 +434,7 @@ export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
             `${name} was deleted (soft delete) — the account is deactivated and all history is preserved.`
           );
           setPendingConfirm(null);
-          router.push('/admin/users');
+          router.push(listPath);
           return;
         case 'force-reset': {
           const res = await usersApi.forcePasswordReset(user.id);
@@ -674,9 +680,9 @@ export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
       <PageContainer>
         <PageHeader
           title="User"
-          breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Users' }, { label: 'Details' }]}
+          breadcrumbs={[{ label: portalLabel }, { label: 'Workforce Users' }, { label: 'Details' }]}
           actions={
-            <Button variant="ghost" size="sm" onClick={() => router.push('/admin/users')}>
+            <Button variant="ghost" size="sm" onClick={() => router.push(listPath)}>
               ← Back to Users
             </Button>
           }
@@ -693,7 +699,7 @@ export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
       <PageHeader
         title={user.name}
         description={user.email}
-        breadcrumbs={[{ label: 'Admin' }, { label: 'Workforce Users' }, { label: user.name }]}
+        breadcrumbs={[{ label: portalLabel }, { label: 'Workforce Users' }, { label: user.name }]}
         badge={
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={ROLE_LABELS[user.role] || user.role} variant={PRIVILEGED_ROLES.includes(user.role) ? 'gold' : 'neutral'} />
@@ -707,7 +713,7 @@ export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
         }
         actions={
           <>
-            <Button variant="ghost" size="sm" onClick={() => router.push('/admin/users')}>
+            <Button variant="ghost" size="sm" onClick={() => router.push(listPath)}>
               ← Back to Users
             </Button>
             <Button variant="ghost" size="sm" onClick={() => void loadUser()}>

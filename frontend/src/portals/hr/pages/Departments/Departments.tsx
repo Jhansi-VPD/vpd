@@ -89,7 +89,7 @@ export const Departments: React.FC = () => {
         <div className="bg-[#15181D] border border-[#272B35] rounded-xl p-12 text-center space-y-3">
           <div className="text-3xl">🏛️</div>
           <p className="text-sm font-semibold text-white">No Departments Registered</p>
-          <p className="text-xs text-[#9B9DA3]">Get started by defining your organization's first department.</p>
+          <p className="text-xs text-[#9B9DA3]">Get started by defining your organization&apos;s first department.</p>
           <button
             onClick={handleOpenAdd}
             className="px-4 py-2 bg-[#C9A84C] text-black font-semibold text-xs rounded-lg"

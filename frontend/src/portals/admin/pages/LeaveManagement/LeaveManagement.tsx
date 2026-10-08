@@ -9,6 +9,14 @@ import PageHeader from '../../../../shared/components/PageHeader';
 export const LeaveManagement: React.FC = () => {
   const [leaves, setLeaves] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [applyForm, setApplyForm] = useState({
+    leave_type: 'annual',
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    reason: '',
+  });
 
   const loadLeaves = async () => {
     try {
@@ -81,7 +89,11 @@ export const LeaveManagement: React.FC = () => {
         title="Leave Approvals Management"
         description="Review pending paid time off, sick leave, and casual leave applications"
         breadcrumbs={[{ label: 'Admin' }, { label: 'Leave Approvals Management' }]}
-        
+        actions={
+          <Button variant="primary" size="sm" onClick={() => setShowApplyModal(true)}>
+            Apply for Leave
+          </Button>
+        }
       />
       <div className="space-y-6">
         <div>
@@ -119,9 +131,6 @@ export const LeaveManagement: React.FC = () => {
       />
 
       </div>
-    </PageContainer>
-    </>
-    </div>
 
       {showApplyModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
