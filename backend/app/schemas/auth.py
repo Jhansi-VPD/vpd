@@ -4,7 +4,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.models.enums import UserRole
 from app.schemas.common import TimestampedRead
 
 
@@ -76,7 +75,12 @@ class UserRead(TimestampedRead):
     email: EmailStr
     phone: str | None = None
     avatar: str | None = None
-    role: UserRole
+    # Built-in enum slug or a custom role slug (a row in the `roles` table) —
+    # `str`, not UserRole, because custom roles are DB data, not enum members.
+    role: str
+    # Resolved from the role row so the frontend can route a custom role to
+    # the right portal; None when the slug has no role row (built-in-ish).
+    portal: str | None = None
     is_active: bool
     is_email_verified: bool
 

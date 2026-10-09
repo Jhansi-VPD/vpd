@@ -30,6 +30,7 @@ const mocks = vi.hoisted(() => ({
   updateRoles: vi.fn(),
   getRoles: vi.fn(),
   getPermissions: vi.fn(),
+  rolesGetAll: vi.fn(),
   getSessions: vi.fn(),
   getLoginHistory: vi.fn(),
   getActivity: vi.fn(),
@@ -74,6 +75,9 @@ vi.mock('../../../../../api', () => ({
     getSessions: mocks.getSessions,
     getLoginHistory: mocks.getLoginHistory,
     getActivity: mocks.getActivity,
+  },
+  rolesApi: {
+    getAll: mocks.rolesGetAll,
   },
 }));
 
@@ -226,6 +230,7 @@ beforeEach(() => {
   mocks.revokeSession.mockResolvedValue(apiOk({ revoked: true }));
   mocks.updateRoles.mockResolvedValue(apiOk({ ...adaDetail, role: 'hr' }));
   mocks.getRoles.mockResolvedValue(apiOk(rolesInfo));
+  mocks.rolesGetAll.mockResolvedValue(apiOk([], metaOf(0)));
   mocks.getPermissions.mockResolvedValue(apiOk({ role: 'employee', source: 'role', permissions: [permissionEntry] }));
   mocks.getSessions.mockResolvedValue(apiOk([sessionEntry]));
   mocks.getLoginHistory.mockResolvedValue(apiOk([historyEntry]));
@@ -340,6 +345,52 @@ describe('User detail page', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Change Role' }));
     await waitFor(() => expect(mocks.updateRoles).toHaveBeenCalledWith('u-ada', 'hr'));
     await waitFor(() => expect(mocks.showNotification).toHaveBeenCalledWith('success', 'Ada Lovelace is now HR.'));
+  });
+
+  it('offers custom roles in the Access tab role selector', async () => {
+    mocks.rolesGetAll.mockResolvedValue(
+      apiOk(
+        [
+          {
+            id: 'r-cm',
+            created_at: '2026-01-01T00:00:00Z',
+            updated_at: '2026-01-01T00:00:00Z',
+            name: 'Content Manager',
+            slug: 'content_manager',
+            description: null,
+            is_system: false,
+            is_active: true,
+            portal: 'employee',
+            user_count: 0,
+            permission_count: 2,
+          },
+        ],
+        metaOf(1)
+      )
+    );
+    render(<UserDetailPage userId="u-ada" />);
+    await screen.findByRole('heading', { level: 1, name: 'Ada Lovelace' });
+    await openTab('Access');
+
+    const select = await screen.findByLabelText('Select a new role');
+    expect(mocks.rolesGetAll).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'custom', status: 'active', limit: 100 })
+    );
+    expect(await screen.findByRole('option', { name: 'Content Manager' })).toBeInTheDocument();
+    fireEvent.change(select, { target: { value: 'content_manager' } });
+    expect(screen.getByRole('button', { name: 'Update Role' })).not.toBeDisabled();
+  });
+
+  it('degrades gracefully when the custom-role list is forbidden', async () => {
+    mocks.rolesGetAll.mockRejectedValue(error(403, 'Forbidden'));
+    render(<UserDetailPage userId="u-ada" />);
+    await screen.findByRole('heading', { level: 1, name: 'Ada Lovelace' });
+    await openTab('Access');
+
+    const select = await screen.findByLabelText('Select a new role');
+    expect(select).toBeInTheDocument();
+    expect(screen.getByText('users.read')).toBeInTheDocument();
+    expect(screen.queryByText('Failed to load role and permission data.')).not.toBeInTheDocument();
   });
 
   it('restricts an HR admin to a read-only view of an admin account', async () => {

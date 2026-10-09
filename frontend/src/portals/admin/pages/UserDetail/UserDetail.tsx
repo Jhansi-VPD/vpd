@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { UpdateUserPayload, usersApi } from '../../../../api';
+import { UpdateUserPayload, rolesApi, usersApi } from '../../../../api';
 import { useAuth } from '../../../../auth/auth.context';
 import { useNotifications } from '../../../../app/providers/NotificationProvider';
 import StatusBadge from '../../../../shared/components/StatusBadge';
@@ -204,6 +204,7 @@ export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
   const [accessLoading, setAccessLoading] = useState(false);
   const [accessError, setAccessError] = useState<string | null>(null);
   const [roleSelection, setRoleSelection] = useState('');
+  const [customRoles, setCustomRoles] = useState<Array<{ slug: string; name: string }>>([]);
 
   // Security tab
   const [sessions, setSessions] = useState<UserSessionInfo[]>([]);
@@ -276,6 +277,14 @@ export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
       setAccessError(err?.message || 'Failed to load role and permission data.');
     } finally {
       setAccessLoading(false);
+    }
+    // Custom roles need roles:read, which HR viewers may lack — degrade silently
+    // and keep the built-in role list rather than failing the whole tab.
+    try {
+      const res = await rolesApi.getAll({ type: 'custom', status: 'active', limit: 100, sort: 'name' });
+      setCustomRoles((res.data || []).map((r) => ({ slug: r.slug, name: r.name })));
+    } catch {
+      setCustomRoles([]);
     }
   }, [userId]);
 
@@ -507,13 +516,22 @@ export const UserDetail: React.FC<UserDetailProps> = ({ userId }) => {
 
   const roleOptions = useMemo(() => {
     if (!rolesInfo) return [{ value: '', label: 'Select new role…' }];
+    const current = String(rolesInfo.current || '');
+    const slugs: string[] = [];
+    rolesInfo.available.forEach((r) => {
+      const slug = String(r);
+      if (slug && slug !== current && !slugs.includes(slug)) slugs.push(slug);
+    });
+    // Custom roles are assignable too (backend validates against active roles rows).
+    customRoles.forEach((r) => {
+      if (r.slug !== current && !slugs.includes(r.slug)) slugs.push(r.slug);
+    });
+    const customLabels = new Map(customRoles.map((r) => [r.slug, r.name]));
     return [
       { value: '', label: 'Select new role…' },
-      ...rolesInfo.available
-        .filter((r) => r !== rolesInfo.current)
-        .map((r) => ({ value: r as string, label: ROLE_LABELS[r] || r })),
+      ...slugs.map((slug) => ({ value: slug, label: ROLE_LABELS[slug] || customLabels.get(slug) || slug })),
     ];
-  }, [rolesInfo]);
+  }, [rolesInfo, customRoles]);
 
   const confirmCopy = useMemo(() => {
     if (!pendingConfirm || !user) return null;

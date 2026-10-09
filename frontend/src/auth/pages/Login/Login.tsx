@@ -24,7 +24,7 @@ export const Login: React.FC = () => {
     setError(null);
     try {
       const user = await login(email.trim(), password);
-      navigate.push(roleHome(user.role));
+      navigate.push(roleHome(user.role, user.portal));
     } catch (err: any) {
       setError(err.message || 'Invalid email or password. Please verify your credentials.');
     } finally {

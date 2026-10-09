@@ -35,6 +35,8 @@ export interface User {
   email: string;
   name: string;
   role: UserRole;
+  /** Portal resolved server-side from the role mapping; null for unmapped roles. */
+  portal?: string | null;
   phone?: string | null;
   avatar?: string | null;
   is_active: boolean;

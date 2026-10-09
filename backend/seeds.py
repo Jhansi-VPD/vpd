@@ -13,6 +13,7 @@ import uuid
 from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy import select, text
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import AsyncSessionLocal
@@ -149,19 +150,90 @@ DEPARTMENTS = [
     "Finance", "Quality Assurance", "DevOps", "Customer Support", "Management",
 ]
 
+# --- RBAC baseline (mirrors alembic revision e6f7a8b9c0d1) -------------------
+# Production ONLY ever runs `alembic upgrade head` (never seeds.py), so the
+# migration carries this data for prod; these constants keep fresh dev
+# databases identical. Keep both files in sync when either changes.
+
+# Mirrors src/auth/role-route.tsx ROLE_HOME + docs/portal-map.md. `guest`
+# intentionally has no portal.
+ROLE_PORTALS = {
+    "super_admin": "admin",
+    "admin": "admin",
+    "finance": "admin",
+    "hr": "hr",
+    "sales": "sales",
+    "marketing": "sales",
+    "project_manager": "delivery",
+    "developer": "employee",
+    "qa": "employee",
+    "employee": "employee",
+    "client": "client",
+    "support": "employee",
+    "partner": "partner",
+}
+
+ACCESS_CONTROL_PERMISSIONS = [
+    ("roles:read", "roles", "read", "View roles and their permissions"),
+    ("roles:create", "roles", "create", "Create custom roles"),
+    ("roles:update", "roles", "update", "Update roles and their status"),
+    ("roles:delete", "roles", "delete", "Delete custom roles"),
+    ("roles:manage_permissions", "roles", "manage_permissions", "Assign and remove permissions from roles"),
+    ("permissions:read", "permissions", "read", "View permissions"),
+    ("permissions:create", "permissions", "create", "Create permissions"),
+    ("permissions:update", "permissions", "update", "Update permissions and their status"),
+    ("permissions:delete", "permissions", "delete", "Delete custom permissions"),
+]
+
+# Baseline role -> permission grants so built-in roles keep the access they
+# had under the old `require_roles` checks until an admin reconfigures them.
+BASELINE_ROLE_PERMISSION_MAPPINGS = {
+    "admin": [
+        "users:read", "users:write",
+        "projects:read", "projects:write",
+        "tasks:read", "tasks:write",
+        "invoices:read", "invoices:write",
+        "tickets:read", "tickets:write",
+        "reports:read", "settings:manage",
+        "roles:read", "roles:create", "roles:update", "roles:delete",
+        "roles:manage_permissions",
+        "permissions:read", "permissions:create", "permissions:update", "permissions:delete",
+    ],
+    "hr": ["users:read", "users:write", "tickets:read", "tickets:write"],
+    "sales": ["projects:read", "invoices:read", "invoices:write"],
+    "marketing": ["projects:read", "reports:read"],
+    "project_manager": ["projects:read", "projects:write", "tasks:read", "tasks:write", "reports:read"],
+    "finance": ["invoices:read", "invoices:write", "reports:read"],
+    "support": ["tickets:read", "tickets:write"],
+}
+
 
 async def seed_roles_and_permissions(db: AsyncSession):
     print("--> Seeding Roles and Permissions...")
-    roles_list = ["super_admin", "admin", "hr", "sales", "marketing", "project_manager", "developer", "qa", "support", "finance", "client", "partner", "employee"]
+    roles_list = ["super_admin", "admin", "hr", "sales", "marketing", "project_manager", "developer", "qa", "support", "finance", "client", "partner", "employee", "guest"]
     role_objs = {}
     for r_slug in roles_list:
         res = await db.execute(select(Role).where(Role.slug == r_slug))
         existing = res.scalar_one_or_none()
         if not existing:
-            r = Role(id=uuid.uuid4(), name=r_slug.replace('_', ' ').title(), slug=r_slug, description=f"{r_slug.replace('_', ' ').title()} Role", is_system=True)
+            r = Role(
+                id=uuid.uuid4(),
+                name=r_slug.replace('_', ' ').title(),
+                slug=r_slug,
+                description=f"{r_slug.replace('_', ' ').title()} Role",
+                is_system=True,
+                is_active=True,
+                portal=ROLE_PORTALS.get(r_slug),
+            )
             db.add(r)
             role_objs[r_slug] = r
         else:
+            # Backfill path for roles created before the RBAC module
+            # (mirrors the migration's idempotent UPDATEs).
+            existing.is_system = True
+            existing.is_active = True
+            if existing.portal is None:
+                existing.portal = ROLE_PORTALS.get(r_slug)
             role_objs[r_slug] = existing
 
     perm_list = [
@@ -189,7 +261,31 @@ async def seed_roles_and_permissions(db: AsyncSession):
         else:
             perm_objs[p_name] = existing
 
+    for p_name, p_mod, p_act, p_desc in ACCESS_CONTROL_PERMISSIONS:
+        res = await db.execute(select(Permission).where(Permission.name == p_name))
+        existing = res.scalar_one_or_none()
+        if not existing:
+            p = Permission(id=uuid.uuid4(), name=p_name, module=p_mod, action=p_act, description=p_desc, is_system=True)
+            db.add(p)
+            perm_objs[p_name] = p
+        else:
+            perm_objs[p_name] = existing
+
     await db.flush()
+
+    for role_slug, perm_names in BASELINE_ROLE_PERMISSION_MAPPINGS.items():
+        role = role_objs.get(role_slug)
+        if role is None:
+            continue
+        for p_name in perm_names:
+            perm = perm_objs.get(p_name)
+            if perm is None:
+                continue
+            await db.execute(
+                pg_insert(role_permissions)
+                .values(role_id=role.id, permission_id=perm.id)
+                .on_conflict_do_nothing(index_elements=["role_id", "permission_id"])
+            )
 
 
 async def seed_departments(db: AsyncSession) -> dict[str, uuid.UUID]:

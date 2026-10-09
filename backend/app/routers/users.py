@@ -91,6 +91,12 @@ EMPLOYEE_ROLES = {
     "super_admin",
 }
 
+# Slugs of the built-in roles (the UserRole enum members). Any other value in
+# `users.role` is a custom role and must match an existing, active, non-deleted
+# `roles` row — existence-checked against the DB in update_user_roles, never
+# trusted from the request.
+_BUILT_IN_ROLE_SLUGS = frozenset(role.value for role in UserRole)
+
 # CSV exports are capped so a filtered export can never be an unbounded query.
 _EXPORT_MAX_ROWS = 10000
 
@@ -857,17 +863,29 @@ async def update_user_roles(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    """Assigns the account's single role. Built-in enum slugs pass straight
+    through; any custom slug must match an existing, active, non-deleted
+    `roles` row before it is accepted."""
     target = await _load_guarded_target(db, user_id, current_user)
-    new_role = payload.roles[0]
-    new_value = _role_value(new_role)
+    new_value = payload.roles[0]
     if new_value in ("admin", "super_admin") and current_user.role != "super_admin":
         raise ApiError.forbidden("Only a Super Admin can grant Admin or Super Admin roles")
+    if new_value not in _BUILT_IN_ROLE_SLUGS:
+        role_id = (
+            await db.execute(
+                select(Role.id).where(
+                    Role.slug == new_value, Role.deleted_at.is_(None), Role.is_active.is_(True)
+                )
+            )
+        ).scalar_one_or_none()
+        if role_id is None:
+            raise ApiError.bad_request(f"Unknown or inactive role: {new_value}")
     current_value = _role_value(target.role)
     if new_value == current_value:
         return success_response(data={"role": new_value}, message="Role unchanged")
     _ensure_not_self(current_user, target, "change the role of")
     await _protect_last_super_admin(db, target, "change the role of")
-    target.role = new_role
+    target.role = new_value
     await db.commit()
     await db.refresh(target)
     await _write_audit(request, current_user, "ROLE_REMOVED", target.id, {"role": current_value})
@@ -888,11 +906,24 @@ async def get_user_permissions(user_id: uuid.UUID, db: AsyncSession = Depends(ge
     target = await crud.get(db, user_id)
     role_value = _role_value(target.role)
     role = (
-        (await db.execute(select(Role).where(Role.slug == role_value).options(selectinload(Role.permissions))))
+        (
+            await db.execute(
+                select(Role)
+                .where(Role.slug == role_value, Role.deleted_at.is_(None))
+                .options(selectinload(Role.permissions))
+            )
+        )
         .scalars()
         .first()
     )
-    permissions = sorted(role.permissions, key=lambda p: (p.module, p.action)) if role is not None else []
+    permissions = (
+        sorted(
+            (p for p in role.permissions if p.is_active and p.deleted_at is None),
+            key=lambda p: (p.module, p.action),
+        )
+        if role is not None
+        else []
+    )
     return success_response(
         data={
             "role": role_value,

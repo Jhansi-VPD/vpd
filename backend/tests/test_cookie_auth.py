@@ -61,7 +61,10 @@ class TestLoginSetsCookies:
         mock_db.add = MagicMock()
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = user
-        mock_db.execute.return_value = mock_result
+        # Second execute() is the role→portal lookup for the UserRead payload.
+        portal_result = MagicMock()
+        portal_result.scalar_one_or_none.return_value = None
+        mock_db.execute.side_effect = [mock_result, portal_result]
 
         response = Response()
         payload = LoginRequest(email=user.email, password="password123")
@@ -207,7 +210,10 @@ class TestRefreshEndpoint:
         mock_db.add = MagicMock()
         found = MagicMock()
         found.scalar_one_or_none.return_value = session
-        mock_db.execute.return_value = found
+        # Second execute() is the role→portal lookup for the UserRead payload.
+        portal_result = MagicMock()
+        portal_result.scalar_one_or_none.return_value = None
+        mock_db.execute.side_effect = [found, portal_result]
         mock_db.get.return_value = user
 
         request = _mock_request({REFRESH_TOKEN_COOKIE: "old-refresh"}, method="POST")

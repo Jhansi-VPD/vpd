@@ -88,7 +88,18 @@ export const API_ENDPOINTS = {
   },
   ACCESS_CONTROL: {
     ROLES: '/access-control/roles',
+    ROLE_BY_ID: (id: string) => `/access-control/roles/${id}`,
+    ROLE_STATUS: (id: string) => `/access-control/roles/${id}/status`,
+    ROLE_PERMISSIONS: (id: string) => `/access-control/roles/${id}/permissions`,
+    ROLE_PERMISSION: (roleId: string, permissionId: string) =>
+      `/access-control/roles/${roleId}/permissions/${permissionId}`,
+    ROLE_USERS: (id: string) => `/access-control/roles/${id}/users`,
+    ROLE_ACTIVITY: (id: string) => `/access-control/roles/${id}/activity`,
     PERMISSIONS: '/access-control/permissions',
+    PERMISSION_MODULES: '/access-control/permissions/modules',
+    PERMISSION_BY_ID: (id: string) => `/access-control/permissions/${id}`,
+    PERMISSION_STATUS: (id: string) => `/access-control/permissions/${id}/status`,
+    PERMISSION_ROLES: (id: string) => `/access-control/permissions/${id}/roles`,
   },
   DASHBOARD: {
     OVERVIEW: '/dashboard/overview',

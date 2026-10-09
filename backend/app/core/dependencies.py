@@ -1,4 +1,7 @@
+import time
+
 from fastapi import Depends, Request
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -6,6 +9,9 @@ from app.core.cookies import ACCESS_TOKEN_COOKIE
 from app.core.database import get_db
 from app.core.errors import ApiError
 from app.core.logger import logger
+from app.models.associations import role_permissions
+from app.models.permission import Permission
+from app.models.role import Role
 from app.models.user import User
 from app.services.auth_service import get_session_by_access_token
 
@@ -100,36 +106,79 @@ def get_client_ip(request: Request) -> str:
             return forwarded.split(",")[0].strip()
     return request.client.host if request.client else "unknown"
 
+_PERMISSION_CACHE_TTL_SECONDS = 30.0
+# role slug -> (expires_at_monotonic, frozenset of permission names)
+_permission_cache: dict[str, tuple[float, frozenset[str]]] = {}
+
+
+def invalidate_permission_cache(role_slug: str | None = None) -> None:
+    """Drop the cached permission set for one role, or the whole cache.
+
+    Called by every role/permission mutation in routers/role.py so the same
+    worker process reflects the change on the next request (§50 — users must
+    not retain old privileges). This is an in-process cache: with multiple
+    gunicorn workers (render.yaml runs `-w 2`), a mutation handled by worker
+    A can take up to _PERMISSION_CACHE_TTL_SECONDS to be seen by worker B.
+    That bound is the deliberate trade for not hitting PostgreSQL on every
+    authorized request; sessions themselves are DB-backed (core/tokens.py),
+    so revocation/deactivation is still instant everywhere.
+    """
+    if role_slug is None:
+        _permission_cache.clear()
+    else:
+        _permission_cache.pop(role_slug, None)
+
+
+async def _fetch_permissions_for_role(db: AsyncSession, slug: str) -> frozenset[str]:
+    """One LEFT-JOIN query per miss (no N+1): a role with zero permissions
+    still yields one row with NULL permission columns, which distinguishes
+    "role exists but grants nothing" from "role does not exist"."""
+    stmt = (
+        select(Role.is_active, Permission.name, Permission.is_active, Permission.deleted_at)
+        .select_from(Role)
+        .outerjoin(role_permissions, role_permissions.c.role_id == Role.id)
+        .outerjoin(Permission, Permission.id == role_permissions.c.permission_id)
+        .where(Role.slug == slug, Role.deleted_at.is_(None))
+    )
+    rows = (await db.execute(stmt)).all()
+    if not rows or not rows[0][0]:
+        # Unknown, soft-deleted, or deactivated role -> grants nothing.
+        return frozenset()
+    return frozenset(
+        name
+        for _, name, perm_is_active, perm_deleted_at in rows
+        if name is not None and perm_is_active and perm_deleted_at is None
+    )
+
+
+async def get_permissions_for_role(db: AsyncSession, slug: str) -> frozenset[str]:
+    now = time.monotonic()
+    cached = _permission_cache.get(slug)
+    if cached is not None and cached[0] > now:
+        return cached[1]
+    granted = await _fetch_permissions_for_role(db, slug)
+    _permission_cache[slug] = (now + _PERMISSION_CACHE_TTL_SECONDS, granted)
+    return granted
+
+
 def require_permissions(*permissions: str):
     """
     Usage: Depends(require_permissions("users:read", "users:write"))
+    Server-side enforcement of the role->permission mapping in the database.
+    "super_admin" always bypasses (same design as require_roles); every
+    other role — built-in or custom — must actually hold each permission.
     """
-    from sqlalchemy import select
-    from sqlalchemy.orm import selectinload
-
-    from app.models.role import Role
 
     async def dependency(
         current_user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+        db: AsyncSession = Depends(get_db),
     ) -> User:
         if current_user.role == "super_admin":
             return current_user
-        
-        stmt = select(Role).where(Role.slug == current_user.role).options(selectinload(Role.permissions))
-        result = await db.execute(stmt)
-        role = result.scalars().first()
-        
-        if not role:
-            from app.core.errors import ApiError
-            raise ApiError.forbidden("Role configuration missing. Contact super admin.")
-            
-        user_perms = {p.name for p in role.permissions}
-        for req in permissions:
-            if req not in user_perms:
-                from app.core.errors import ApiError
-                raise ApiError.forbidden(f"Missing permission: {req}")
-                
+        granted = await get_permissions_for_role(db, str(current_user.role))
+        missing = [p for p in permissions if p not in granted]
+        if missing:
+            raise ApiError.forbidden(f"Missing permission: {missing[0]}")
         return current_user
-        
+
     return dependency

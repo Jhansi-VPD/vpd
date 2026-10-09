@@ -13,6 +13,23 @@ import {
   UserRolesInfo,
   UserSessionInfo,
 } from '../types/user.types';
+import {
+  ModuleSummary,
+  PermissionBase,
+  PermissionCreatePayload,
+  PermissionDetail,
+  PermissionListItem,
+  PermissionListParams,
+  PermissionRoleEntry,
+  RoleActivityEntry,
+  RoleCreatePayload,
+  RoleDetail,
+  RoleListItem,
+  RoleListParams,
+  RolePermissionSummary,
+  RoleUpdatePayload,
+  RoleUserEntry,
+} from '../types/role.types';
 
 export interface CreateUserPayload {
   name: string;
@@ -202,16 +219,64 @@ export const backupsApi = {
 };
 
 export const rolesApi = {
-  getAll: (params?: any) => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.ACCESS_CONTROL.ROLES, { params } as any),
-  create: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.ACCESS_CONTROL.ROLES, data),
-  update: (id: string, data: any) => apiClient.put<ApiResponse<any>>(`${API_ENDPOINTS.ACCESS_CONTROL.ROLES}/${id}`, data),
-  delete: (id: string) => apiClient.delete<ApiResponse<void>>(`${API_ENDPOINTS.ACCESS_CONTROL.ROLES}/${id}`),
+  getAll: (params?: RoleListParams) =>
+    apiClient.get<ApiResponse<RoleListItem[]>>(API_ENDPOINTS.ACCESS_CONTROL.ROLES, { params } as RequestOptions),
+  getById: (id: string) =>
+    apiClient.get<ApiResponse<RoleDetail>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_BY_ID(id)),
+  create: (data: RoleCreatePayload) =>
+    apiClient.post<ApiResponse<RoleDetail>>(API_ENDPOINTS.ACCESS_CONTROL.ROLES, data),
+  update: (id: string, data: RoleUpdatePayload) =>
+    apiClient.put<ApiResponse<RoleDetail>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_BY_ID(id), data),
+  setStatus: (id: string, isActive: boolean) =>
+    apiClient.patch<ApiResponse<RoleDetail>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_STATUS(id), {
+      is_active: isActive,
+    }),
+  delete: (id: string) => apiClient.delete<ApiResponse<null>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_BY_ID(id)),
+
+  getPermissions: (id: string) =>
+    apiClient.get<ApiResponse<RolePermissionSummary>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_PERMISSIONS(id)),
+  setPermissions: (id: string, permissionIds: string[]) =>
+    apiClient.put<ApiResponse<RolePermissionSummary>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_PERMISSIONS(id), {
+      permission_ids: permissionIds,
+    }),
+  addPermission: (id: string, permissionId: string) =>
+    apiClient.post<ApiResponse<PermissionBase>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_PERMISSIONS(id), {
+      permission_id: permissionId,
+    }),
+  removePermission: (id: string, permissionId: string) =>
+    apiClient.delete<ApiResponse<null>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_PERMISSION(id, permissionId)),
+
+  getUsers: (id: string, params?: { page?: number; limit?: number; search?: string }) =>
+    apiClient.get<ApiResponse<RoleUserEntry[]>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_USERS(id), {
+      params,
+    } as RequestOptions),
+  getActivity: (id: string, params?: { page?: number; limit?: number }) =>
+    apiClient.get<ApiResponse<RoleActivityEntry[]>>(API_ENDPOINTS.ACCESS_CONTROL.ROLE_ACTIVITY(id), {
+      params,
+    } as RequestOptions),
 };
 
 export const permissionsApi = {
-  getAll: (params?: any) => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSIONS, { params } as any),
-  create: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSIONS, data),
-  delete: (id: string) => apiClient.delete<ApiResponse<void>>(`${API_ENDPOINTS.ACCESS_CONTROL.PERMISSIONS}/${id}`),
+  getAll: (params?: PermissionListParams) =>
+    apiClient.get<ApiResponse<PermissionListItem[]>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSIONS, {
+      params,
+    } as RequestOptions),
+  getModules: () =>
+    apiClient.get<ApiResponse<ModuleSummary[]>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSION_MODULES),
+  getById: (id: string) =>
+    apiClient.get<ApiResponse<PermissionDetail>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSION_BY_ID(id)),
+  create: (data: PermissionCreatePayload) =>
+    apiClient.post<ApiResponse<PermissionDetail>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSIONS, data),
+  update: (id: string, data: { description?: string | null }) =>
+    apiClient.put<ApiResponse<PermissionDetail>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSION_BY_ID(id), data),
+  setStatus: (id: string, isActive: boolean) =>
+    apiClient.patch<ApiResponse<PermissionDetail>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSION_STATUS(id), {
+      is_active: isActive,
+    }),
+  delete: (id: string) =>
+    apiClient.delete<ApiResponse<null>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSION_BY_ID(id)),
+  getRoles: (id: string) =>
+    apiClient.get<ApiResponse<PermissionRoleEntry[]>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSION_ROLES(id)),
 };
 
 export const dashboardApi = {

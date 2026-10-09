@@ -1143,11 +1143,66 @@ class TestRoles:
             )
         assert exc.value.status_code == 403
 
+    async def test_assign_custom_role_validates_against_db(self, monkeypatch):
+        """A non-built-in slug that matches an active, non-deleted roles row
+        (the DB is the source of truth — see PUT /users/{id}/roles)."""
+        target = _make_user(role=UserRole.employee)
+        _patch_crud_get(monkeypatch, target)
+        audit = _capture_audit(monkeypatch)
+        db = _mock_db()
+        db.execute = AsyncMock(side_effect=[_result_optional(uuid.uuid4())])
+
+        result = await users_router.update_user_roles(
+            target.id,
+            UserRoleAssignment(roles=["data_analyst"]),
+            _mock_request(),
+            db,
+            _make_user(role=UserRole.admin),
+        )
+
+        assert result["data"] == {"role": "data_analyst"}
+        assert target.role == "data_analyst"
+        assert _audit_actions(audit) == ["ROLE_REMOVED", "ROLE_ASSIGNED"]
+        db.execute.assert_awaited()
+
+    async def test_assign_unknown_custom_role_rejected_400(self, monkeypatch):
+        """Unknown/inactive custom slugs are rejected by the DB check, not by
+        the schema — no write, no audit."""
+        target = _make_user(role=UserRole.employee)
+        _patch_crud_get(monkeypatch, target)
+        audit = _capture_audit(monkeypatch)
+        db = _mock_db()
+        db.execute = AsyncMock(side_effect=[_result_optional(None)])
+
+        with pytest.raises(ApiError) as exc:
+            await users_router.update_user_roles(
+                target.id,
+                UserRoleAssignment(roles=["data_analyst"]),
+                _mock_request(),
+                db,
+                _make_user(role=UserRole.admin),
+            )
+
+        assert exc.value.status_code == 400
+        assert "Unknown or inactive role" in exc.value.message
+        assert target.role == UserRole.employee
+        db.commit.assert_not_awaited()
+        audit.assert_not_awaited()
+
     def test_assignment_schema_pins_exactly_one_role(self):
         with pytest.raises(ValidationError):
             UserRoleAssignment(roles=[])
         with pytest.raises(ValidationError):
             UserRoleAssignment(roles=[UserRole.employee, UserRole.hr])
+
+    @pytest.mark.parametrize("bad_slug", ["Bad Slug", "1starts_with_digit", "UPPER", "has-dash"])
+    def test_assignment_schema_rejects_invalid_slugs(self, bad_slug):
+        with pytest.raises(ValidationError):
+            UserRoleAssignment(roles=[bad_slug])
+
+    def test_assignment_schema_accepts_custom_slug(self):
+        payload = UserRoleAssignment(roles=["data_analyst"])
+        assert payload.roles == ["data_analyst"]
 
 
 class TestPermissions:
@@ -1157,13 +1212,13 @@ class TestPermissions:
         role = Role(id=uuid.uuid4(), name="Employee", slug="employee", description=None, is_system=True, **_stamps())
         role.permissions = [
             Permission(
-                id=uuid.uuid4(), name="users.update", module="users", action="update", description=None, **_stamps()
+                id=uuid.uuid4(), name="users.update", module="users", action="update", description=None, is_system=False, is_active=True, **_stamps()
             ),
             Permission(
-                id=uuid.uuid4(), name="users.create", module="users", action="create", description=None, **_stamps()
+                id=uuid.uuid4(), name="users.create", module="users", action="create", description=None, is_system=False, is_active=True, **_stamps()
             ),
             Permission(
-                id=uuid.uuid4(), name="auth.login", module="auth", action="login", description=None, **_stamps()
+                id=uuid.uuid4(), name="auth.login", module="auth", action="login", description=None, is_system=False, is_active=True, **_stamps()
             ),
         ]
         db = _mock_db()

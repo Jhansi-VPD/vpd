@@ -1,3 +1,4 @@
+import re
 import uuid
 from datetime import date, datetime
 from typing import Literal
@@ -7,6 +8,7 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 from app.models.enums import UserRole
 from app.schemas.auth import _validate_password_complexity
 from app.schemas.common import ORMBase, TimestampedRead
+from app.schemas.role import SLUG_PATTERN
 
 
 class UserCreate(BaseModel):
@@ -52,7 +54,9 @@ class UserOut(TimestampedRead):
     email: EmailStr
     phone: str | None = None
     avatar: str | None = None
-    role: UserRole
+    # Built-in enum slug or a custom role slug (a row in the `roles` table) —
+    # `str`, not UserRole, because custom roles are DB data, not enum members.
+    role: str
     is_active: bool
     is_email_verified: bool
     last_login_at: datetime | None = None
@@ -132,9 +136,22 @@ class UserRoleAssignment(BaseModel):
     """Single-role architecture: users hold exactly one role (the `users.role`
     column is the authorization source of truth). The list shape keeps the
     API future-proof, but length is pinned to exactly 1 so a caller cannot
-    silently assume multi-role support."""
+    silently assume multi-role support. Values may be built-in role slugs or
+    custom role slugs — the endpoint existence-checks custom slugs against
+    the `roles` table; the request body is never trusted on its own."""
 
-    roles: list[UserRole] = Field(min_length=1, max_length=1)
+    roles: list[str] = Field(min_length=1, max_length=1)
+
+    @field_validator("roles")
+    @classmethod
+    def _validate_slugs(cls, value: list[str]) -> list[str]:
+        checked: list[str] = []
+        for slug in value:
+            text = str(slug)
+            if not re.match(SLUG_PATTERN, text):
+                raise ValueError(f"Invalid role slug: {text}")
+            checked.append(text)
+        return checked
 
 
 class BulkUserActionRequest(BaseModel):

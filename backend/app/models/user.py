@@ -1,7 +1,7 @@
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import Boolean, DateTime, Enum, Integer, String
+from sqlalchemy import Boolean, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -28,7 +28,10 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     phone: Mapped[str | None] = mapped_column(String(30))
     avatar: Mapped[str | None] = mapped_column(String(500))
-    role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="user_role"), default=UserRole.employee, nullable=False)
+    # Plain string (not the PG user_role enum) so custom roles — rows in
+    # the `roles` table — can be assigned; built-in role slugs are still
+    # the UserRole enum values (see app/models/enums.py).
+    role: Mapped[str] = mapped_column(String(100), default=UserRole.employee, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_email_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     email_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

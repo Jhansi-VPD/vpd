@@ -11,12 +11,27 @@ const ROLE_HOME: Record<string, string> = {
   marketing: '/sales',
   hr: '/hr',
   project_manager: '/delivery',
+  delivery: '/delivery',
   client: '/client',
   employee: '/employee',
 };
 
-export function roleHome(role: string | null | undefined): string {
-  return ROLE_HOME[String(role || '').toLowerCase()] || '/employee';
+// 'partner' is intentionally absent: there is no partner portal yet, so
+// partner-role users fall through to the employee home.
+const PORTAL_HOME: Record<string, string> = {
+  admin: '/admin',
+  sales: '/sales',
+  hr: '/hr',
+  delivery: '/delivery',
+  employee: '/employee',
+  client: '/client',
+};
+
+export function roleHome(role: string | null | undefined, portal?: string | null): string {
+  const roleKey = String(role || '').toLowerCase();
+  if (ROLE_HOME[roleKey]) return ROLE_HOME[roleKey];
+  const portalKey = String(portal || '').toLowerCase();
+  return PORTAL_HOME[portalKey] || '/employee';
 }
 
 function GuardScreen() {
@@ -41,14 +56,19 @@ export const RoleRoute: React.FC<RoleRouteProps> = ({ allowedRoles = [], childre
   const pathname = usePathname();
 
   const role = String(user?.role || '').toLowerCase();
-  const home = roleHome(role);
+  const portal = String(user?.portal || '').toLowerCase();
+  const home = roleHome(role, user?.portal);
   // home === pathname keeps unknown roles usable inside their fallback portal
   // instead of looping replace() back to the same URL.
   const authorized =
     !isLoading &&
     isAuthenticated &&
     !!user &&
-    (role === 'super_admin' || role === 'admin' || allowedRoles.includes(role) || home === pathname);
+    (role === 'super_admin' ||
+      role === 'admin' ||
+      allowedRoles.includes(role) ||
+      (!!portal && allowedRoles.includes(portal)) ||
+      home === pathname);
 
   useEffect(() => {
     if (isLoading) return;

@@ -1,10 +1,13 @@
 import { UserRole } from './common.types';
 
+/** Built-in slugs plus custom role slugs created via Role Management. */
+export type RoleSlug = UserRole | (string & {});
+
 export interface UserProfile {
   id: string;
   email: string;
   name: string;
-  role: UserRole;
+  role: RoleSlug;
   phone?: string;
   avatar?: string;
   department_id?: string;
@@ -15,7 +18,7 @@ export interface UserProfile {
 }
 
 export interface RolePermission {
-  role: UserRole;
+  role: RoleSlug;
   permissions: string[];
   description: string;
 }
@@ -33,7 +36,7 @@ export interface UserListItem {
   email: string;
   phone: string | null;
   avatar: string | null;
-  role: UserRole;
+  role: RoleSlug;
   is_active: boolean;
   is_email_verified: boolean;
   last_login_at: string | null;
@@ -105,13 +108,13 @@ export interface PermissionInfo {
 }
 
 export interface UserRolesInfo {
-  current: UserRole;
-  available: UserRole[];
+  current: RoleSlug;
+  available: RoleSlug[];
 }
 
 /** GET /users/{id}/permissions — role-derived, read-only (no per-user grants in schema) */
 export interface UserPermissionsInfo {
-  role: UserRole;
+  role: RoleSlug;
   source: string;
   permissions: PermissionInfo[];
 }
@@ -131,7 +134,7 @@ export interface UserListParams {
   limit?: number;
   sort?: string;
   search?: string;
-  role?: UserRole;
+  role?: RoleSlug;
   status?: AdminUserStatus;
   is_active?: boolean;
   department_id?: string;

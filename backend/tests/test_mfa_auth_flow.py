@@ -92,7 +92,10 @@ class TestGlobalSwitch:
         mock_db.add = MagicMock()
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = user
-        mock_db.execute.return_value = mock_result
+        # Second execute() is the role→portal lookup for the UserRead payload.
+        portal_result = MagicMock()
+        portal_result.scalar_one_or_none.return_value = None
+        mock_db.execute.side_effect = [mock_result, portal_result]
 
         response = Response()
         result = await login(_mock_request(), response, LoginRequest(email=user.email, password="password123"), mock_db)
@@ -149,7 +152,11 @@ class TestMfaVerifyLogin:
         mock_db.add = MagicMock()
         challenge_result = MagicMock()
         challenge_result.scalar_one_or_none.return_value = challenge
-        mock_db.execute.return_value = challenge_result
+        # Second execute() is the role→portal lookup for the UserRead payload
+        # (no backup-code lookup happens: the TOTP path short-circuits).
+        portal_result = MagicMock()
+        portal_result.scalar_one_or_none.return_value = None
+        mock_db.execute.side_effect = [challenge_result, portal_result]
         mock_db.get.return_value = user
 
         code = pyotp.totp.TOTP(secret).now()
@@ -210,7 +217,10 @@ class TestMfaVerifyLogin:
         mock_db.add = MagicMock()
         challenge_result = MagicMock(scalar_one_or_none=MagicMock(return_value=challenge))
         no_backup = MagicMock(scalar_one_or_none=MagicMock(return_value=None))
-        mock_db.execute.side_effect = [challenge_result, no_backup, challenge_result]
+        portal_result = MagicMock(scalar_one_or_none=MagicMock(return_value=None))
+        # Call 1 (wrong code): challenge, backup-miss. Call 2 (retry succeeds):
+        # challenge, then the role→portal lookup for the UserRead payload.
+        mock_db.execute.side_effect = [challenge_result, no_backup, challenge_result, portal_result]
         mock_db.get.return_value = user
 
         with patch("app.routers.auth.hash_token", return_value="th"):

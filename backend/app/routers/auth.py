@@ -26,6 +26,7 @@ from app.models.email_verification_token import EmailVerificationToken
 from app.models.mfa_backup_code import MfaBackupCode
 from app.models.mfa_challenge import MfaChallenge
 from app.models.password_reset_token import PasswordResetToken
+from app.models.role import Role
 from app.models.user import User
 from app.models.user_session import UserSession
 from app.schemas.auth import (
@@ -111,6 +112,26 @@ def _login_allowed(email: str | None) -> bool:
     return email.strip().lower() in _BUILTIN_LOGIN_ALLOWLIST
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+async def _role_portal(db: AsyncSession, user: User) -> str | None:
+    """Portal configured on the user's role row (custom roles are DB data, so
+    their landing portal can't come from the frontend's static slug→portal
+    map). Built-in slugs without a `roles` row resolve to None — the frontend
+    then falls back to its built-in map."""
+    return (
+        await db.execute(
+            select(Role.portal).where(Role.slug == user.role, Role.deleted_at.is_(None))
+        )
+    ).scalar_one_or_none()
+
+
+async def _user_read(db: AsyncSession, user: User) -> UserRead:
+    """Single construction point for UserRead payloads across auth flows —
+    keeps the role→portal resolution from drifting between endpoints."""
+    payload = UserRead.model_validate(user)
+    payload.portal = await _role_portal(db, user)
+    return payload
 
 EMAIL_VERIFICATION_TOKEN_TTL = timedelta(hours=24)
 PASSWORD_RESET_TOKEN_TTL = timedelta(hours=1)
@@ -258,7 +279,7 @@ async def register(request: Request, payload: RegisterRequest, db: AsyncSession 
 
     await _issue_verification_email(db, user)
 
-    return success_response(data=UserRead.model_validate(user), message="Account created successfully", status_code=201)
+    return success_response(data=await _user_read(db, user), message="Account created successfully", status_code=201)
 
 
 @router.post("/login", response_model=dict)
@@ -316,7 +337,7 @@ async def login(request: Request, response: Response, payload: LoginRequest, db:
         db, user, get_client_ip(request), request.headers.get("user-agent"),
     )
     set_session_cookies(response, access_token, refresh_token, csrf_token=secrets.token_urlsafe(32))
-    return success_response(data=LoginResponse(user=UserRead.model_validate(user)), message="Logged in successfully")
+    return success_response(data=LoginResponse(user=await _user_read(db, user)), message="Logged in successfully")
 
 
 @router.post("/mfa/verify-login", response_model=dict)
@@ -357,7 +378,7 @@ async def mfa_verify_login(request: Request, response: Response, payload: MfaVer
     )
     set_session_cookies(response, access_token, refresh_token, csrf_token=secrets.token_urlsafe(32))
     response.delete_cookie(MFA_PENDING_COOKIE, path="/")
-    return success_response(data=LoginResponse(user=UserRead.model_validate(user)), message="Logged in successfully")
+    return success_response(data=LoginResponse(user=await _user_read(db, user)), message="Logged in successfully")
 
 
 @router.post("/refresh", response_model=dict)
@@ -382,7 +403,7 @@ async def refresh(request: Request, response: Response, db: AsyncSession = Depen
         raise ApiError.unauthorized("User no longer exists or is deactivated")
 
     set_session_cookies(response, new_access, new_refresh, csrf_token=secrets.token_urlsafe(32))
-    return success_response(data=UserRead.model_validate(user), message="Session refreshed")
+    return success_response(data=await _user_read(db, user), message="Session refreshed")
 
 
 @router.post("/logout", response_model=dict)
@@ -409,8 +430,8 @@ async def logout_all(response: Response, db: AsyncSession = Depends(get_db), cur
 
 
 @router.get("/me", response_model=dict)
-async def me(current_user: User = Depends(get_current_user)):
-    return success_response(data=UserRead.model_validate(current_user), message="Current user fetched")
+async def me(db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return success_response(data=await _user_read(db, current_user), message="Current user fetched")
 
 
 @router.post("/forgot-password", response_model=dict)
