@@ -25,6 +25,8 @@
 |------|--------|-------|----------|
 | admin | Admin | admin@vpdtechnologies.com | `Password123!` |
 | project_manager | Manager (Project Manager) | pm@vpdtechnologies.com | `Password123!` |
+| developer | Employee / Dev | developer@vpdtechnologies.com | `Password123!` |
+| qa_tester | Employee / QA | qa@vpdtechnologies.com | `Password123!` |
 | hr | HR | hr@vpdtechnologies.com | `Password123!` |
 | sales | Sales | sales@vpdtechnologies.com | `Password123!` |
 | client | Client | client@vpdtechnologies.com | `Password123!` |

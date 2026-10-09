@@ -61,6 +61,7 @@ export const API_ENDPOINTS = {
   TIMESHEETS: {
     BASE: '/timesheets',
     BY_ID: (id: string) => `/timesheets/${id}`,
+    STATUS: (id: string) => `/timesheets/${id}/status`,
   },
   SALES: {
     PIPELINE: '/leads',

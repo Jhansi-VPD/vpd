@@ -147,8 +147,11 @@ export const tasksApi = {
 };
 
 export const timesheetsApi = {
-  getAll: (params?: any) => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.TIMESHEETS.BASE, { params } as any),
+  getAll: (params?: any) => apiClient.get<ApiResponse<any>>(API_ENDPOINTS.TIMESHEETS.BASE, { params } as any),
   logTime: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.TIMESHEETS.BASE, data),
+  updateStatus: (id: string, status: string) => apiClient.patch<ApiResponse<any>>(API_ENDPOINTS.TIMESHEETS.STATUS(id), { status }),
+  approve: (id: string) => apiClient.patch<ApiResponse<any>>(API_ENDPOINTS.TIMESHEETS.STATUS(id), { status: 'approved' }),
+  reject: (id: string, notes?: string) => apiClient.patch<ApiResponse<any>>(API_ENDPOINTS.TIMESHEETS.STATUS(id), { status: 'rejected', notes }),
 };
 
 export const salesApi = {
@@ -184,6 +187,7 @@ export const clientsApi = {
 
 export const invoicesApi = {
   getAll: () => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.FINANCE.INVOICES),
+  create: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.FINANCE.INVOICES, data),
 };
 
 export const paymentsApi = {

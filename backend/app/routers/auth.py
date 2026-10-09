@@ -92,6 +92,10 @@ _BUILTIN_LOGIN_ALLOWLIST = frozenset({
     "sales@vpdtechnologies.com",
     "client@vpdtechnologies.com",
     "employee@vpdtechnologies.com",
+    "developer@vpdtechnologies.com",
+    "qa@vpdtechnologies.com",
+    "alex.mercer@vpdtechnologies.com",
+    "priya.patel@vpdtechnologies.com",
 })
 LOGIN_ALLOWLIST = _BUILTIN_LOGIN_ALLOWLIST  # kept for import compatibility
 

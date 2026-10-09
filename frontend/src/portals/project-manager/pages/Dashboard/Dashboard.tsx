@@ -8,11 +8,17 @@ import Button from '../../../../shared/components/Button';
 import StatusBadge from '../../../../shared/components/StatusBadge';
 import { Icon } from '../../../../shared/components';
 import { projectsApi, tasksApi } from '../../../../api';
+import CreateProjectModal from '../../components/CreateProjectModal';
 
 export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [projectsList, setProjectsList] = useState<any[]>([]);
   const [tasksList, setTasksList] = useState<any[]>([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const handleProjectCreated = (newProject: any) => {
+    setProjectsList((prev) => [newProject, ...prev]);
+  };
 
   useEffect(() => {
     async function fetchDeliveryData() {
@@ -48,41 +54,139 @@ export const Dashboard: React.FC = () => {
                 View Kanban
               </Button>
             </Link>
-            <Link href="/delivery/projects">
-              <Button variant="primary" size="sm">
-                + New Project
-              </Button>
-            </Link>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              + New Project
+            </Button>
           </div>
         }
       />
 
+      {/* End-to-End Delivery & QA Lifecycle Ribbon */}
+      <div className="rounded-xl border border-[#2A2A2A] bg-[#141414] p-4 space-y-3 shimmer-bg shadow-lg animate-slideDown">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-white flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
+            <span className="text-[#D4AF37]">⚡</span> Project Manager Delivery & QA Lifecycle
+          </span>
+          <span className="text-[10px] text-amber-400/90 font-mono font-medium px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+            End-to-End Flow
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 text-xs">
+          <Link
+            href="/delivery/projects"
+            className="p-3 rounded-lg bg-[#181818]/90 border border-[#262626] card-hover-fx space-y-1 block group relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-emerald-400 font-mono font-bold">STAGE 1</span>
+              <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity text-emerald-400">➔</span>
+            </div>
+            <p className="font-semibold text-white group-hover:text-[#D4AF37] transition-colors text-[11px]">
+              Contract Signed
+            </p>
+            <p className="text-[10px] text-zinc-500">Auto-provisioned from CRM</p>
+          </Link>
+
+          <Link
+            href="/delivery/team"
+            className="p-3 rounded-lg bg-[#181818]/90 border border-[#262626] card-hover-fx space-y-1 block group relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-blue-400 font-mono font-bold">STAGE 2</span>
+              <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity text-blue-400">➔</span>
+            </div>
+            <p className="font-semibold text-white group-hover:text-[#D4AF37] transition-colors text-[11px]">
+              Team Allocation
+            </p>
+            <p className="text-[10px] text-zinc-500">Assign Devs, Testers & DevOps</p>
+          </Link>
+
+          <Link
+            href="/delivery/tasks"
+            className="p-3 rounded-lg bg-[#181818]/90 border border-[#262626] card-hover-fx space-y-1 block group relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-amber-400 font-mono font-bold">STAGE 3</span>
+              <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity text-amber-400">➔</span>
+            </div>
+            <p className="font-semibold text-white group-hover:text-[#D4AF37] transition-colors text-[11px]">
+              Daily Task Assign
+            </p>
+            <p className="text-[10px] text-zinc-500">PM assigns tasks by role to Devs</p>
+          </Link>
+
+          <Link
+            href="/delivery/tasks"
+            className="p-3 rounded-lg bg-[#181818]/90 border border-[#262626] card-hover-fx space-y-1 block group relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-red-400 font-mono font-bold">STAGE 4</span>
+              <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity text-red-400">➔</span>
+            </div>
+            <p className="font-semibold text-white group-hover:text-[#D4AF37] transition-colors text-[11px]">
+              QA Testing & Bug Fix
+            </p>
+            <p className="text-[10px] text-zinc-500">Tester tests, reports bug, Dev retests</p>
+          </Link>
+
+          <Link
+            href="/delivery/projects"
+            className="p-3 rounded-lg bg-[#181818]/90 border border-[#262626] card-hover-fx space-y-1 block group relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-[#D4AF37] font-mono font-bold">STAGE 5</span>
+              <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity text-[#D4AF37]">➔</span>
+            </div>
+            <p className="font-semibold text-white group-hover:text-[#D4AF37] transition-colors text-[11px]">
+              HR & Admin Invoicing
+            </p>
+            <p className="text-[10px] text-zinc-500">Official invoice generated by HR/Admin</p>
+          </Link>
+        </div>
+      </div>
+
       {/* Top Telemetry KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard
-          title="Sprint Completion"
-          value="88%"
-          change="+6% vs Target"
-          isPositive={true}
-        />
-        <MetricCard
-          title="Open Tasks in Flight"
-          value={tasksList.length > 0 ? String(tasksList.length) : "34"}
-          change="7 in Code Review"
-          isPositive={true}
-        />
-        <MetricCard
-          title="Active Projects"
-          value={projectsList.length > 0 ? String(projectsList.length) : "8"}
-          change="All On Schedule"
-          isPositive={true}
-        />
-        <MetricCard
-          title="Critical Blockers"
-          value="0"
-          change="Zero Impediments"
-          isPositive={true}
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-slideUp">
+        <div className="card-hover-fx rounded-xl">
+          <MetricCard
+            title="Sprint Completion"
+            value="88%"
+            change="+6% vs Target"
+            isPositive={true}
+          />
+        </div>
+        <div className="card-hover-fx rounded-xl">
+          <MetricCard
+            title="Open Tasks in Flight"
+            value={tasksList.length > 0 ? String(tasksList.length) : "34"}
+            change="7 in Code Review"
+            isPositive={true}
+          />
+        </div>
+        <div className="card-hover-fx rounded-xl">
+          <MetricCard
+            title="Active Projects"
+            value={projectsList.length > 0 ? String(projectsList.length) : "8"}
+            change="All On Schedule"
+            isPositive={true}
+          />
+        </div>
+        <div className="card-hover-fx rounded-xl">
+          <MetricCard
+            title="Critical Blockers"
+            value="0"
+            change="Zero Impediments"
+            isPositive={true}
+          />
+        </div>
       </div>
 
       {/* Two Column Grid: Active Projects & Sprint Tasks */}
@@ -220,6 +324,13 @@ export const Dashboard: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Modal for creating a new project */}
+      <CreateProjectModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onProjectCreated={handleProjectCreated}
+      />
     </PageContainer>
   );
 };

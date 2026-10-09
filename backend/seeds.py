@@ -199,7 +199,7 @@ BASELINE_ROLE_PERMISSION_MAPPINGS = {
         "roles:manage_permissions",
         "permissions:read", "permissions:create", "permissions:update", "permissions:delete",
     ],
-    "hr": ["users:read", "users:write", "tickets:read", "tickets:write"],
+    "hr": ["users:read", "users:write", "tickets:read", "tickets:write", "invoices:read", "invoices:write"],
     "sales": ["projects:read", "invoices:read", "invoices:write"],
     "marketing": ["projects:read", "reports:read"],
     "project_manager": ["projects:read", "projects:write", "tasks:read", "tasks:write", "reports:read"],
@@ -334,7 +334,7 @@ async def seed_users_employees_clients(db: AsyncSession, dept_map: dict[str, uui
         # Employee profile
         if "code" in u_info:
             res_emp = await db.execute(select(Employee).where((Employee.user_id == user.id) | (Employee.employee_code == u_info["code"])))
-            emp = res_emp.scalar_one_or_none()
+            emp = res_emp.scalars().first()
             if not emp:
                 emp = Employee(
                     id=uuid.uuid4(),

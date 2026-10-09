@@ -18,6 +18,8 @@ export default function LoginPage() {
   const demoAccounts = [
     { role: 'Admin', email: 'admin@vpdtechnologies.com', path: '/admin' },
     { role: 'Manager', email: 'pm@vpdtechnologies.com', path: '/delivery' },
+    { role: 'Developer', email: 'developer@vpdtechnologies.com', path: '/employee' },
+    { role: 'QA Tester', email: 'qa@vpdtechnologies.com', path: '/employee' },
     { role: 'HR', email: 'hr@vpdtechnologies.com', path: '/hr' },
     { role: 'Sales', email: 'sales@vpdtechnologies.com', path: '/sales' },
     { role: 'Client', email: 'client@vpdtechnologies.com', path: '/client' },

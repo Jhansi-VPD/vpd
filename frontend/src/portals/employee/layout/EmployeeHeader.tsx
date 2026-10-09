@@ -94,12 +94,12 @@ export const EmployeeHeader: React.FC = () => {
               {initialsOf(user?.name)}
             </span>
             <span className="hidden sm:block text-left leading-tight">
-              <span className="block text-xs font-semibold text-white">{user?.name || 'Employee'}</span>
-              <span className="block text-[10px] text-[#71717A]">{formatRole(user?.role)}</span>
+              <span className="block text-xs font-bold text-white">{user?.name || 'Employee'}</span>
+              <span className="block text-[11px] font-medium text-amber-400 tracking-wide">{formatRole(user?.role)}</span>
             </span>
             <Icon
               name="chevron-down"
-              className={`hidden sm:block h-3.5 w-3.5 text-[#71717A] transition-transform ${menuOpen ? 'rotate-180' : ''}`}
+              className={`hidden sm:block h-3.5 w-3.5 text-zinc-400 transition-transform ${menuOpen ? 'rotate-180' : ''}`}
             />
           </button>
 
@@ -110,7 +110,7 @@ export const EmployeeHeader: React.FC = () => {
             >
               <div className="px-4 py-3 border-b border-[#2A2A2A] bg-[#141414]">
                 <p className="text-xs font-semibold text-white truncate">{user?.name || 'Employee'}</p>
-                {user?.email && <p className="mt-0.5 text-[10px] text-[#71717A] truncate">{user.email}</p>}
+                {user?.email && <p className="mt-0.5 text-xs text-zinc-300 font-mono truncate">{user.email}</p>}
                 <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[#D4AF37]">
                   <Icon name="user" className="h-3 w-3" />
                   {formatRole(user?.role)}

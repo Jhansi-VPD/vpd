@@ -14,7 +14,7 @@ from app.schemas.finance import InvoiceCreate, InvoiceOut, InvoiceUpdate, Paymen
 from app.utils.pagination import PageParams, page_params
 from app.utils.responses import build_pagination_meta, success_response
 
-router = APIRouter(prefix="/finance", tags=["Finance"], dependencies=[Depends(require_roles("admin", "finance"))])
+router = APIRouter(prefix="/finance", tags=["Finance"], dependencies=[Depends(require_roles("admin", "super_admin", "hr", "finance"))])
 
 invoice_crud = CRUDBase(Invoice, searchable_fields=["invoice_number"])
 
@@ -33,7 +33,7 @@ async def get_invoice(invoice_id: uuid.UUID, db: AsyncSession = Depends(get_db))
     return success_response(data=InvoiceOut.model_validate(invoice))
 
 
-@router.post("/invoices", response_model=dict, status_code=201)
+@router.post("/invoices", response_model=dict, status_code=201, dependencies=[Depends(require_roles("admin", "super_admin", "hr"))])
 async def create_invoice(payload: InvoiceCreate, db: AsyncSession = Depends(get_db)):
     data = payload.model_dump()
     data["invoice_number"] = data.get("invoice_number") or f"INV-{int(datetime.utcnow().timestamp())}"

@@ -13,7 +13,11 @@ from app.utils.pagination import PageParams, page_params
 from app.utils.responses import build_pagination_meta, success_response
 from app.utils.uploads import save_upload
 
-router = APIRouter(prefix="/media", tags=["Media"], dependencies=[Depends(require_roles("admin", "marketing", "hr"))])
+router = APIRouter(
+    prefix="/media",
+    tags=["Media"],
+    dependencies=[Depends(require_roles("admin", "super_admin", "project_manager", "hr", "marketing", "employee", "developer"))],
+)
 
 crud = CRUDBase(Media)
 
@@ -26,15 +30,20 @@ async def list_media(request: Request, db: AsyncSession = Depends(get_db), page:
     return success_response(data=[MediaOut.model_validate(m) for m in items], message="Media fetched", meta=meta)
 
 
+@router.post("", response_model=dict, status_code=201)
 @router.post("/upload", response_model=dict, status_code=201)
 async def upload_files(
-    files: list[UploadFile] = File(...),
+    files: list[UploadFile] | None = None,
+    file: UploadFile | None = None,
     folder: str = Form("misc"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    upload_list = files or ([file] if file else [])
+    if not upload_list:
+        return success_response(data=[], message="No files provided", status_code=200)
     records = []
-    for f in files:
+    for f in upload_list:
         url = await save_upload(f, folder)
         media = Media(file_name=f.filename, url=url, mime_type=f.content_type, size_bytes=f.size, uploaded_by=current_user.id, folder=folder)
         db.add(media)

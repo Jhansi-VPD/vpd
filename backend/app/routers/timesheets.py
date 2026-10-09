@@ -9,7 +9,7 @@ from app.models.timesheet import Timesheet
 from app.models.user import User
 from app.schemas.employee import TimesheetOut, TimesheetCreate, TimesheetStatusUpdate
 from app.utils.pagination import PageParams, page_params
-from app.utils.responses import success_response
+from app.utils.responses import build_pagination_meta, success_response
 from app.models.enums import TimesheetStatus
 
 router = APIRouter(prefix="/timesheets", tags=["Timesheets"], dependencies=[Depends(require_roles("admin", "hr", "super_admin", "employee", "project_manager"))])
@@ -27,7 +27,12 @@ async def list_timesheets(request: Request, db: AsyncSession = Depends(get_db), 
         filters["status"] = status
 
     items, total = await crud.list(db, page, filters=filters)
-    return {"items": items, "total": total, "page": page.page, "size": page.size}
+    meta = build_pagination_meta(total, page.page, page.limit)
+    return success_response(
+        data=[TimesheetOut.model_validate(m).model_dump(mode="json") for m in items],
+        message="Timesheets fetched",
+        meta=meta,
+    )
 
 @router.post("", response_model=dict)
 async def create_timesheet(data: TimesheetCreate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
