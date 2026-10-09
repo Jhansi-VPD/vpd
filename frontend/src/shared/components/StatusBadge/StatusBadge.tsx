@@ -27,8 +27,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, variant }) => 
     warning: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/30',
     danger: 'bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/30',
     info: 'bg-[#38BDF8]/10 text-[#38BDF8] border-[#38BDF8]/30',
-    gold: 'bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/30',
-    neutral: 'bg-[#1D1D1D] text-[#A1A1AA] border-[#2A2A2A]',
+    gold: 'bg-[#D4AF37]/15 text-[#D4AF37] border-[#D4AF37]/35',
+    neutral: 'bg-[#222225] text-zinc-200 border-zinc-700 font-semibold',
   };
 
   return (

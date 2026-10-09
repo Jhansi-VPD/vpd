@@ -108,8 +108,8 @@ export function DataTable<T extends { id?: string | number }>({
         </div>
       )}
       <div className={`w-full overflow-x-auto ${loading ? 'opacity-60 pointer-events-none' : ''}`}>
-        <table className="w-full text-left text-sm text-zinc-300 min-w-[600px]">
-          <thead className="border-b border-[#2A2A2A] bg-[#141414] text-xs uppercase tracking-wider text-[#A1A1AA]">
+        <table className="w-full text-left text-sm text-zinc-200 min-w-[600px]">
+          <thead className="border-b border-[#2A2A2A] bg-[#141414] text-xs uppercase tracking-wider text-zinc-200 font-semibold">
             <tr>
               {selectionActive && (
                 <th className="w-12 px-4 py-3.5">

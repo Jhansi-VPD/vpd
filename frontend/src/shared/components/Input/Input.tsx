@@ -22,13 +22,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           className={`w-full px-3.5 py-2.5 bg-[#171717] border ${
             error ? 'border-[#EF4444] focus:border-[#EF4444]' : 'border-[#2A2A2A] focus:border-[#D4AF37]'
-          } rounded-xl text-white placeholder-[#71717A] text-sm focus:outline-none focus:ring-1 ${
+          } rounded-xl text-white placeholder-zinc-400 text-sm focus:outline-none focus:ring-1 ${
             error ? 'focus:ring-[#EF4444]' : 'focus:ring-[#D4AF37]'
           } transition-all ${className}`}
           {...props}
         />
         {error && <p className="text-xs text-[#EF4444]">{error}</p>}
-        {helperText && !error && <p className="text-xs text-[#A1A1AA]">{helperText}</p>}
+        {helperText && !error && <p className="text-xs text-zinc-300 font-medium">{helperText}</p>}
       </div>
     );
   }

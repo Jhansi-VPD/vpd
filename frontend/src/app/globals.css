@@ -100,3 +100,135 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
 }
+
+/* Date input calendar picker indicator styling */
+input[type="date"] {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.9;
+  filter: brightness(0) invert(1);
+  padding: 2px;
+  border-radius: 4px;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(201, 168, 76, 0.8));
+  transform: scale(1.15);
+}
+
+/* =========================================================================
+   Luxury Micro-Animations & Attractive Card Effects
+   ========================================================================= */
+
+.card-hover-fx {
+  position: relative;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.26s ease;
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
+}
+
+.card-hover-fx:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.85),
+              0 0 22px rgba(212, 175, 55, 0.18);
+  border-color: rgba(212, 175, 55, 0.45);
+}
+
+/* Top Shimmer Accent line for Cards */
+.card-hover-fx::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.card-hover-fx:hover::before {
+  opacity: 1;
+}
+
+/* Kanban & Workflow Card Interactive Styling */
+.kanban-card-fx {
+  position: relative;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s ease;
+  will-change: transform, box-shadow;
+}
+
+.kanban-card-fx:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.85),
+              0 0 18px rgba(212, 175, 55, 0.22);
+  border-color: rgba(212, 175, 55, 0.55);
+}
+
+/* Luxury Glass Surface */
+.glass-surface {
+  background: rgba(18, 18, 20, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Ambient Gold Glow Keyframe Animations */
+@keyframes subtlePulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.22);
+  }
+}
+
+.gold-pulse-ambient {
+  animation: subtlePulse 4s ease-in-out infinite;
+}
+
+/* Shimmer Animation */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(212, 175, 55, 0.08) 30%,
+    rgba(212, 175, 55, 0.18) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmerSweep 3.5s infinite;
+  pointer-events: none;
+}
+

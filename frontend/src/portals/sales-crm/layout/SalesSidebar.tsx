@@ -139,8 +139,8 @@ export const SalesSidebar: React.FC = () => {
                       aria-current={active ? 'page' : undefined}
                       className={`group relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] font-medium transition-all duration-150 ${
                         active
-                          ? 'bg-[#D4AF37]/10 text-[#F0D67C]'
-                          : 'text-[#A1A1AA] hover:text-white hover:bg-[#1E1E1E]'
+                          ? 'bg-[#D4AF37]/15 text-[#F0D67C] font-semibold'
+                          : 'text-zinc-300 hover:text-white hover:bg-[#1E1E1E]'
                       }`}
                     >
                       {active && (
@@ -149,7 +149,7 @@ export const SalesSidebar: React.FC = () => {
                       <Icon
                         name={item.icon}
                         className={`h-[18px] w-[18px] flex-shrink-0 ${
-                          active ? 'text-[#D4AF37]' : 'text-[#71717A] group-hover:text-[#A1A1AA]'
+                          active ? 'text-[#D4AF37]' : 'text-zinc-400 group-hover:text-white'
                         }`}
                       />
                       <span className="truncate">{item.label}</span>
@@ -169,9 +169,9 @@ export const SalesSidebar: React.FC = () => {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
                 <span className="relative flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              <p className="text-[10px] font-semibold text-white">CRM Pipeline Live</p>
+              <p className="text-xs font-semibold text-white">CRM Pipeline Live</p>
             </div>
-            <p className="mt-1 text-[10px] text-[#71717A] font-mono">Q4 Targets · On Track</p>
+            <p className="mt-1 text-xs text-zinc-300 font-mono">Q4 Targets · On Track</p>
           </div>
         </div>
       </aside>

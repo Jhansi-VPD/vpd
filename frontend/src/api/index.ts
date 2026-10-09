@@ -154,35 +154,45 @@ export const timesheetsApi = {
   reject: (id: string, notes?: string) => apiClient.patch<ApiResponse<any>>(API_ENDPOINTS.TIMESHEETS.STATUS(id), { status: 'rejected', notes }),
 };
 
+export const contactApi = {
+  getAll: (params?: any) => apiClient.get<ApiResponse<any>>('/contact', { params } as any),
+  getById: (id: string) => apiClient.get<ApiResponse<any>>(`/contact/${id}`),
+};
+
 export const salesApi = {
   getPipeline: () => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.SALES.PIPELINE),
 };
 
 export const leadsApi = {
-  getAll: (params?: any) => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.SALES.LEADS, { params } as any),
+  getAll: (params?: any) => apiClient.get<ApiResponse<any>>(API_ENDPOINTS.SALES.LEADS, { params } as any),
+  getById: (id: string) => apiClient.get<ApiResponse<any>>(`/leads/${id}`),
   create: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.SALES.LEADS, data),
+  update: (id: string, data: any) => apiClient.patch<ApiResponse<any>>(`/leads/${id}`, data),
+  logCall: (id: string, notes: string) => apiClient.post<ApiResponse<any>>(`/leads/${id}/log-call`, { notes }),
+  requirementGathering: (id: string, notes: string) => apiClient.post<ApiResponse<any>>(`/leads/${id}/requirement-gathering`, { notes }),
+  disqualify: (id: string, reason: string) => apiClient.post<ApiResponse<any>>(`/leads/${id}/disqualify`, { reason }),
+  convert: (id: string) => apiClient.post<ApiResponse<any>>(`/leads/${id}/convert`),
 };
 
 export const proposalsApi = {
-  getAll: () => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.SALES.PROPOSALS),
+  getAll: (params?: any) => apiClient.get<ApiResponse<any>>(API_ENDPOINTS.SALES.PROPOSALS, { params } as any),
+  create: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.SALES.PROPOSALS, data),
+  send: (id: string) => apiClient.post<ApiResponse<any>>(`/proposals/${id}/send`),
+  accept: (id: string) => apiClient.post<ApiResponse<any>>(`/proposals/${id}/accept`),
+  reject: (id: string, reason?: string) => apiClient.post<ApiResponse<any>>(`/proposals/${id}/reject`, { reason }),
 };
 
 export const contractsApi = {
-  getAll: () => apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.SALES.CONTRACTS),
-};
-
-export const hrApi = {
-  getOverview: () => apiClient.get<ApiResponse<any>>('/hr/overview'),
-};
-
-export const recruitmentApi = {
-  getJobs: () => apiClient.get<ApiResponse<any[]>>('/recruitment/jobs'),
-  getCandidates: () => apiClient.get<ApiResponse<any[]>>('/recruitment/candidates'),
+  getAll: (params?: any) => apiClient.get<ApiResponse<any>>(API_ENDPOINTS.SALES.CONTRACTS, { params } as any),
+  create: (data: any) => apiClient.post<ApiResponse<any>>(API_ENDPOINTS.SALES.CONTRACTS, data),
+  sign: (id: string, data: { client_signed?: boolean; company_signed?: boolean; provision_client_account?: boolean }) =>
+    apiClient.post<ApiResponse<any>>(`/contracts/${id}/sign`, data),
 };
 
 export const clientsApi = {
-  getAll: () => apiClient.get<ApiResponse<any[]>>('/clients'),
+  getAll: (params?: any) => apiClient.get<ApiResponse<any>>('/clients', { params } as any),
   getById: (id: string) => apiClient.get<ApiResponse<any>>(`/clients/${id}`),
+  create: (data: any) => apiClient.post<ApiResponse<any>>('/clients', data),
 };
 
 export const invoicesApi = {
