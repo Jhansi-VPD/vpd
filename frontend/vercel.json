@@ -1,7 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/v1/:path*", "destination": "https://vpd-k6hu.onrender.com/api/v1/:path*" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/api/v1/:path*", "destination": "https://vpdtechnologies-h191.onrender.com/api/v1/:path*" }
   ],
   "headers": [
     {

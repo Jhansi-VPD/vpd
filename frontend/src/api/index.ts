@@ -279,6 +279,11 @@ export const permissionsApi = {
     apiClient.get<ApiResponse<PermissionRoleEntry[]>>(API_ENDPOINTS.ACCESS_CONTROL.PERMISSION_ROLES(id)),
 };
 
+export const auditLogsApi = {
+  getAll: (params?: { page?: number; limit?: number; user_id?: string; action?: string; entity_type?: string }) =>
+    apiClient.get<ApiResponse<any[]>>(API_ENDPOINTS.AUDIT.LOGS, { params } as RequestOptions),
+};
+
 export const dashboardApi = {
   getOverview: () => apiClient.get<ApiResponse<any>>(API_ENDPOINTS.DASHBOARD.OVERVIEW),
 };

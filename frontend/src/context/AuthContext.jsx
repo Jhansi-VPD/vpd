@@ -69,11 +69,16 @@ export function AuthProvider({ children }) {
 
     initAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
-      if (s) {
-        setSession(s);
-      }
-    });
+    let subscription;
+    try {
+      ({ data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+        if (s) {
+          setSession(s);
+        }
+      }));
+    } catch (err) {
+      console.warn('Supabase auth state subscription skipped:', err);
+    }
 
     return () => subscription?.unsubscribe();
   }, []);
