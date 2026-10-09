@@ -17,6 +17,7 @@ from app.schemas.career import (
     ApplicationStatusUpdate,
     CareerCreate,
     CareerOut,
+    CareerUpdate,
 )
 from app.utils.pagination import PageParams, page_params
 from app.utils.responses import build_pagination_meta, success_response
@@ -28,11 +29,15 @@ career_crud = CRUDBase(Career, searchable_fields=["title", "location", "departme
 application_crud = CRUDBase(Application, searchable_fields=["full_name", "email"])
 
 
-# ---------- Public ----------
+# ---------- Public & HR ----------
 @router.get("", response_model=dict)
 async def list_open_positions(request: Request, db: AsyncSession = Depends(get_db), page: PageParams = Depends(page_params)):
     filters = {k: request.query_params.get(k) for k in ("department", "location", "employment_type") if request.query_params.get(k)}
-    filters["status"] = "open"
+    status_param = request.query_params.get("status")
+    if status_param and status_param.lower() != "all":
+        filters["status"] = status_param.lower()
+    elif not status_param:
+        filters["status"] = "open"
     items, total = await career_crud.list(db, page, filters)
     meta = build_pagination_meta(total, page.page, page.limit)
     return success_response(data=[CareerOut.model_validate(c) for c in items], message="Open positions fetched", meta=meta)
@@ -78,6 +83,21 @@ async def create_position(payload: CareerCreate, db: AsyncSession = Depends(get_
     data["slug"] = data.get("slug") or slugify(data["title"])
     career = await career_crud.create(db, data)
     return success_response(data=CareerOut.model_validate(career), message="Job posting created", status_code=201)
+
+
+@router.patch("/{career_id}", response_model=dict, dependencies=[Depends(require_roles("admin", "hr"))])
+async def update_position(career_id: uuid.UUID, payload: CareerUpdate, db: AsyncSession = Depends(get_db)):
+    data = {k: v for k, v in payload.model_dump().items() if v is not None}
+    if "title" in data and "slug" not in data:
+        data["slug"] = slugify(data["title"])
+    career = await career_crud.update(db, career_id, data)
+    return success_response(data=CareerOut.model_validate(career), message="Job posting updated")
+
+
+@router.delete("/{career_id}", response_model=dict, dependencies=[Depends(require_roles("admin", "hr"))])
+async def delete_position(career_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+    await career_crud.delete(db, career_id)
+    return success_response(message="Job posting deleted")
 
 
 @router.get("/admin/applications", response_model=dict, dependencies=[Depends(require_roles("admin", "hr"))])

@@ -175,7 +175,7 @@ export const Dashboard: React.FC = () => {
             {loading ? '...' : stats.openPositions}
           </div>
           <Link href="/hr/recruitment" className="text-[11px] text-[#C9A84C] hover:underline flex items-center gap-1">
-            View ATS requisitions →
+            View ATS jobs →
           </Link>
         </div>
 

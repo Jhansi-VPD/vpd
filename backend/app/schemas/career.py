@@ -21,6 +21,11 @@ class CareerCreate(BaseModel):
 
 
 class CareerUpdate(BaseModel):
+    title: str | None = None
+    department: str | None = None
+    location: str | None = None
+    employment_type: CareerEmploymentType | None = None
+    experience_required: str | None = None
     description: str | None = None
     status: CareerStatus | None = None
     responsibilities: list[str] | None = None

@@ -245,6 +245,14 @@ export const hrApi = {
     return apiClient.post<ApiResponse<any>>('/careers', data);
   },
 
+  updateCareer(id: string, data: any) {
+    return apiClient.patch<ApiResponse<any>>(`/careers/${id}`, data);
+  },
+
+  deleteCareer(id: string) {
+    return apiClient.delete<ApiResponse<any>>(`/careers/${id}`);
+  },
+
   getApplications(params: Record<string, any> = {}) {
     const qs = new URLSearchParams(params).toString();
     return apiClient.get<ApiResponse<any[]>>(`/careers/admin/applications${qs ? `?${qs}` : ''}`);
