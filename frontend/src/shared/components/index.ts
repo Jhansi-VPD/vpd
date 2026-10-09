@@ -20,3 +20,5 @@ export * from './ErrorState';
 export * from './Pagination';
 export * from './KpiCard/KpiCard';
 export * from './ActionToast/ActionToast';
+export * from './AttendanceTracker';
+

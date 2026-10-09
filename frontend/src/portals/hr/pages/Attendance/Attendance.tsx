@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { hrApi } from '../../../../api/hr.api';
+import AttendanceTrackerCard from '../../../../shared/components/AttendanceTracker';
 
 export const Attendance: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'my' | 'company'>('my');
@@ -117,7 +118,16 @@ export const Attendance: React.FC = () => {
         </div>
       </div>
 
-      {/* Today summary card */}
+      {/* Live Attendance & Break Tracker Card for Personal Tab */}
+      {activeTab === 'my' && (
+        <AttendanceTrackerCard
+          onPunchChange={() => {
+            fetchAttendance();
+          }}
+        />
+      )}
+
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-[#15181D] border border-[#272B35] rounded-xl p-4 space-y-1">
           <span className="text-[10px] uppercase font-mono text-[#7A7D84]">Today&apos;s Status</span>
