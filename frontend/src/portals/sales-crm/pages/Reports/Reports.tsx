@@ -4,7 +4,7 @@ import { MetricCard } from '../../../../shared/components/Charts';
 import DataTable from '../../../../shared/components/DataTable';
 import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
-import { Icon } from '../../../../shared/components';
+import { Icon, ActionToast } from '../../../../shared/components';
 
 interface RepPerf {
   id: string;
@@ -160,15 +160,11 @@ export const Reports: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Toast */}
-      {exportNotice && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ Export Status:</span>
-            <span>{exportNotice}</span>
-          </div>
-          <button onClick={() => setExportNotice(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={exportNotice}
+        onClose={() => setExportNotice(null)}
+        title="⚡ Export Status:"
+      />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -7,7 +7,7 @@ import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
-import { Icon } from '../../../../shared/components';
+import { Icon, KpiCard, ActionToast } from '../../../../shared/components';
 
 export const Clients: React.FC = () => {
   const [clients, setClients] = useState<any[]>([]);
@@ -155,15 +155,11 @@ export const Clients: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Toast */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ Client Directory:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ Client Directory:"
+      />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -193,27 +189,31 @@ export const Clients: React.FC = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Active Client Accounts</div>
-          <div className="text-xl font-extrabold text-white font-mono mt-0.5">{clients.length} Accounts</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Contractually bound</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Total Contracted Value</div>
-          <div className="text-xl font-extrabold text-[#D4AF37] font-mono mt-0.5">${totalARR.toLocaleString()}</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Cumulative signed ARR</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Delivery Hub Projects</div>
-          <div className="text-xl font-extrabold text-emerald-400 font-mono mt-0.5">{totalProjects} Live</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Auto-provisioned on contract sign</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Client Retention</div>
-          <div className="text-xl font-extrabold text-cyan-400 font-mono mt-0.5">98.5%</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Zero churn in current FY</div>
-        </div>
+        <KpiCard
+          label="Active Client Accounts"
+          value={`${clients.length} Accounts`}
+          subtitle="Contractually bound"
+        />
+        <KpiCard
+          label="Total Contracted Value"
+          value={`$${totalARR.toLocaleString()}`}
+          subtitle="Cumulative signed ARR"
+          valueColor="text-[#D4AF37]"
+        />
+        <KpiCard
+          label="Delivery Hub Projects"
+          value={`${totalProjects} Live`}
+          subtitle="Auto-provisioned on contract sign"
+          valueColor="text-emerald-400"
+        />
+        <KpiCard
+          label="Client Retention"
+          value="98.5%"
+          subtitle="Zero churn in current FY"
+          valueColor="text-cyan-400"
+        />
       </div>
+
 
       {/* Clients Table */}
       <DataTable

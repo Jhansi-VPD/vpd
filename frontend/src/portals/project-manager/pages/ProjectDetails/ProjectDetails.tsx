@@ -738,7 +738,7 @@ export const ProjectDetails: React.FC = () => {
                         <span className="text-blue-400 font-semibold">Alex Mercer (Lead Dev)</span>
                       </p>
                       <p className="text-[11px] text-zinc-400 mt-1 italic">
-                        "Amounts over $1,000 exhibit a 1-cent variance due to premature float truncation in the payment calculation module."
+                        &ldquo;Amounts over $1,000 exhibit a 1-cent variance due to premature float truncation in the payment calculation module.&rdquo;
                       </p>
                     </div>
                   </div>
@@ -1118,10 +1118,10 @@ export const ProjectDetails: React.FC = () => {
               <div className="text-xs text-amber-200/90 leading-relaxed">
                 <p className="font-semibold text-white">How the Project Invoicing Pipeline Works:</p>
                 <ol className="list-decimal ml-4 mt-1.5 space-y-1">
-                  <li>Project Manager assigns daily tasks $\rightarrow$ Developers build and deliver code.</li>
+                  <li>Project Manager assigns daily tasks &rarr; Developers build and deliver code.</li>
                   <li>QA Testers verify builds and report defects back to Developers until all tests pass.</li>
-                  <li>Once QA tests pass and the milestone is verified, the Project Manager clicks <strong>"Dispatch Invoice Request"</strong>.</li>
-                  <li><strong>HR and Admin</strong> receive the request in the HR Portal (`/hr/payroll`) and Admin Portal (`/admin/projects`) where they officially generate the invoice document.</li>
+                  <li>Once QA tests pass and the milestone is verified, the Project Manager clicks <strong>&quot;Dispatch Invoice Request&quot;</strong>.</li>
+                  <li><strong>HR and Admin</strong> receive the request in the HR Portal (<code>/hr/payroll</code>) and Admin Portal (<code>/admin/projects</code>) where they officially generate the invoice document.</li>
                 </ol>
               </div>
             </div>

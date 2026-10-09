@@ -5,7 +5,7 @@ import { leadsApi, salesApi, proposalsApi, contractsApi } from '../../../../api'
 import Button from '../../../../shared/components/Button';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
-import { Icon } from '../../../../shared/components';
+import { Icon, KpiCard, ActionToast } from '../../../../shared/components';
 
 interface Deal {
   id: string;
@@ -219,15 +219,11 @@ export const Pipeline: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Toast */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ Status Updated:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ Status Updated:"
+      />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -252,29 +248,31 @@ export const Pipeline: React.FC = () => {
 
       {/* Pipeline KPI Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Total Pipeline Value</div>
-          <div className="text-xl font-extrabold text-white font-mono mt-0.5">${totalValue.toLocaleString()}</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">{deals.length} active opportunities</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Weighted Forecast</div>
-          <div className="text-xl font-extrabold text-[#D4AF37] font-mono mt-0.5">${Math.round(weightedValue).toLocaleString()}</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Probability-adjusted ARR</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Closed Won Clients</div>
-          <div className="text-xl font-extrabold text-emerald-400 font-mono mt-0.5">{wonCount} Accounts</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Active in Delivery Hub</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Win Conversion Rate</div>
-          <div className="text-xl font-extrabold text-cyan-400 font-mono mt-0.5">
-            {deals.length ? Math.round((wonCount / deals.length) * 100) : 0}%
-          </div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Stage velocity benchmark</div>
-        </div>
+        <KpiCard
+          label="Total Pipeline Value"
+          value={`$${totalValue.toLocaleString()}`}
+          subtitle={`${deals.length} active opportunities`}
+        />
+        <KpiCard
+          label="Weighted Forecast"
+          value={`$${Math.round(weightedValue).toLocaleString()}`}
+          subtitle="Probability-adjusted ARR"
+          valueColor="text-[#D4AF37]"
+        />
+        <KpiCard
+          label="Closed Won Clients"
+          value={`${wonCount} Accounts`}
+          subtitle="Active in Delivery Hub"
+          valueColor="text-emerald-400"
+        />
+        <KpiCard
+          label="Win Conversion Rate"
+          value={`${deals.length ? Math.round((wonCount / deals.length) * 100) : 0}%`}
+          subtitle="Stage velocity benchmark"
+          valueColor="text-cyan-400"
+        />
       </div>
+
 
       {/* Kanban Board Columns */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3.5 min-h-[550px]">

@@ -120,7 +120,7 @@ export const Contracts: React.FC = () => {
 
       const newCtr = res.data || {
         id: `ctr-${Date.now()}`,
-        contract_id: `CTR-2026-0${Math.floor(Math.random() * 90) + 20}`,
+        contract_id: `CTR-2026-${Date.now().toString().slice(-4)}`,
         client_name: matchedProp?.client_name || 'Enterprise Client',
         scope: matchedProp?.scope_summary || 'Custom Software Engineering Services',
         value: `$${(matchedProp?.price || 95000).toLocaleString()}`,
@@ -137,7 +137,7 @@ export const Contracts: React.FC = () => {
       const matchedProp = acceptedProposals.find((p) => p.id === selectedProposalId);
       const fallbackCtr = {
         id: `ctr-${Date.now()}`,
-        contract_id: `CTR-2026-0${Math.floor(Math.random() * 90) + 20}`,
+        contract_id: `CTR-2026-${Date.now().toString().slice(-4)}`,
         client_name: matchedProp?.client_name || 'Enterprise Client',
         scope: matchedProp?.scope_summary || 'Software Engineering SOW',
         value: `$${(matchedProp?.price || 95000).toLocaleString()}`,

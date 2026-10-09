@@ -7,7 +7,7 @@ import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
-import { Icon } from '../../../../shared/components';
+import { Icon, KpiCard, ActionToast } from '../../../../shared/components';
 
 interface Activity {
   id: string;
@@ -219,15 +219,11 @@ export const Activities: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Toast Notification */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ Activity Recorded:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ Activity Recorded:"
+      />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -257,27 +253,31 @@ export const Activities: React.FC = () => {
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Total Activities Logged</div>
-          <div className="text-xl font-extrabold text-white font-mono mt-0.5">{activities.length} Touchpoints</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Current quarterly cycle</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Discovery Calls Held</div>
-          <div className="text-xl font-extrabold text-blue-400 font-mono mt-0.5">{totalCalls} Completed</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Inbound qualification</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Client Demos Delivered</div>
-          <div className="text-xl font-extrabold text-purple-400 font-mono mt-0.5">{totalDemos} Sessions</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Architecture walkthroughs</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Commercial Conversions</div>
-          <div className="text-xl font-extrabold text-[#D4AF37] font-mono mt-0.5">{proposalWins} Advanced</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Proposal/contract outcomes</div>
-        </div>
+        <KpiCard
+          label="Total Activities Logged"
+          value={`${activities.length} Touchpoints`}
+          subtitle="Current quarterly cycle"
+        />
+        <KpiCard
+          label="Discovery Calls Held"
+          value={`${totalCalls} Completed`}
+          subtitle="Inbound qualification"
+          valueColor="text-blue-400"
+        />
+        <KpiCard
+          label="Client Demos Delivered"
+          value={`${totalDemos} Sessions`}
+          subtitle="Architecture walkthroughs"
+          valueColor="text-purple-400"
+        />
+        <KpiCard
+          label="Commercial Conversions"
+          value={`${proposalWins} Advanced`}
+          subtitle="Proposal/contract outcomes"
+          valueColor="text-[#D4AF37]"
+        />
       </div>
+
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-2 rounded-xl bg-[#141414] border border-[#2A2A2A]">

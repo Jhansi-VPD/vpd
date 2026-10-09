@@ -7,7 +7,7 @@ import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
-import { Icon } from '../../../../shared/components';
+import { Icon, ActionToast } from '../../../../shared/components';
 
 export const Proposals: React.FC = () => {
   const [proposals, setProposals] = useState<any[]>([]);
@@ -122,7 +122,7 @@ export const Proposals: React.FC = () => {
       const matchedLead = leads.find((l) => l.id === selectedLeadId);
       const newProp = res.data || {
         id: `prop-${Date.now()}`,
-        number: `PROP-2026-0${Math.floor(Math.random() * 90) + 10}`,
+        number: `PROP-2026-${Date.now().toString().slice(-4)}`,
         version: 1,
         lead_id: selectedLeadId,
         client_name: matchedLead?.company || 'Enterprise Lead',
@@ -142,7 +142,7 @@ export const Proposals: React.FC = () => {
       const matchedLead = leads.find((l) => l.id === selectedLeadId);
       const fallbackProp = {
         id: `prop-${Date.now()}`,
-        number: `PROP-2026-0${Math.floor(Math.random() * 90) + 10}`,
+        number: `PROP-2026-${Date.now().toString().slice(-4)}`,
         version: 1,
         lead_id: selectedLeadId,
         client_name: matchedLead?.company || 'Enterprise Lead',
@@ -230,15 +230,11 @@ export const Proposals: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Toast */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ Commercial Action:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ Commercial Action:"
+      />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

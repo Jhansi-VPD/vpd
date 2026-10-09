@@ -8,7 +8,8 @@ import { MetricCard, MiniBarChart } from '../../../../shared/components/Charts';
 import DataTable from '../../../../shared/components/DataTable';
 import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
-import { Icon } from '../../../../shared/components';
+import { Icon, ActionToast } from '../../../../shared/components';
+import { buildContactLeadPayload } from '../../../../shared/utils';
 
 export const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
@@ -72,14 +73,7 @@ export const Dashboard: React.FC = () => {
 
   const handleConvertToLead = async (submission: any) => {
     try {
-      await leadsApi.create({
-        company: submission.company,
-        contact_name: submission.name,
-        email: submission.email,
-        source: 'contact_form',
-        estimated_value: submission.budget ? Number(submission.budget.replace(/[^0-9]/g, '')) : 95000,
-        notes: `Converted from Website Contact Form. Inquiry: "${submission.message}"`,
-      });
+      await leadsApi.create(buildContactLeadPayload(submission));
     } catch {
       // Local fallback
     }
@@ -110,15 +104,12 @@ export const Dashboard: React.FC = () => {
       />
 
       {/* Notification Toast */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown mb-6">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ CRM Action:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ CRM Action:"
+        className="mb-6"
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <MetricCard 

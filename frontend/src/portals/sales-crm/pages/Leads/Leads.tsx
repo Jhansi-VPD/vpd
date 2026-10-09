@@ -8,6 +8,7 @@ import Button from '../../../../shared/components/Button';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
 import { Icon } from '../../../../shared/components';
+import { buildContactLeadPayload } from '../../../../shared/utils';
 
 export const Leads: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'inbound' | 'new' | 'contacted' | 'requirements' | 'proposal' | 'converted' | 'disqualified'>('all');
@@ -169,16 +170,8 @@ export const Leads: React.FC = () => {
   // 1. Convert Inbound Submission -> Lead
   const handleConvertSubmissionToLead = async (submission: any) => {
     try {
-      const budgetNum = submission.budget ? Number(submission.budget.replace(/[^0-9]/g, '')) : 95000;
-      const res = await leadsApi.create({
-        company: submission.company,
-        contact_name: submission.name,
-        email: submission.email,
-        phone: submission.phone || '',
-        source: 'contact_form',
-        estimated_value: budgetNum,
-        notes: `Converted from Website Contact Form. Inquiry: "${submission.message}"`,
-      });
+      const payload = buildContactLeadPayload(submission);
+      const res = await leadsApi.create(payload);
 
       const newLead = res.data || {
         id: `lead-${Date.now()}`,
@@ -188,7 +181,7 @@ export const Leads: React.FC = () => {
         phone: submission.phone,
         source: 'contact_form',
         status: 'new',
-        estimated_value: budgetNum,
+        estimated_value: payload.estimated_value,
         notes: `Inquiry: ${submission.message}`,
         created_at: new Date().toISOString(),
       };
@@ -612,7 +605,7 @@ export const Leads: React.FC = () => {
           <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-xs text-blue-300 flex items-center justify-between">
             <span className="flex items-center gap-2">
               <Icon name="mail" className="w-4 h-4 text-blue-400" />
-              These inquiries originated directly from the public Website Contact Form. Click "Convert to Lead" to inject them into the sales discovery pipeline.
+              These inquiries originated directly from the public Website Contact Form. Click &ldquo;Convert to Lead&rdquo; to inject them into the sales discovery pipeline.
             </span>
             <span className="font-mono text-[11px] text-blue-400">{inboundSubmissions.length} pending inquiries</span>
           </div>

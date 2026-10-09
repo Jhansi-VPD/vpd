@@ -6,7 +6,8 @@ import PageHeader from '../../../../shared/components/PageHeader';
 import { MetricCard } from '../../../../shared/components/Charts';
 import Button from '../../../../shared/components/Button';
 import StatusBadge from '../../../../shared/components/StatusBadge';
-import { Icon } from '../../../../shared/components';
+import { Icon, ActionToast } from '../../../../shared/components';
+import { buildContactLeadPayload } from '../../../../shared/utils';
 import { leadsApi, contactApi } from '../../../../api';
 
 export const Dashboard: React.FC = () => {
@@ -75,14 +76,7 @@ export const Dashboard: React.FC = () => {
 
   const handleConvertToLead = async (submission: any) => {
     try {
-      await leadsApi.create({
-        company: submission.company,
-        contact_name: submission.name,
-        email: submission.email,
-        source: 'contact_form',
-        estimated_value: submission.budget ? Number(submission.budget.replace(/[^0-9]/g, '')) : 100000,
-        notes: `Converted from Website Contact Form. Inquiry: "${submission.message}"`,
-      });
+      await leadsApi.create(buildContactLeadPayload(submission));
     } catch {
       // Local fallback
     }
@@ -118,15 +112,11 @@ export const Dashboard: React.FC = () => {
       />
 
       {/* Notification Toast */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between animate-fadeIn mb-4">
-          <div className="flex items-center gap-2">
-            <span className="text-emerald-400 font-bold">⚡ Success:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ Success:"
+      />
 
       {/* Top Sales KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 animate-slideUp">
@@ -195,7 +185,7 @@ export const Dashboard: React.FC = () => {
               </div>
 
               <p className="text-[11px] text-zinc-300 line-clamp-2 bg-[#121214] p-2 rounded border border-zinc-800">
-                "{sub.message}"
+                &ldquo;{sub.message}&rdquo;
               </p>
 
               <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between">

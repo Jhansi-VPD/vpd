@@ -7,7 +7,7 @@ import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
-import { Icon } from '../../../../shared/components';
+import { Icon, KpiCard, ActionToast } from '../../../../shared/components';
 
 interface Opportunity {
   id: string;
@@ -315,15 +315,11 @@ export const Opportunities: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Toast Notification */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ Opportunity Updated:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ Opportunity Updated:"
+      />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -353,27 +349,31 @@ export const Opportunities: React.FC = () => {
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Total Pipeline Value</div>
-          <div className="text-xl font-extrabold text-white font-mono mt-0.5">${totalPipeline.toLocaleString()}</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">{activeOpps.length} qualified opportunities</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Weighted Forecast (ARR)</div>
-          <div className="text-xl font-extrabold text-[#D4AF37] font-mono mt-0.5">${Math.round(weightedPipeline).toLocaleString()}</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Probability-adjusted revenue</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Avg Deal Value</div>
-          <div className="text-xl font-extrabold text-cyan-400 font-mono mt-0.5">${avgDealSize.toLocaleString()}</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Enterprise contract average</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Closed Won Deals</div>
-          <div className="text-xl font-extrabold text-emerald-400 font-mono mt-0.5">{wonOpps.length} Accounts</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Active in Delivery Hub</div>
-        </div>
+        <KpiCard
+          label="Total Pipeline Value"
+          value={`$${totalPipeline.toLocaleString()}`}
+          subtitle={`${activeOpps.length} qualified opportunities`}
+        />
+        <KpiCard
+          label="Weighted Forecast (ARR)"
+          value={`$${Math.round(weightedPipeline).toLocaleString()}`}
+          subtitle="Probability-adjusted revenue"
+          valueColor="text-[#D4AF37]"
+        />
+        <KpiCard
+          label="Avg Deal Value"
+          value={`$${avgDealSize.toLocaleString()}`}
+          subtitle="Enterprise contract average"
+          valueColor="text-cyan-400"
+        />
+        <KpiCard
+          label="Closed Won Deals"
+          value={`${wonOpps.length} Accounts`}
+          subtitle="Active in Delivery Hub"
+          valueColor="text-emerald-400"
+        />
       </div>
+
 
       {/* Filters and Search Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-2 rounded-xl bg-[#141414] border border-[#2A2A2A]">

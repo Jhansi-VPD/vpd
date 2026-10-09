@@ -7,7 +7,7 @@ import StatusBadge from '../../../../shared/components/StatusBadge';
 import Button from '../../../../shared/components/Button';
 import Modal from '../../../../shared/components/Modal';
 import Input from '../../../../shared/components/Input';
-import { Icon } from '../../../../shared/components';
+import { Icon, KpiCard, ActionToast } from '../../../../shared/components';
 
 interface FollowUpItem {
   id: string;
@@ -215,15 +215,11 @@ export const FollowUps: React.FC = () => {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Toast Notification */}
-      {notification && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center justify-between shadow-lg animate-slideDown">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-emerald-400">⚡ Action Item:</span>
-            <span>{notification}</span>
-          </div>
-          <button onClick={() => setNotification(null)} className="text-emerald-400 hover:text-white">✕</button>
-        </div>
-      )}
+      <ActionToast
+        message={notification}
+        onClose={() => setNotification(null)}
+        title="⚡ Action Item:"
+      />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -253,27 +249,31 @@ export const FollowUps: React.FC = () => {
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Pending Tasks</div>
-          <div className="text-xl font-extrabold text-white font-mono mt-0.5">{pendingCount} Active</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Across sales pipeline</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Due Today</div>
-          <div className="text-xl font-extrabold text-amber-400 font-mono mt-0.5">{dueTodayCount} Urgent</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Expiring by end-of-day</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">High Priority</div>
-          <div className="text-xl font-extrabold text-red-400 font-mono mt-0.5">{highPriorityCount} Critical</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">Immediate revenue impact</div>
-        </div>
-        <div className="card-hover-fx p-3.5 rounded-xl bg-[#141414] border border-[#2A2A2A] shadow-sm">
-          <div className="text-[11px] text-zinc-300 uppercase tracking-wider font-semibold font-mono">Resolved Tasks</div>
-          <div className="text-xl font-extrabold text-emerald-400 font-mono mt-0.5">{completedCount} Completed</div>
-          <div className="text-xs text-zinc-300 mt-1 font-medium">100% SLA adherence</div>
-        </div>
+        <KpiCard
+          label="Pending Tasks"
+          value={`${pendingCount} Active`}
+          subtitle="Across sales pipeline"
+        />
+        <KpiCard
+          label="Due Today"
+          value={`${dueTodayCount} Urgent`}
+          subtitle="Expiring by end-of-day"
+          valueColor="text-amber-400"
+        />
+        <KpiCard
+          label="High Priority"
+          value={`${highPriorityCount} Critical`}
+          subtitle="Immediate revenue impact"
+          valueColor="text-red-400"
+        />
+        <KpiCard
+          label="Resolved Tasks"
+          value={`${completedCount} Completed`}
+          subtitle="100% SLA adherence"
+          valueColor="text-emerald-400"
+        />
       </div>
+
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-2 rounded-xl bg-[#141414] border border-[#2A2A2A]">
